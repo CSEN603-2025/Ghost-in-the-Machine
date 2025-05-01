@@ -1,7 +1,7 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import './App.css';
 import LoginPage from './pages/LoginPage';
-import WorkshopsPage from './pages/WorkshopsPage';  // <-- import your new page
+import WorkshopsPage from './pages/WorkshopsPage';  
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import RegisterCompanyPage from './pages/RegisterCompany';
 
