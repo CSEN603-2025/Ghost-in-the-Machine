@@ -1,6 +1,7 @@
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import LoginPage from './pages/LoginPage';
+import WorkshopsPage from './pages/WorkshopsPage';  // <-- import your new page
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import RegisterCompanyPage from './pages/RegisterCompany';
 
@@ -10,8 +11,13 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register-company" element={<RegisterCompanyPage />} />
+        <Route path="/workshops" element={<WorkshopsPage />} />  
       </Routes>
     </Router>
+  
+        
+        
+     
   );
 }
 
