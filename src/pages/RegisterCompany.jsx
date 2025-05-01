@@ -19,7 +19,6 @@ function RegisterCompanyPage() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Validation
         if (companyName === '' || industry === '' || email === '' || phone === '' || address === '' || companySize === '') {
             setError('Please fill in all fields');
             return;
@@ -48,8 +47,6 @@ function RegisterCompanyPage() {
             imageFile,
             documentFile
         });
-
-        // Reset fields after success
         setCompanyName('');
         setIndustry('');
         setCompanySize('');
@@ -99,8 +96,6 @@ function RegisterCompanyPage() {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                 />
-
-                {/* Company Size - moved to after address */}
                 <label style={styles.label}>Select Company Size:</label>
                 <select
                     value={companySize}
@@ -114,7 +109,6 @@ function RegisterCompanyPage() {
                     <option value="Corporate">Corporate ({'>'}500 employees)</option>
                 </select>
 
-                {/* Upload Company Image */}
                 <label style={styles.label}>Upload Company Image:</label>
                 <input
                     type="file"
