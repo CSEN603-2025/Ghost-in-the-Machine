@@ -1,9 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function WorkshopForm({ onAdd }) {
+export default function WorkshopForm({ onAdd, onUpdate, editWorkshop }) {
   const [formData, setFormData] = useState({
     name: '', speaker: '', date: '', description: ''
   });
+
+  useEffect(() => {
+    if (editWorkshop) {
+      setFormData(editWorkshop);
+    }
+  }, [editWorkshop]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -11,17 +17,21 @@ export default function WorkshopForm({ onAdd }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onAdd(formData);
+    if (editWorkshop) {
+      onUpdate(formData);
+    } else {
+      onAdd(formData);
+    }
     setFormData({ name: '', speaker: '', date: '', description: '' });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="workshop-form" onSubmit={handleSubmit}>
       <input name="name" placeholder="Workshop Name" value={formData.name} onChange={handleChange} required />
       <input name="speaker" placeholder="Speaker" value={formData.speaker} onChange={handleChange} required />
       <input name="date" type="date" value={formData.date} onChange={handleChange} required />
       <input name="description" placeholder="Description" value={formData.description} onChange={handleChange} required />
-      <button type="submit">Add Workshop</button>
+      <button type="submit">{editWorkshop ? "Update Workshop" : "Add Workshop"}</button>
     </form>
   );
 }

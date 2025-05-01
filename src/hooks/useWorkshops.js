@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react';   // <-- add this!
 
 export const useWorkshops = () => {
   const [workshops, setWorkshops] = useState([
@@ -14,5 +14,11 @@ export const useWorkshops = () => {
     setWorkshops(prev => prev.filter(w => w.id !== id));
   };
 
-  return { workshops, addWorkshop, deleteWorkshop };
+  const updateWorkshop = (updatedWorkshop) => {
+    setWorkshops(prev =>
+      prev.map(w => (w.id === updatedWorkshop.id ? updatedWorkshop : w))
+    );
+  };
+
+  return { workshops, addWorkshop, deleteWorkshop, updateWorkshop };
 };
