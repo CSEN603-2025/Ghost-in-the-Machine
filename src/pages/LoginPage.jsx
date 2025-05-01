@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import InputField from '../components/InputField';
 import MainActionButton from '../components/MainActionButton';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
 
+const handleRegisterClick = () => {
+    navigate('/register-company');
+};
     const handleSubmit = (e) => {
         e.preventDefault();
         if (email === '' || password === '') {
@@ -20,7 +25,7 @@ function LoginPage() {
                 setError('Invalid email or password');
             }
         }
-        // Handle login logic here
+       
         console.log('Logging in with', email, password);
     };
 
@@ -43,6 +48,9 @@ function LoginPage() {
                 <MainActionButton type="submit" style={styles.button}> Log In </MainActionButton>
                 {error && <p style={styles.error}>{error}</p>}
             </form>
+            <button onClick={handleRegisterClick} style={styles.registerButton}>
+                Register a Company
+            </button>
         </div>
     );
 }
@@ -70,6 +78,16 @@ const styles = {
       border: 'none',
       borderRadius: '4px',
       marginTop: '10px',
+    },
+    registerButton: {
+        marginTop: '20px',
+        backgroundColor: '#003366', 
+        color: 'white',
+        padding: '10px',
+        fontSize: '14px',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
     },
     error: {
       color: 'red',
