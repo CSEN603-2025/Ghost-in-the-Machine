@@ -6,23 +6,22 @@ import { useNavigate } from 'react-router-dom';
 function RegisterCompanyPage() {
     const navigate = useNavigate();
     const [companyName, setCompanyName] = useState('');
+    const [industry, setIndustry] = useState('');
+    const [companySize, setCompanySize] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [imageFile, setImageFile] = useState(null);
     const [documentFile, setDocumentFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null); 
+    const [imagePreview, setImagePreview] = useState(null);
     const [error, setError] = useState(null);
-    
-    const handleBackToLoginClick = () => {
-        navigate('/');
-    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (companyName === '' || email === '' || phone === '' || address === '') {
-            setError('Please fill in all text fields');
+        // Validation
+        if (companyName === '' || industry === '' || email === '' || phone === '' || address === '' || companySize === '') {
+            setError('Please fill in all fields');
             return;
         }
         if (!/\S+@\S+\.\S+/.test(email)) {
@@ -38,10 +37,11 @@ function RegisterCompanyPage() {
             return;
         }
 
-        
         setError('Company registered successfully!');
         console.log('Registering company:', {
             companyName,
+            industry,
+            companySize,
             email,
             phone,
             address,
@@ -49,16 +49,20 @@ function RegisterCompanyPage() {
             documentFile
         });
 
-       
+        // Reset fields after success
         setCompanyName('');
+        setIndustry('');
+        setCompanySize('');
         setEmail('');
         setPhone('');
         setAddress('');
         setImageFile(null);
         setDocumentFile(null);
         setImagePreview(null);
+    };
 
-       
+    const handleBackToLoginClick = () => {
+        navigate('/');
     };
 
     return (
@@ -70,6 +74,12 @@ function RegisterCompanyPage() {
                     placeholder="Company Name"
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
+                />
+                <InputField
+                    type="text"
+                    placeholder="Industry"
+                    value={industry}
+                    onChange={(e) => setIndustry(e.target.value)}
                 />
                 <InputField
                     type="email"
@@ -90,7 +100,21 @@ function RegisterCompanyPage() {
                     onChange={(e) => setAddress(e.target.value)}
                 />
 
-                
+                {/* Company Size - moved to after address */}
+                <label style={styles.label}>Select Company Size:</label>
+                <select
+                    value={companySize}
+                    onChange={(e) => setCompanySize(e.target.value)}
+                    style={styles.select}
+                >
+                    <option value="">-- Select Company Size --</option>
+                    <option value="Small">Small (≤ 50 employees)</option>
+                    <option value="Medium">Medium (51–100 employees)</option>
+                    <option value="Large">Large (101–500 employees)</option>
+                    <option value="Corporate">Corporate ({'>'}500 employees)</option>
+                </select>
+
+                {/* Upload Company Image */}
                 <label style={styles.label}>Upload Company Image:</label>
                 <input
                     type="file"
@@ -105,6 +129,7 @@ function RegisterCompanyPage() {
                     style={styles.fileInput}
                 />
 
+               
                 {imagePreview && (
                     <img
                         src={imagePreview}
@@ -122,9 +147,15 @@ function RegisterCompanyPage() {
                     style={styles.fileInput}
                 />
 
+          
                 <MainActionButton type="submit" style={styles.button}>
                     Register
                 </MainActionButton>
+
+            
+                <button type="button" onClick={handleBackToLoginClick} style={styles.backButton}>
+                    Already registered? Login
+                </button>
 
                 {error && (
                     <p
@@ -137,9 +168,6 @@ function RegisterCompanyPage() {
                     </p>
                 )}
             </form>
-            <button type="backButton" onClick={handleBackToLoginClick} style={styles.backButton}>
-    Already registered? Login
-</button>
         </div>
     );
 }
@@ -163,6 +191,13 @@ const styles = {
         marginBottom: '5px',
         textAlign: 'left',
     },
+    select: {
+        padding: '10px',
+        fontSize: '14px',
+        marginBottom: '15px',
+        borderRadius: '4px',
+        border: '1px solid #ccc',
+    },
     fileInput: {
         marginBottom: '15px',
     },
@@ -173,9 +208,8 @@ const styles = {
         objectFit: 'contain',  
         borderRadius: '8px',
         border: '1px solid #ddd',
-        backgroundColor: '#f9f9f9', 
+        backgroundColor: '#f9f9f9',
     },
-    
     button: {
         padding: '10px',
         fontSize: '16px',
@@ -188,7 +222,7 @@ const styles = {
     },
     backButton: {
         marginTop: '15px',
-        backgroundColor: '#6c757d', 
+        backgroundColor: '#6c757d',
         color: 'white',
         padding: '10px',
         fontSize: '14px',
