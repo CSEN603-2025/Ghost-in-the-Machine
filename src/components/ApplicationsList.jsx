@@ -1,9 +1,9 @@
-// src/components/ApplicationsList.jsx
 
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// Dummy applications data
+
 const dummyApplications = [
   {
     id: 1,
@@ -57,10 +57,16 @@ function ApplicationsList({ posts }) {
 
   const handleStatusChange = (id, newStatus) => {
     setApplications(prev =>
-      prev.map(app =>
-        app.id === id ? { ...app, status: newStatus } : app
-      )
+      prev.map(app => (app.id === id ? { ...app, status: newStatus } : app))
     );
+  };
+
+  // Collect unique internship titles from posts and applications
+  const getAllInternshipTitles = () => {
+    const postTitles = posts.map(post => post.title);
+    const appTitles = applications.map(app => app.internshipTitle);
+    const combined = [...new Set([...postTitles, ...appTitles])];
+    return combined;
   };
 
   const filteredApplications = applications.filter(app => {
@@ -76,14 +82,24 @@ function ApplicationsList({ posts }) {
 
       {/* Filters */}
       <div style={styles.filters}>
-        <select style={styles.input} value={selectedPost} onChange={(e) => setSelectedPost(e.target.value)}>
+        <select
+          style={styles.input}
+          value={selectedPost}
+          onChange={(e) => setSelectedPost(e.target.value)}
+        >
           <option value="">Filter by Internship</option>
-          {[...new Set(applications.map(app => app.internshipTitle))].map((title, index) => (
-            <option key={index} value={title}>{title}</option>
+          {getAllInternshipTitles().map((title, index) => (
+            <option key={index} value={title}>
+              {title}
+            </option>
           ))}
         </select>
 
-        <select style={styles.input} value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
+        <select
+          style={styles.input}
+          value={selectedStatus}
+          onChange={(e) => setSelectedStatus(e.target.value)}
+        >
           <option value="">Filter by Status</option>
           <option value="Pending">Pending</option>
           <option value="Finalized">Finalized</option>
@@ -114,22 +130,57 @@ function ApplicationsList({ posts }) {
               <p><strong>Email:</strong> {app.email}</p>
               <p><strong>Phone:</strong> {app.phone}</p>
               <p><strong>CV:</strong> {app.cv}</p>
-              <p><strong>Internship:</strong> <span onClick={() => navigate(`/applications/${app.internshipTitle.replace(/\s+/g, '-').toLowerCase()}`)} style={styles.linkText}>{app.internshipTitle}</span></p>
+              <p>
+                <strong>Internship:</strong>{' '}
+                <span
+                  onClick={() =>
+                    navigate(`/applications/${app.internshipTitle.replace(/\s+/g, '-').toLowerCase()}`)
+                  }
+                  style={styles.linkText}
+                >
+                  {app.internshipTitle}
+                </span>
+              </p>
               <p><strong>Status:</strong> {app.status}</p>
 
               {/* Status Update Buttons */}
               {app.status === 'Pending' && (
                 <>
-                  <button style={styles.actionButton} onClick={() => handleStatusChange(app.id, 'Finalized')}>Finalize</button>
-                  <button style={styles.actionButton} onClick={() => handleStatusChange(app.id, 'Accepted')}>Accept</button>
-                  <button style={styles.actionButton} onClick={() => handleStatusChange(app.id, 'Rejected')}>Reject</button>
+                  <button
+                    style={styles.actionButton}
+                    onClick={() => handleStatusChange(app.id, 'Finalized')}
+                  >
+                    Finalize
+                  </button>
+                  <button
+                    style={styles.actionButton}
+                    onClick={() => handleStatusChange(app.id, 'Accepted')}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    style={styles.actionButton}
+                    onClick={() => handleStatusChange(app.id, 'Rejected')}
+                  >
+                    Reject
+                  </button>
                 </>
               )}
               {app.status === 'Accepted' && (
-                <button style={styles.actionButton} onClick={() => handleStatusChange(app.id, 'Current Intern')}>Set Current Intern</button>
+                <button
+                  style={styles.actionButton}
+                  onClick={() => handleStatusChange(app.id, 'Current Intern')}
+                >
+                  Set Current Intern
+                </button>
               )}
               {app.status === 'Current Intern' && (
-                <button style={styles.actionButton} onClick={() => handleStatusChange(app.id, 'Internship Complete')}>Set Complete</button>
+                <button
+                  style={styles.actionButton}
+                  onClick={() => handleStatusChange(app.id, 'Internship Complete')}
+                >
+                  Set Complete
+                </button>
               )}
             </div>
           ))
@@ -188,7 +239,7 @@ const styles = {
     color: '#007bff',
     textDecoration: 'underline',
     cursor: 'pointer',
-  }
+  },
 };
 
 export default ApplicationsList;

@@ -1,9 +1,9 @@
-// src/components/ApplicationsByPost.jsx
+// src/components/ApplicationListPage.jsx
 
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-// Dummy applications data again
+// Dummy applications
 const dummyApplications = [
   {
     id: 1,
@@ -47,22 +47,14 @@ const dummyApplications = [
   },
 ];
 
-function ApplicationsByPost() {
-  const { postId } = useParams(); // get post title from URL
-  const readableTitle = postId.replace(/-/g, ' '); // convert dash to space
+function ApplicationListPage() {
+  const { postId } = useParams();
+  const readableTitle = postId.replace(/-/g, ' ');
 
-  const [applications, setApplications] = useState(dummyApplications);
-
-  const handleStatusChange = (id, newStatus) => {
-    setApplications(prev =>
-      prev.map(app =>
-        app.id === id ? { ...app, status: newStatus } : app
-      )
-    );
-  };
+  const [applications] = useState(dummyApplications);
 
   const filteredApplications = applications.filter(
-    app => app.internshipTitle.toLowerCase() === readableTitle.toLowerCase()
+    (app) => app.internshipTitle.toLowerCase() === readableTitle.toLowerCase()
   );
 
   return (
@@ -70,10 +62,10 @@ function ApplicationsByPost() {
       <h2>Applications for {readableTitle}</h2>
 
       {filteredApplications.length === 0 ? (
-        <p>No applications found for this post.</p>
+        <p style={styles.noApplications}>No applications received yet.</p>
       ) : (
         <div style={styles.applicationsContainer}>
-          {filteredApplications.map(app => (
+          {filteredApplications.map((app) => (
             <div key={app.id} style={styles.applicationCard}>
               <h3>{app.studentName}</h3>
               <p><strong>Major:</strong> {app.major}</p>
@@ -81,21 +73,6 @@ function ApplicationsByPost() {
               <p><strong>Phone:</strong> {app.phone}</p>
               <p><strong>CV:</strong> {app.cv}</p>
               <p><strong>Status:</strong> {app.status}</p>
-
-              {/* Status Buttons */}
-              {app.status === 'Pending' && (
-                <>
-                  <button style={styles.actionButton} onClick={() => handleStatusChange(app.id, 'Finalized')}>Finalize</button>
-                  <button style={styles.actionButton} onClick={() => handleStatusChange(app.id, 'Accepted')}>Accept</button>
-                  <button style={styles.actionButton} onClick={() => handleStatusChange(app.id, 'Rejected')}>Reject</button>
-                </>
-              )}
-              {app.status === 'Accepted' && (
-                <button style={styles.actionButton} onClick={() => handleStatusChange(app.id, 'Current Intern')}>Set Current Intern</button>
-              )}
-              {app.status === 'Current Intern' && (
-                <button style={styles.actionButton} onClick={() => handleStatusChange(app.id, 'Internship Complete')}>Set Complete</button>
-              )}
             </div>
           ))}
         </div>
@@ -114,6 +91,7 @@ const styles = {
     flexWrap: 'wrap',
     gap: '20px',
     justifyContent: 'center',
+    marginTop: '20px',
   },
   applicationCard: {
     backgroundColor: '#f5f5f5',
@@ -122,19 +100,12 @@ const styles = {
     width: '300px',
     textAlign: 'left',
     boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-    position: 'relative',
   },
-  actionButton: {
-    marginTop: '8px',
-    marginRight: '8px',
-    padding: '6px 12px',
-    fontSize: '14px',
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
+  noApplications: {
+    marginTop: '30px',
+    fontSize: '18px',
+    color: '#888',
   },
 };
 
-export default ApplicationsByPost;
+export default ApplicationListPage;
