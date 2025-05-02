@@ -9,7 +9,7 @@ import MyApplicationsPage from './pages/MyApplicationsPage'; // New page for My 
 import WorkshopsPage from './pages/WorkshopsPage';
 import LandingPage from './pages/LandingPage'; 
 
-import ApplicationsByPost from './components/ApplicationsByPost'; 
+import ApplicationListPage from './components/ApplicationListPage';
 
 function App() {
   return (
@@ -21,7 +21,8 @@ function App() {
       <Route path="/student-applications" element={<MyApplicationsPage />} /> {/* New route */}
       <Route path="/workshops" element={<WorkshopsPage />} />
       <Route path="/company-dashboard" element={<CompanyDashboard />} />
-      <Route path="/applications/:postId" element={<ApplicationsByPost />} />  {/* ADD THIS NEW ROUTE */}
+      <Route path="/applications/:postId" element={<ApplicationListPage />} />
+     
     </Routes>
   );
 }
