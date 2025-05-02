@@ -7,21 +7,17 @@ import CompanyDashboard from './pages/CompanyDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import MyApplicationsPage from './pages/MyApplicationsPage'; // New page for My Applications
 import WorkshopsPage from './pages/WorkshopsPage';
-import EditProfilePage from "./pages/EditProfilePage";
-
-
-
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<LoginPage />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/welcome" element={<LoginPage />} />
       <Route path="/register-company" element={<RegisterCompanyPage />} />
-      <Route path="/student/dashboard" element={<StudentDashboard />} />
-      <Route path="/student/applications" element={<MyApplicationsPage />} /> {/* New route */}
+      <Route path="/student-dashboard" element={<StudentDashboard />} />
+      <Route path="/student-applications" element={<MyApplicationsPage />} /> {/* New route */}
       <Route path="/workshops" element={<WorkshopsPage />} />
         <Route path="/dashboard" element={<CompanyDashboard />} />
-        <Route path="/student/edit-profile" element={<EditProfilePage />} />
     </Routes>
   );
 }
