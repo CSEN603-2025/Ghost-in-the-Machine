@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import InputField from '../components/InputField';
 import MainActionButton from '../components/MainActionButton';
 import { useNavigate } from 'react-router-dom';
+import {FaEye} from 'react-icons/fa';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegisterClick = () => navigate('/register-company');
 
@@ -51,13 +53,35 @@ function LoginPage() {
           placeholder="Email"
           value={email}
           onChange={e => setEmail(e.target.value)}
+          style={{ width: '100%' }} // ensures email input fills container
         />
-        <InputField
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
+        <div style={{ position: 'relative' }}>
+          <InputField
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            style={{ width: '100%', paddingRight: '40px' }} // full width with extra right padding for the icon
+          />
+          <button 
+            type="button"
+            onMouseDown={() => setShowPassword(true)}
+            onMouseUp={() => setShowPassword(false)}
+            onMouseLeave={() => setShowPassword(false)}
+            style={{
+              position: 'absolute',
+              right: 10,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+            }}
+          >
+            <FaEye />
+          </button>
+        </div>
         <MainActionButton type="submit" style={styles.button}>
           Log In
         </MainActionButton>
