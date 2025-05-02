@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CompanyProfileCard from '../components/CompanyProfileCard';
 import PostsList from '../components/PostsList';
-
+import ApplicationsList from '../components/ApplicationsList';
 function CompanyDashboard() {
     const [activeSection, setActiveSection] = useState('home');
     const [posts, setPosts] = useState([]); // GLOBAL POSTS STATE
@@ -47,7 +47,7 @@ function CompanyDashboard() {
             <div style={styles.contentArea}>
                 {activeSection === 'home' && <p>Welcome to the Home Section.</p>}
                 {activeSection === 'posts' && <PostsList posts={posts} setPosts={setPosts} />}
-                {activeSection === 'applications' && <p>Applications Section will be implemented soon.</p>}
+                {activeSection === 'applications' && <ApplicationsList posts={posts} />}
                 {activeSection === 'interns' && <p>Interns Section will be implemented soon.</p>}
                 {activeSection === 'evaluation' && <p>Evaluation Section will be implemented soon.</p>}
             </div>

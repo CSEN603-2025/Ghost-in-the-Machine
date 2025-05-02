@@ -7,6 +7,7 @@ import CompanyDashboard from './pages/CompanyDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import MyApplicationsPage from './pages/MyApplicationsPage'; // New page for My Applications
 import WorkshopsPage from './pages/WorkshopsPage';
+import ApplicationsByPost from './components/ApplicationsByPost'; 
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/student-applications" element={<MyApplicationsPage />} /> {/* New route */}
       <Route path="/workshops" element={<WorkshopsPage />} />
       <Route path="/company-dashboard" element={<CompanyDashboard />} />
+      <Route path="/applications/:postId" element={<ApplicationsByPost />} />  {/* ADD THIS NEW ROUTE */}
     </Routes>
   );
 }
