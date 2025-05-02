@@ -31,7 +31,7 @@ function LoginPage() {
     }
     else if (email === 'rep@corp.com' && password === '1234') {
       setSuccess('Company login successful!');
-      navigate('/company-dashboard');
+      navigate('/dashboard');
     }
     else if (email === 'officer@scad.com' && password === '12345') {
       setSuccess('SCAD login successful!');
