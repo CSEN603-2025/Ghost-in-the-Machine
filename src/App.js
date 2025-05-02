@@ -13,10 +13,10 @@ function App() {
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route path="/register-company" element={<RegisterCompanyPage />} />
-      <Route path="/student/dashboard" element={<StudentDashboard />} />
-      <Route path="/student/applications" element={<MyApplicationsPage />} /> {/* New route */}
+      <Route path="/student-dashboard" element={<StudentDashboard />} />
+      <Route path="/student-applications" element={<MyApplicationsPage />} /> {/* New route */}
       <Route path="/workshops" element={<WorkshopsPage />} />
-        <Route path="/dashboard" element={<CompanyDashboard />} />
+      <Route path="/company-dashboard" element={<CompanyDashboard />} />
     </Routes>
   );
 }
