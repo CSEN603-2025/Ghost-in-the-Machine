@@ -18,8 +18,14 @@ const handleRegisterClick = () => {
             setError('Please fill in all fields');
             return;
         } else {
-            if (email == 'user@mail.com' && password == 'p123') {
-                setError('Login successful!');
+            if (email === 'student@guc.com' && password === '123') {
+                setError('Student login successful!');
+            }
+            else if(email === 'company@corp.com' && password === '1234') {
+                setError('Company login successful!')
+            }
+            else if (email === 'scad@gucscad.com' && password === '12345'){
+                setError('SCAD login successful')
             }
             else {
                 setError('Invalid email or password');
