@@ -7,6 +7,10 @@ import CompanyDashboard from './pages/CompanyDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import MyApplicationsPage from './pages/MyApplicationsPage'; // New page for My Applications
 import WorkshopsPage from './pages/WorkshopsPage';
+import EditProfilePage from "./pages/EditProfilePage";
+
+
+
 
 function App() {
   return (
@@ -17,6 +21,7 @@ function App() {
       <Route path="/student/applications" element={<MyApplicationsPage />} /> {/* New route */}
       <Route path="/workshops" element={<WorkshopsPage />} />
         <Route path="/dashboard" element={<CompanyDashboard />} />
+        <Route path="/student/edit-profile" element={<EditProfilePage />} />
     </Routes>
   );
 }

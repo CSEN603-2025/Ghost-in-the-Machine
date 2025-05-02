@@ -65,7 +65,6 @@ const StudentDashboard = () => {
   const handleMajorChange = (e) => setSelectedMajor(e.target.value);
   const handleSemesterChange = (e) => setSelectedSemester(e.target.value);
   const handleInterestsChange = (e) => setSelectedInterests(e.target.value);
-
   const handleInternshipSearch = (e) => setInternshipSearch(e.target.value);
 
   const handleInternshipFilterChange = (e) => {
@@ -130,7 +129,6 @@ const StudentDashboard = () => {
 
         <h2 style={styles.heading}>Suggested Internships for You</h2>
 
-        {/* Internship Filters */}
         <div style={styles.filterContainer}>
           <select value={selectedMajor} onChange={handleMajorChange} style={styles.filterSelect}>
             <option value="">Select Major</option>
@@ -177,7 +175,6 @@ const StudentDashboard = () => {
           </select>
         </div>
 
-        {/* Internship Cards */}
         <div style={styles.cardContainer}>
           {filteredInternships.map((internship) => (
             <div key={internship.id} style={styles.card}>
@@ -195,7 +192,6 @@ const StudentDashboard = () => {
 
         <h2 style={styles.heading}>Suggested Companies Based on Your Job Interests</h2>
 
-        {/* Company Filters */}
         <div style={styles.filterContainer}>
           <select name="industry" value={companyFilter.industry} onChange={handleCompanyFilterChange} style={styles.filterSelect}>
             <option value="">All Industries</option>
@@ -215,11 +211,8 @@ const StudentDashboard = () => {
                 </option>
               ))}
           </select>
-
-         
         </div>
 
-        {/* Company Cards */}
         <div style={styles.cardContainer}>
           {sortedCompanies.map((company, index) => (
             <div key={index} style={styles.card}>
@@ -260,11 +253,14 @@ const styles = {
     backgroundColor: "#2b7de9",
     color: "white",
     border: "none",
-    borderRadius: "5px",
-    padding: "8px 12px",
+    borderRadius: "20px",
+    padding: "10px 16px",
     marginLeft: "10px",
     cursor: "pointer",
-    transition: "transform 0.1s ease-in-out",
+    fontWeight: "500",
+    fontSize: "14px",
+    transition: "background-color 0.2s, transform 0.1s",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
   },
   container: {
     display: "flex",
@@ -305,11 +301,14 @@ const styles = {
   button: {
     backgroundColor: "#2b7de9",
     color: "white",
-    padding: "10px 20px",
     border: "none",
-    borderRadius: "5px",
+    borderRadius: "20px",
+    padding: "10px 16px",
+    fontWeight: "500",
+    fontSize: "14px",
     cursor: "pointer",
-    transition: "transform 0.1s ease-in-out",
+    transition: "background-color 0.2s, transform 0.1s",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
   },
   searchInput: {
     padding: "12px",
