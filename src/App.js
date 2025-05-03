@@ -13,8 +13,11 @@ import InternList from './components/InternList';
 import InternDetails from './components/InternDetails';
 
 
+
+
 function App() {
   return (
+  
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/welcome" element={<LoginPage />} />
@@ -28,6 +31,7 @@ function App() {
       <Route path="/interns/:id" element={<InternDetails />} />
 
     </Routes>
+    
   );
 }
 

@@ -1,56 +1,15 @@
 
+import React, { useState, useEffect, useContext } from 'react';
 
-import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ApplicationsContext } from '../contexts/ApplicationsContext';
 
 
-const dummyApplications = [
-  {
-    id: 1,
-    studentName: 'Ahmed Ali',
-    major: 'Computer Engineering',
-    email: 'ahmed.ali@gmail.com',
-    phone: '+201234567890',
-    cv: 'CV_Ahmed.pdf',
-    internshipTitle: 'Frontend Developer Intern',
-    status: 'Pending',
-  },
-  {
-    id: 2,
-    studentName: 'Mona Saeed',
-    major: 'Business Administration',
-    email: 'mona.saeed@gmail.com',
-    phone: '+201098765432',
-    cv: 'CV_Mona.pdf',
-    internshipTitle: 'Data Analyst Intern',
-    status: 'Accepted',
-  },
-  {
-    id: 3,
-    studentName: 'Khaled Mostafa',
-    major: 'Computer Science',
-    email: 'khaled.mostafa@gmail.com',
-    phone: '+201112223334',
-    cv: 'CV_Khaled.pdf',
-    internshipTitle: 'Mobile Developer Intern',
-    status: 'Finalized',
-  },
-  {
-    id: 4,
-    studentName: 'Sarah Kamal',
-    major: 'Marketing',
-    email: 'sarah.kamal@gmail.com',
-    phone: '+201234111222',
-    cv: 'CV_Sarah.pdf',
-    internshipTitle: 'Data Analyst Intern',
-    status: 'Pending',
-  },
-];
 
 function ApplicationsList({ posts }) {
   const navigate = useNavigate();
 
-  const [applications, setApplications] = useState(dummyApplications);
+  const { applications, setApplications } = useContext(ApplicationsContext);
   const [selectedPost, setSelectedPost] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [searchName, setSearchName] = useState('');
