@@ -13,6 +13,7 @@ import InternDetails from './components/InternDetails';
 import { useNotifications } from './hooks/useNotifications';
 import NotificationBell from './components/NotificationBell';
 import ApplicationDetails from './components/ApplicationDetails';
+import VideoCallPage from './pages/VideoCallPage';
 
 function App() {
   const {
@@ -38,6 +39,7 @@ function App() {
           <Route path="/register-company" element={<RegisterCompanyPage />} />
           <Route path="/student-dashboard" element={<StudentDashboard />} />
           <Route path="/student-applications" element={<MyApplicationsPage />} />
+          <Route path="/video-call" element={<VideoCallPage />} />
           <Route path="student/my-applications" element={<MyApplicationsPage />} />
           <Route
             path="/workshops"
