@@ -7,6 +7,7 @@ import CompanyDashboard from './pages/CompanyDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import MyApplicationsPage from './pages/MyApplicationsPage'; // New page for My Applications
 import WorkshopsPage from './pages/WorkshopsPage';
+import LandingPage from './pages/LandingPage'
 
 function App() {
   return (
