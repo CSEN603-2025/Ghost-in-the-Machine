@@ -27,9 +27,9 @@ function InternDetails() {
   };
 
   const handleSave = () => {
-    // Here you would usually call an API to update the intern's status
+    
     alert(`Status updated to: ${status}`);
-    navigate(-1); // Go back to intern list
+    navigate(-1); 
   };
 
   if (!intern) {
@@ -51,15 +51,12 @@ function InternDetails() {
       </div>
 
       <div style={styles.info}>
-        <div style={styles.label}>Current Status:</div>
-        <select value={status} onChange={handleStatusChange} style={styles.selectInput}>
-          <option value="Finalized">Finalized</option>
-          <option value="Accepted">Accepted</option>
-          <option value="Rejected">Rejected</option>
-          <option value="Current Intern">Current Intern</option>
-          <option value="Internship Complete">Internship Complete</option>
-        </select>
-      </div>
+  <div style={styles.label}>Current Status:</div>
+  <select value={status} onChange={handleStatusChange} style={styles.selectInput}>
+    <option value="Current Intern">Current Intern</option>
+    <option value="Internship Complete">Internship Complete</option>
+  </select>
+</div>
 
       <button onClick={handleSave} style={styles.saveButton}>Save Status</button>
 
