@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ApplicationsContext } from '../contexts/ApplicationsContext'; // Import the real context!
+import { ApplicationsContext } from '../contexts/ApplicationsContext';
 
 function InternDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { applications, setApplications } = useContext(ApplicationsContext); // use Context
+  const { applications, setApplications } = useContext(ApplicationsContext);
 
   const [intern, setIntern] = useState(null);
   const [status, setStatus] = useState('');
@@ -23,12 +23,11 @@ function InternDetails() {
   };
 
   const handleSave = () => {
-    // Actually update the global ApplicationsContext
     setApplications((prev) =>
       prev.map((app) => (app.id === parseInt(id) ? { ...app, status } : app))
     );
     alert(`Status updated to: ${status}`);
-    navigate(-1); // Go back to InternList
+    navigate(-1);
   };
 
   if (!intern) {
@@ -45,7 +44,44 @@ function InternDetails() {
       </div>
 
       <div style={styles.info}>
-        <div style={styles.label}>Job Title:</div>
+        <div style={styles.label}>Major:</div>
+        <div>{intern.major}</div>
+      </div>
+
+      <div style={styles.info}>
+        <div style={styles.label}>Email:</div>
+        <div>{intern.email}</div>
+      </div>
+
+      <div style={styles.info}>
+        <div style={styles.label}>Phone:</div>
+        <div>{intern.phone}</div>
+      </div>
+
+      <div style={styles.info}>
+        <div style={styles.label}>CV:</div>
+        <div style={styles.cvLinks}>
+          <a
+            href={`/${intern.cv}`}
+            download
+            style={styles.linkButton}
+          >
+            Download CV
+          </a>
+
+          <a
+            href={`/${intern.cv}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={styles.linkButton}
+          >
+            Preview CV
+          </a>
+        </div>
+      </div>
+
+      <div style={styles.info}>
+        <div style={styles.label}>Internship Title:</div>
         <div>{intern.internshipTitle}</div>
       </div>
 
@@ -67,12 +103,12 @@ function InternDetails() {
 const styles = {
   container: {
     padding: '20px',
-    maxWidth: '500px',
+    maxWidth: '700px',
     margin: '0 auto',
   },
   title: {
     textAlign: 'center',
-    fontSize: '24px',
+    fontSize: '28px',
     marginBottom: '20px',
   },
   info: {
@@ -110,6 +146,20 @@ const styles = {
     fontSize: '16px',
     cursor: 'pointer',
     marginTop: '10px',
+  },
+  cvLinks: {
+    display: 'flex',
+    gap: '10px',
+    marginTop: '5px',
+  },
+  linkButton: {
+    display: 'inline-block',
+    padding: '8px 12px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    borderRadius: '5px',
+    textDecoration: 'none',
+    fontSize: '14px',
   },
 };
 

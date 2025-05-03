@@ -1,15 +1,11 @@
-
 import React, { useState, useEffect, useContext } from 'react';
-
 import { useNavigate } from 'react-router-dom';
 import { ApplicationsContext } from '../contexts/ApplicationsContext';
 
-
-
 function ApplicationsList({ posts }) {
   const navigate = useNavigate();
-
   const { applications, setApplications } = useContext(ApplicationsContext);
+
   const [selectedPost, setSelectedPost] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [searchName, setSearchName] = useState('');
@@ -20,7 +16,6 @@ function ApplicationsList({ posts }) {
     );
   };
 
-  // Collect unique internship titles from posts and applications
   const getAllInternshipTitles = () => {
     const postTitles = posts.map(post => post.title);
     const appTitles = applications.map(app => app.internshipTitle);
@@ -61,7 +56,6 @@ function ApplicationsList({ posts }) {
         >
           <option value="">Filter by Status</option>
           <option value="Pending">Pending</option>
-          
           <option value="Accepted">Accepted</option>
           <option value="Rejected">Rejected</option>
           <option value="Current Intern">Current Intern</option>
@@ -83,7 +77,11 @@ function ApplicationsList({ posts }) {
           <p>No applications found.</p>
         ) : (
           filteredApplications.map(app => (
-            <div key={app.id} style={styles.applicationCard}>
+            <div
+              key={app.id}
+              style={styles.applicationCard}
+              onClick={() => navigate(`/applications/details/${app.id}`)}
+            >
               <h3>{app.studentName}</h3>
               <p><strong>Major:</strong> {app.major}</p>
               <p><strong>Email:</strong> {app.email}</p>
@@ -92,9 +90,10 @@ function ApplicationsList({ posts }) {
               <p>
                 <strong>Internship:</strong>{' '}
                 <span
-                  onClick={() =>
-                    navigate(`/applications/${app.internshipTitle.replace(/\s+/g, '-').toLowerCase()}`)
-                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/applications/${app.internshipTitle.replace(/\s+/g, '-').toLowerCase()}`);
+                  }}
                   style={styles.linkText}
                 >
                   {app.internshipTitle}
@@ -102,32 +101,41 @@ function ApplicationsList({ posts }) {
               </p>
               <p><strong>Status:</strong> {app.status}</p>
 
-              {/* Status Update Buttons */}
+              {/* Status Buttons */}
               {app.status === 'Pending' && (
-  <>
-    <button
-      style={styles.actionButton}
-      onClick={() => handleStatusChange(app.id, 'Accepted')}
-    >
-      Accept
-    </button>
-    <button
-      style={styles.actionButton}
-      onClick={() => handleStatusChange(app.id, 'Rejected')}
-    >
-      Reject
-    </button>
-  </>
-)}
+                <>
+                  <button
+                    style={styles.actionButton}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStatusChange(app.id, 'Accepted');
+                    }}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    style={styles.actionButton}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStatusChange(app.id, 'Rejected');
+                    }}
+                  >
+                    Reject
+                  </button>
+                </>
+              )}
 
-{app.status === 'Accepted' && (
-  <button
-    style={styles.actionButton}
-    onClick={() => handleStatusChange(app.id, 'Current Intern')}
-  >
-    Finalize
-  </button>
-)}
+              {app.status === 'Accepted' && (
+                <button
+                  style={styles.actionButton}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleStatusChange(app.id, 'Current Intern');
+                  }}
+                >
+                  Finalize
+                </button>
+              )}
             </div>
           ))
         )}
@@ -169,6 +177,7 @@ const styles = {
     textAlign: 'left',
     boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
     position: 'relative',
+    cursor: 'pointer',
   },
   actionButton: {
     marginTop: '8px',

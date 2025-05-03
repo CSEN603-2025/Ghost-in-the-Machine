@@ -11,6 +11,9 @@ import LandingPage from './pages/LandingPage';
 import ApplicationListPage from './components/ApplicationListPage';
 import InternList from './components/InternList';
 import InternDetails from './components/InternDetails';
+import ApplicationDetails from './components/ApplicationDetails';
+
+
 
 
 
@@ -29,6 +32,7 @@ function App() {
       <Route path="/applications/:postId" element={<ApplicationListPage />} />
       <Route path="/interns" element={<InternList />} />
       <Route path="/interns/:id" element={<InternDetails />} />
+      <Route path="/applications/details/:id" element={<ApplicationDetails />} />
 
     </Routes>
     
