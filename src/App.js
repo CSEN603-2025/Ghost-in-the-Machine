@@ -9,6 +9,9 @@ import MyApplicationsPage from './pages/MyApplicationsPage'; // New page for My 
 import WorkshopsPage from './pages/WorkshopsPage';
 import LandingPage from './pages/LandingPage'; 
 import ApplicationListPage from './components/ApplicationListPage';
+import InternList from './components/InternList';
+import InternDetails from './components/InternDetails';
+
 
 function App() {
   return (
@@ -19,8 +22,11 @@ function App() {
       <Route path="/student-dashboard" element={<StudentDashboard />} />
       <Route path="/student-applications" element={<MyApplicationsPage />} /> {/* New route */}
       <Route path="/workshops" element={<WorkshopsPage />} />
-        <Route path="/dashboard" element={<CompanyDashboard />} />
-        <Route path="/applications/:postId" element={<ApplicationListPage />} />
+      <Route path="/dashboard" element={<CompanyDashboard />} />
+      <Route path="/applications/:postId" element={<ApplicationListPage />} />
+      <Route path="/interns" element={<InternList />} />
+      <Route path="/interns/:id" element={<InternDetails />} />
+
     </Routes>
   );
 }

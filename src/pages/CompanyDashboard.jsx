@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import CompanyProfileCard from '../components/CompanyProfileCard';
 import PostsList from '../components/PostsList';
 import ApplicationsList from '../components/ApplicationsList';
+import InternList from '../components/InternList'; // 🔵 IMPORT InternList
+
 function CompanyDashboard() {
     const [activeSection, setActiveSection] = useState('home');
     const [posts, setPosts] = useState([]); // GLOBAL POSTS STATE
@@ -48,7 +50,7 @@ function CompanyDashboard() {
                 {activeSection === 'home' && <p>Welcome to the Home Section.</p>}
                 {activeSection === 'posts' && <PostsList posts={posts} setPosts={setPosts} />}
                 {activeSection === 'applications' && <ApplicationsList posts={posts} />}
-                {activeSection === 'interns' && <p>Interns Section will be implemented soon.</p>}
+                {activeSection === 'interns' && <InternList />} {/* 🔵 Show InternList */}
                 {activeSection === 'evaluation' && <p>Evaluation Section will be implemented soon.</p>}
             </div>
         </div>
