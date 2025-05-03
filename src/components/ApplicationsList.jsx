@@ -61,7 +61,7 @@ function ApplicationsList({ posts }) {
         >
           <option value="">Filter by Status</option>
           <option value="Pending">Pending</option>
-          <option value="Finalized">Finalized</option>
+          
           <option value="Accepted">Accepted</option>
           <option value="Rejected">Rejected</option>
           <option value="Current Intern">Current Intern</option>
@@ -104,43 +104,30 @@ function ApplicationsList({ posts }) {
 
               {/* Status Update Buttons */}
               {app.status === 'Pending' && (
-                <>
-                  <button
-                    style={styles.actionButton}
-                    onClick={() => handleStatusChange(app.id, 'Finalized')}
-                  >
-                    Finalize
-                  </button>
-                  <button
-                    style={styles.actionButton}
-                    onClick={() => handleStatusChange(app.id, 'Accepted')}
-                  >
-                    Accept
-                  </button>
-                  <button
-                    style={styles.actionButton}
-                    onClick={() => handleStatusChange(app.id, 'Rejected')}
-                  >
-                    Reject
-                  </button>
-                </>
-              )}
-              {app.status === 'Accepted' && (
-                <button
-                  style={styles.actionButton}
-                  onClick={() => handleStatusChange(app.id, 'Current Intern')}
-                >
-                  Set Current Intern
-                </button>
-              )}
-              {app.status === 'Current Intern' && (
-                <button
-                  style={styles.actionButton}
-                  onClick={() => handleStatusChange(app.id, 'Internship Complete')}
-                >
-                  Set Complete
-                </button>
-              )}
+  <>
+    <button
+      style={styles.actionButton}
+      onClick={() => handleStatusChange(app.id, 'Accepted')}
+    >
+      Accept
+    </button>
+    <button
+      style={styles.actionButton}
+      onClick={() => handleStatusChange(app.id, 'Rejected')}
+    >
+      Reject
+    </button>
+  </>
+)}
+
+{app.status === 'Accepted' && (
+  <button
+    style={styles.actionButton}
+    onClick={() => handleStatusChange(app.id, 'Current Intern')}
+  >
+    Finalize
+  </button>
+)}
             </div>
           ))
         )}

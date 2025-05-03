@@ -34,7 +34,7 @@ export const ApplicationsProvider = ({ children }) => {
       phone: '+201112223334',
       cv: 'CV_Khaled.pdf',
       internshipTitle: 'Mobile Developer Intern',
-      status: 'Finalized',
+      status: 'Pending',
     },
     {
       id: 4,

@@ -1,35 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
-// Dummy intern data again (in a real app, you would fetch this)
-const dummyInterns = [
-  { id: 1, name: 'Ahmed Ali', jobTitle: 'Frontend Developer', status: 'Current Intern' },
-  { id: 2, name: 'Mona Saeed', jobTitle: 'Data Analyst', status: 'Internship Complete' },
-  { id: 3, name: 'Sara Kamal', jobTitle: 'Backend Developer', status: 'Current Intern' },
-];
+import { ApplicationsContext } from '../contexts/ApplicationsContext'; // Import the real context!
 
 function InternDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { applications, setApplications } = useContext(ApplicationsContext); // use Context
+
   const [intern, setIntern] = useState(null);
   const [status, setStatus] = useState('');
 
   useEffect(() => {
-    const selectedIntern = dummyInterns.find((i) => i.id === parseInt(id));
+    const selectedIntern = applications.find((i) => i.id === parseInt(id));
     if (selectedIntern) {
       setIntern(selectedIntern);
       setStatus(selectedIntern.status);
     }
-  }, [id]);
+  }, [id, applications]);
 
   const handleStatusChange = (e) => {
     setStatus(e.target.value);
   };
 
   const handleSave = () => {
-    
+    // Actually update the global ApplicationsContext
+    setApplications((prev) =>
+      prev.map((app) => (app.id === parseInt(id) ? { ...app, status } : app))
+    );
     alert(`Status updated to: ${status}`);
-    navigate(-1); 
+    navigate(-1); // Go back to InternList
   };
 
   if (!intern) {
@@ -42,21 +41,21 @@ function InternDetails() {
 
       <div style={styles.info}>
         <div style={styles.label}>Name:</div>
-        <div>{intern.name}</div>
+        <div>{intern.studentName}</div>
       </div>
 
       <div style={styles.info}>
         <div style={styles.label}>Job Title:</div>
-        <div>{intern.jobTitle}</div>
+        <div>{intern.internshipTitle}</div>
       </div>
 
       <div style={styles.info}>
-  <div style={styles.label}>Current Status:</div>
-  <select value={status} onChange={handleStatusChange} style={styles.selectInput}>
-    <option value="Current Intern">Current Intern</option>
-    <option value="Internship Complete">Internship Complete</option>
-  </select>
-</div>
+        <div style={styles.label}>Current Status:</div>
+        <select value={status} onChange={handleStatusChange} style={styles.selectInput}>
+          <option value="Current Intern">Current Intern</option>
+          <option value="Internship Complete">Internship Complete</option>
+        </select>
+      </div>
 
       <button onClick={handleSave} style={styles.saveButton}>Save Status</button>
 
