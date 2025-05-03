@@ -1,10 +1,21 @@
-// src/pages/EditProfilePage.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 
 const EditProfilePage = () => {
+  const navigate = useNavigate(); // Hook to navigate after saving
   const [jobInterests, setJobInterests] = useState("");
-  const [internships, setInternships] = useState([{ company: "", role: "", duration: "" }]);
+  const [internships, setInternships] = useState([{ company: "", role: "", duration: "", status: "current" }]);
   const [activities, setActivities] = useState("");
+
+  useEffect(() => {
+    // Load the existing internships if they are already stored in localStorage
+    const storedProfile = JSON.parse(localStorage.getItem("studentProfile"));
+    if (storedProfile?.internships) {
+      setInternships(storedProfile.internships);
+      setJobInterests(storedProfile.jobInterests);
+      setActivities(storedProfile.activities);
+    }
+  }, []);
 
   const handleInternshipChange = (index, field, value) => {
     const updated = [...internships];
@@ -13,13 +24,30 @@ const EditProfilePage = () => {
   };
 
   const addInternship = () => {
-    setInternships([...internships, { company: "", role: "", duration: "" }]);
+    setInternships([...internships, { company: "", role: "", duration: "", status: "current" }]);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Profile saved (mock functionality)!");
-    console.log({ jobInterests, internships, activities });
+
+    // Get current profile data from localStorage (if any)
+    const storedProfile = JSON.parse(localStorage.getItem("studentProfile")) || {};
+
+    // Update the internships in the profile
+    const updatedProfile = {
+      ...storedProfile,
+      jobInterests,
+      internships, // Store the updated list of internships
+      activities,
+    };
+
+    // Save the updated profile back to localStorage
+    localStorage.setItem("studentProfile", JSON.stringify(updatedProfile));
+
+    alert("Profile saved and internships updated!");
+
+    // Redirect to the Student Dashboard
+    navigate("/student-dashboard");
   };
 
   return (
@@ -56,6 +84,14 @@ const EditProfilePage = () => {
               onChange={(e) => handleInternshipChange(i, "duration", e.target.value)}
               style={styles.input}
             />
+            <select
+              value={intern.status}
+              onChange={(e) => handleInternshipChange(i, "status", e.target.value)}
+              style={styles.input}
+            >
+              <option value="current">Current</option>
+              <option value="completed">Completed</option>
+            </select>
           </div>
         ))}
         <button type="button" onClick={addInternship} style={styles.addButton}>+ Add Internship</button>

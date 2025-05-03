@@ -119,6 +119,8 @@ const StudentDashboard = () => {
       </nav>
 
       <div style={styles.content}>
+        <h1 style={{ textAlign: "left", marginBottom: "10px" }}>Student Dashboard</h1>
+
         <input
           type="text"
           placeholder="Search internships..."
@@ -176,18 +178,22 @@ const StudentDashboard = () => {
         </div>
 
         <div style={styles.cardContainer}>
-          {filteredInternships.map((internship) => (
-            <div key={internship.id} style={styles.card}>
-              <h3>{internship.title}</h3>
-              <p><strong>Company:</strong> {internship.company}</p>
-              <p><strong>Duration:</strong> {internship.duration}</p>
-              <p><strong>Paid:</strong> {internship.paid ? "Yes" : "No"}</p>
-              <p><strong>Industry:</strong> {internship.industry}</p>
-              <Link to={`/student/internship/${internship.id}`}>
-                <button style={styles.button}>View Details</button>
-              </Link>
-            </div>
-          ))}
+          {filteredInternships.length > 0 ? (
+            filteredInternships.map((internship) => (
+              <div key={internship.id} style={styles.card}>
+                <h3>{internship.title}</h3>
+                <p><strong>Company:</strong> {internship.company}</p>
+                <p><strong>Duration:</strong> {internship.duration}</p>
+                <p><strong>Paid:</strong> {internship.paid ? "Yes" : "No"}</p>
+                <p><strong>Industry:</strong> {internship.industry}</p>
+                <Link to={`/student/internship/${internship.id}`}>
+                  <button style={styles.button}>View Details</button>
+                </Link>
+              </div>
+            ))
+          ) : (
+            <p style={styles.noData}>No internships found based on your criteria.</p>
+          )}
         </div>
 
         <h2 style={styles.heading}>Suggested Companies Based on Your Job Interests</h2>
@@ -214,16 +220,20 @@ const StudentDashboard = () => {
         </div>
 
         <div style={styles.cardContainer}>
-          {sortedCompanies.map((company, index) => (
-            <div key={index} style={styles.card}>
-              <h3>{company.name}</h3>
-              <p><strong>Industry:</strong> {company.industry}</p>
-              <p><strong>Recommendations:</strong> {company.recommendations} / 5</p>
-              <Link to={`/student/company/${company.name}`}>
-                <button style={styles.button}>View Details</button>
-              </Link>
-            </div>
-          ))}
+          {sortedCompanies.length > 0 ? (
+            sortedCompanies.map((company, index) => (
+              <div key={index} style={styles.card}>
+                <h3>{company.name}</h3>
+                <p><strong>Industry:</strong> {company.industry}</p>
+                <p><strong>Recommendations:</strong> {company.recommendations} / 5</p>
+                <Link to={`/student/company/${company.name}`}>
+                  <button style={styles.button}>View Details</button>
+                </Link>
+              </div>
+            ))
+          ) : (
+            <p style={styles.noData}>No companies match your current interests and filters.</p>
+          )}
         </div>
       </div>
     </div>
@@ -259,13 +269,10 @@ const styles = {
     cursor: "pointer",
     fontWeight: "500",
     fontSize: "14px",
-    transition: "background-color 0.2s, transform 0.1s",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
   },
   container: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
     minHeight: "100vh",
     backgroundColor: "#f4f4f9",
     paddingTop: "60px",
@@ -276,59 +283,57 @@ const styles = {
     padding: "20px",
     width: "80%",
     maxWidth: "1000px",
-    backgroundColor: "#fff",
+  },
+  searchInput: {
+    width: "100%",
+    padding: "10px",
+    fontSize: "16px",
     borderRadius: "8px",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+    border: "1px solid #ccc",
+    marginBottom: "20px",
   },
   heading: {
-    fontSize: "1.5em",
-    marginBottom: "20px",
-    color: "#444",
+    marginTop: "30px",
+    marginBottom: "10px",
+    textAlign: "left",
+    color: "#333",
   },
-  cardContainer: {
+  filterContainer: {
     display: "flex",
     flexWrap: "wrap",
+    gap: "10px",
+    marginBottom: "20px",
+  },
+  filterSelect: {
+    padding: "8px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    fontSize: "14px",
+  },
+  cardContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
     gap: "20px",
-    justifyContent: "center",
   },
   card: {
-    backgroundColor: "#f0f0f0",
-    padding: "15px",
-    borderRadius: "8px",
-    width: "300px",
+    backgroundColor: "white",
+    padding: "20px",
+    borderRadius: "12px",
     boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+    textAlign: "left",
   },
   button: {
+    marginTop: "10px",
+    padding: "10px 16px",
     backgroundColor: "#2b7de9",
     color: "white",
     border: "none",
-    borderRadius: "20px",
-    padding: "10px 16px",
-    fontWeight: "500",
-    fontSize: "14px",
+    borderRadius: "8px",
     cursor: "pointer",
-    transition: "background-color 0.2s, transform 0.1s",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
   },
-  searchInput: {
-    padding: "12px",
-    borderRadius: "5px",
-    width: "80%",
-    margin: "20px auto",
-    display: "block",
-    fontSize: "16px",
-  },
-  filterContainer: {
-    marginBottom: "20px",
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: "10px",
-  },
-  filterSelect: {
-    padding: "10px",
-    borderRadius: "5px",
-    width: "200px",
+  noData: {
+    color: "#888",
+    fontStyle: "italic",
   },
 };
 
