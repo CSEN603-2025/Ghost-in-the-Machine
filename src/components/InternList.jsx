@@ -1,18 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const dummyInterns = [
-  { id: 1, name: 'Ahmed Ali', jobTitle: 'Frontend Developer', status: 'Current Intern' },
-  { id: 2, name: 'Mona Saeed', jobTitle: 'Data Analyst', status: 'Internship Complete' },
-  { id: 3, name: 'Sara Kamal', jobTitle: 'Backend Developer', status: 'Current Intern' },
-  { id: 4, name: 'Omar Zaki', jobTitle: 'Security Engineer', status: 'Current Intern' },
-  { id: 5, name: 'Laila Hossam', jobTitle: 'Product Manager', status: 'Internship Complete' },
-  { id: 6, name: 'Mohamed Farid', jobTitle: 'DevOps Engineer', status: 'Current Intern' },
-  { id: 7, name: 'Nora Adel', jobTitle: 'UX Designer', status: 'Internship Complete' },
-];
+import { ApplicationsContext } from '../contexts/ApplicationsContext'; // Correct path!
 
 function InternList() {
-  const [interns, setInterns] = useState(dummyInterns);
+  const { applications } = useContext(ApplicationsContext); // Take applications globally
   const [nameSearch, setNameSearch] = useState('');
   const [jobSearch, setJobSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
@@ -22,26 +13,16 @@ function InternList() {
 
   const internsPerPage = 5;
 
-  const handleNameSearchChange = (e) => {
-    setNameSearch(e.target.value);
-    setCurrentPage(1); // reset to first page when search changes
-  };
-
-  const handleJobSearchChange = (e) => {
-    setJobSearch(e.target.value);
-    setCurrentPage(1); // reset to first page when search changes
-  };
-
-  const handleFilterChange = (e) => {
-    setFilterStatus(e.target.value);
-    setCurrentPage(1); // reset to first page when filter changes
-  };
-
-  const filteredInterns = interns.filter((intern) => {
-    const matchesName = intern.name.toLowerCase().includes(nameSearch.toLowerCase());
-    const matchesJob = intern.jobTitle.toLowerCase().includes(jobSearch.toLowerCase());
-    const matchesStatus = filterStatus === 'All' || intern.status === filterStatus;
-    return matchesName && matchesJob && matchesStatus;
+  // Filtering applications
+  const filteredInterns = applications.filter((intern) => {
+    const matchesStatus =
+      (filterStatus === 'All' && (intern.status === 'Current Intern' || intern.status === 'Internship Complete')) ||
+      (filterStatus !== 'All' && intern.status === filterStatus);
+  
+    const matchesName = intern.studentName.toLowerCase().includes(nameSearch.toLowerCase());
+    const matchesJob = intern.internshipTitle.toLowerCase().includes(jobSearch.toLowerCase());
+  
+    return matchesStatus && matchesName && matchesJob;
   });
 
   const indexOfLastIntern = currentPage * internsPerPage;
@@ -74,7 +55,10 @@ function InternList() {
         type="text"
         placeholder="Search by student name"
         value={nameSearch}
-        onChange={handleNameSearchChange}
+        onChange={(e) => {
+          setNameSearch(e.target.value);
+          setCurrentPage(1);
+        }}
         style={styles.searchInput}
       />
 
@@ -82,30 +66,40 @@ function InternList() {
         type="text"
         placeholder="Search by job title"
         value={jobSearch}
-        onChange={handleJobSearchChange}
+        onChange={(e) => {
+          setJobSearch(e.target.value);
+          setCurrentPage(1);
+        }}
         style={styles.searchInput}
       />
 
-      <select value={filterStatus} onChange={handleFilterChange} style={styles.selectInput}>
+      <select
+        value={filterStatus}
+        onChange={(e) => {
+          setFilterStatus(e.target.value);
+          setCurrentPage(1);
+        }}
+        style={styles.selectInput}
+      >
         <option value="All">All</option>
         <option value="Current Intern">Current Intern</option>
         <option value="Internship Complete">Internship Complete</option>
       </select>
 
       <div style={styles.internList}>
-        {currentInterns.map((intern) => (
-          <div
-            key={intern.id}
-            style={styles.internCard}
-            onClick={() => handleInternClick(intern.id)}
-          >
-            <div style={styles.internName}>{intern.name}</div>
-            <div style={styles.internJob}>{intern.jobTitle}</div>
-            <div style={styles.internStatus}>{intern.status}</div>
-          </div>
-        ))}
-
-        {currentInterns.length === 0 && (
+        {currentInterns.length > 0 ? (
+          currentInterns.map((intern) => (
+            <div
+              key={intern.id}
+              style={styles.internCard}
+              onClick={() => handleInternClick(intern.id)}
+            >
+              <div style={styles.internName}>{intern.studentName}</div>
+              <div style={styles.internJob}>{intern.internshipTitle}</div>
+              <div style={styles.internStatus}>{intern.status}</div>
+            </div>
+          ))
+        ) : (
           <div style={styles.noResults}>No interns found.</div>
         )}
       </div>
@@ -113,8 +107,12 @@ function InternList() {
       {/* Pagination */}
       {filteredInterns.length > internsPerPage && (
         <div style={styles.pagination}>
-          <button style={styles.pageButton} onClick={handlePrevPage} disabled={currentPage === 1}>
-             Prev
+          <button
+            style={styles.pageButton}
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+          >
+            Prev
           </button>
           <span style={styles.pageNumber}>
             Page {currentPage} of {totalPages}
@@ -124,7 +122,7 @@ function InternList() {
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
           >
-            Next 
+            Next
           </button>
         </div>
       )}

@@ -1,35 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
-// Dummy intern data again (in a real app, you would fetch this)
-const dummyInterns = [
-  { id: 1, name: 'Ahmed Ali', jobTitle: 'Frontend Developer', status: 'Current Intern' },
-  { id: 2, name: 'Mona Saeed', jobTitle: 'Data Analyst', status: 'Internship Complete' },
-  { id: 3, name: 'Sara Kamal', jobTitle: 'Backend Developer', status: 'Current Intern' },
-];
+import { ApplicationsContext } from '../contexts/ApplicationsContext';
 
 function InternDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { applications, setApplications } = useContext(ApplicationsContext);
+
   const [intern, setIntern] = useState(null);
   const [status, setStatus] = useState('');
 
   useEffect(() => {
-    const selectedIntern = dummyInterns.find((i) => i.id === parseInt(id));
+    const selectedIntern = applications.find((i) => i.id === parseInt(id));
     if (selectedIntern) {
       setIntern(selectedIntern);
       setStatus(selectedIntern.status);
     }
-  }, [id]);
+  }, [id, applications]);
 
   const handleStatusChange = (e) => {
     setStatus(e.target.value);
   };
 
   const handleSave = () => {
-    
+    setApplications((prev) =>
+      prev.map((app) => (app.id === parseInt(id) ? { ...app, status } : app))
+    );
     alert(`Status updated to: ${status}`);
-    navigate(-1); 
+    navigate(-1);
   };
 
   if (!intern) {
@@ -42,21 +40,58 @@ function InternDetails() {
 
       <div style={styles.info}>
         <div style={styles.label}>Name:</div>
-        <div>{intern.name}</div>
+        <div>{intern.studentName}</div>
       </div>
 
       <div style={styles.info}>
-        <div style={styles.label}>Job Title:</div>
-        <div>{intern.jobTitle}</div>
+        <div style={styles.label}>Major:</div>
+        <div>{intern.major}</div>
       </div>
 
       <div style={styles.info}>
-  <div style={styles.label}>Current Status:</div>
-  <select value={status} onChange={handleStatusChange} style={styles.selectInput}>
-    <option value="Current Intern">Current Intern</option>
-    <option value="Internship Complete">Internship Complete</option>
-  </select>
-</div>
+        <div style={styles.label}>Email:</div>
+        <div>{intern.email}</div>
+      </div>
+
+      <div style={styles.info}>
+        <div style={styles.label}>Phone:</div>
+        <div>{intern.phone}</div>
+      </div>
+
+      <div style={styles.info}>
+        <div style={styles.label}>CV:</div>
+        <div style={styles.cvLinks}>
+          <a
+            href={`/${intern.cv}`}
+            download
+            style={styles.linkButton}
+          >
+            Download CV
+          </a>
+
+          <a
+            href={`/${intern.cv}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={styles.linkButton}
+          >
+            Preview CV
+          </a>
+        </div>
+      </div>
+
+      <div style={styles.info}>
+        <div style={styles.label}>Internship Title:</div>
+        <div>{intern.internshipTitle}</div>
+      </div>
+
+      <div style={styles.info}>
+        <div style={styles.label}>Current Status:</div>
+        <select value={status} onChange={handleStatusChange} style={styles.selectInput}>
+          <option value="Current Intern">Current Intern</option>
+          <option value="Internship Complete">Internship Complete</option>
+        </select>
+      </div>
 
       <button onClick={handleSave} style={styles.saveButton}>Save Status</button>
 
@@ -68,12 +103,12 @@ function InternDetails() {
 const styles = {
   container: {
     padding: '20px',
-    maxWidth: '500px',
+    maxWidth: '700px',
     margin: '0 auto',
   },
   title: {
     textAlign: 'center',
-    fontSize: '24px',
+    fontSize: '28px',
     marginBottom: '20px',
   },
   info: {
@@ -111,6 +146,20 @@ const styles = {
     fontSize: '16px',
     cursor: 'pointer',
     marginTop: '10px',
+  },
+  cvLinks: {
+    display: 'flex',
+    gap: '10px',
+    marginTop: '5px',
+  },
+  linkButton: {
+    display: 'inline-block',
+    padding: '8px 12px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    borderRadius: '5px',
+    textDecoration: 'none',
+    fontSize: '14px',
   },
 };
 

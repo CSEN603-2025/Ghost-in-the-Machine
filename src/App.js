@@ -12,6 +12,7 @@ import InternList from './components/InternList';
 import InternDetails from './components/InternDetails';
 import { useNotifications } from './hooks/useNotifications';
 import NotificationBell from './components/NotificationBell';
+import ApplicationDetails from './components/ApplicationDetails';
 
 function App() {
   const {
@@ -47,6 +48,7 @@ function App() {
           <Route path="/applications/:postId" element={<ApplicationListPage />} />
           <Route path="/interns" element={<InternList />} />
           <Route path="/interns/:id" element={<InternDetails />} />
+          <Route path="/applications/details/:id" element={<ApplicationDetails />} />
         </Routes>
       </div>
     </Router>
