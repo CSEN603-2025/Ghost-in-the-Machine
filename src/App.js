@@ -7,7 +7,12 @@ import CompanyDashboard from './pages/CompanyDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import MyApplicationsPage from './pages/MyApplicationsPage'; // New page for My Applications
 import WorkshopsPage from './pages/WorkshopsPage';
-import LandingPage from './pages/LandingPage'
+import LandingPage from './pages/LandingPage';
+import ApplicationDetails from './components/ApplicationDetails';
+import ApplicationListPage from './components/ApplicationListPage';
+ import InternList from './components/InternList';
+ import InternDetails from './components/InternDetails';
+
 
 function App() {
   return (
@@ -19,6 +24,10 @@ function App() {
       <Route path="student/my-applications" element={<MyApplicationsPage />} /> {/* New route */}
       <Route path="/workshops" element={<WorkshopsPage />} />
         <Route path="/dashboard" element={<CompanyDashboard />} />
+        <Route path="/applications/details/:id" element={<ApplicationDetails />} />
+        <Route path="/applications/:postId" element={<ApplicationListPage />} />
+       <Route path="/interns" element={<InternList />} />
+       <Route path="/interns/:id" element={<InternDetails />} />
     </Routes>
   );
 }
