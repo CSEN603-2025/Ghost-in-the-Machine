@@ -42,8 +42,6 @@ const styles = {
         borderRadius: '50%',
         marginBottom: '15px',
         backgroundColor: '#f5f5f5',
-        display: 'block',           // ADD THIS
-        margin: '0 auto 15px auto', // FIX MARGINS TO CENTER
     },
     name: {
         fontSize: '24px',

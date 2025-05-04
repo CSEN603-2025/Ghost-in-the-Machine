@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const EditProfilePage = () => {
-  const navigate = useNavigate(); // Hook to navigate after saving
   const [jobInterests, setJobInterests] = useState("");
-  const [internships, setInternships] = useState([{ company: "", role: "", duration: "", status: "current" }]);
+  const [internships, setInternships] = useState([
+    { company: "", role: "", duration: "", startDate: "", endDate: "", status: "current" },
+  ]);
   const [activities, setActivities] = useState("");
+  const [major, setMajor] = useState(""); // New state for major
+  const [semester, setSemester] = useState(""); // New state for semester
 
-  useEffect(() => {
-    // Load the existing internships if they are already stored in localStorage
-    const storedProfile = JSON.parse(localStorage.getItem("studentProfile"));
-    if (storedProfile?.internships) {
-      setInternships(storedProfile.internships);
-      setJobInterests(storedProfile.jobInterests);
-      setActivities(storedProfile.activities);
-    }
-  }, []);
+  const navigate = useNavigate();
 
   const handleInternshipChange = (index, field, value) => {
     const updated = [...internships];
@@ -24,29 +19,38 @@ const EditProfilePage = () => {
   };
 
   const addInternship = () => {
-    setInternships([...internships, { company: "", role: "", duration: "", status: "current" }]);
+    setInternships([
+      ...internships,
+      { company: "", role: "", duration: "", startDate: "", endDate: "", status: "current" },
+    ]);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Get current profile data from localStorage (if any)
-    const storedProfile = JSON.parse(localStorage.getItem("studentProfile")) || {};
+    // Filter out internships that don't have any valid data
+    const validInternships = internships.filter((intern) => {
+      return intern.company || intern.role || intern.duration || intern.startDate || intern.endDate;
+    });
 
-    // Update the internships in the profile
-    const updatedProfile = {
-      ...storedProfile,
+    // If there are valid internships, update the profile
+    const storedProfile = JSON.parse(localStorage.getItem("studentProfile")) || {};
+    const updatedInternships = [
+      ...(storedProfile.internships || []),
+      ...validInternships,
+    ];
+
+    const profileData = {
       jobInterests,
-      internships, // Store the updated list of internships
+      internships: updatedInternships,
       activities,
+      major,
+      semester, // Save major and semester
     };
 
-    // Save the updated profile back to localStorage
-    localStorage.setItem("studentProfile", JSON.stringify(updatedProfile));
+    localStorage.setItem("studentProfile", JSON.stringify(profileData));
 
-    alert("Profile saved and internships updated!");
-
-    // Redirect to the Student Dashboard
+    alert("Profile saved successfully!");
     navigate("/student-dashboard");
   };
 
@@ -63,7 +67,36 @@ const EditProfilePage = () => {
           style={styles.input}
         />
 
-        <label style={styles.label}>Previous Internships / Part-Time Jobs</label>
+        {/* Major Dropdown */}
+        <label style={styles.label}>Major</label>
+        <select
+          value={major}
+          onChange={(e) => setMajor(e.target.value)}
+          style={styles.input}
+        >
+          <option value="">Select your major</option>
+          <option value="Computer Engineering">Computer Engineering</option>
+          <option value="Business">Business</option>
+          <option value="Pharmacy">Pharmacy</option>
+          <option value="Management">Management</option>
+        </select>
+
+        {/* Semester Dropdown */}
+        <label style={styles.label}>Semester</label>
+        <select
+          value={semester}
+          onChange={(e) => setSemester(e.target.value)}
+          style={styles.input}
+        >
+          <option value="">Select your semester</option>
+          {[...Array(10)].map((_, i) => (
+            <option key={i + 1} value={i + 1}>
+              {i + 1}
+            </option>
+          ))}
+        </select>
+
+        <label style={styles.label}>Internships</label>
         {internships.map((intern, i) => (
           <div key={i} style={styles.internshipBlock}>
             <input
@@ -78,23 +111,48 @@ const EditProfilePage = () => {
               onChange={(e) => handleInternshipChange(i, "role", e.target.value)}
               style={styles.input}
             />
-            <input
-              placeholder="Duration"
-              value={intern.duration}
-              onChange={(e) => handleInternshipChange(i, "duration", e.target.value)}
-              style={styles.input}
-            />
-            <select
-              value={intern.status}
-              onChange={(e) => handleInternshipChange(i, "status", e.target.value)}
-              style={styles.input}
-            >
-              <option value="current">Current</option>
-              <option value="completed">Completed</option>
-            </select>
+            <div style={styles.inlineContainer}>
+              <input
+                placeholder="Duration"
+                value={intern.duration}
+                onChange={(e) => handleInternshipChange(i, "duration", e.target.value)}
+                style={{ ...styles.input, flex: 1 }}
+              />
+              <select
+                value={intern.status}
+                onChange={(e) => handleInternshipChange(i, "status", e.target.value)}
+                style={{ ...styles.input, flex: 1 }}
+              >
+                <option value="current">Current</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+
+            <div style={styles.dateContainer}>
+              <div style={styles.dateField}>
+                <label style={styles.dateLabel}>Start Date</label>
+                <input
+                  type="date"
+                  value={intern.startDate}
+                  onChange={(e) => handleInternshipChange(i, "startDate", e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+              <div style={styles.dateField}>
+                <label style={styles.dateLabel}>End Date</label>
+                <input
+                  type="date"
+                  value={intern.endDate}
+                  onChange={(e) => handleInternshipChange(i, "endDate", e.target.value)}
+                  style={styles.input}
+                />
+              </div>
+            </div>
           </div>
         ))}
-        <button type="button" onClick={addInternship} style={styles.addButton}>+ Add Internship</button>
+        <button type="button" onClick={addInternship} style={styles.addButton}>
+          + Add Internship
+        </button>
 
         <label style={styles.label}>College Activities</label>
         <textarea
@@ -104,7 +162,9 @@ const EditProfilePage = () => {
           style={styles.textarea}
         />
 
-        <button type="submit" style={styles.submitButton}>Save Profile</button>
+        <button type="submit" style={styles.submitButton}>
+          Save Profile
+        </button>
       </form>
     </div>
   );
@@ -143,6 +203,13 @@ const styles = {
     marginBottom: "20px",
   },
   internshipBlock: {
+    marginBottom: "20px",
+    borderBottom: "1px solid #eee",
+    paddingBottom: "10px",
+  },
+  inlineContainer: {
+    display: "flex",
+    gap: "10px",
     marginBottom: "10px",
   },
   addButton: {
@@ -161,6 +228,21 @@ const styles = {
     borderRadius: "8px",
     fontWeight: "bold",
     cursor: "pointer",
+  },
+  dateContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: "10px",
+    marginBottom: "10px",
+  },
+  dateField: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+  },
+  dateLabel: {
+    marginBottom: "5px",
+    fontWeight: "normal", // not bold
   },
 };
 
