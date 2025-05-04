@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaEye } from 'react-icons/fa';
+import {FaEye} from 'react-icons/fa';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -9,7 +9,6 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegisterClick = () => navigate('/register-company');
 
