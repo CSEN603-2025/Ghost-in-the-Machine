@@ -15,6 +15,7 @@ import NotificationBell from './components/NotificationBell';
 import ApplicationDetails from './components/ApplicationDetails';
 import VideoCallPage from './pages/VideoCallPage';
 import SCADDashboard from './pages/SCADDashboard';
+import ManageCompanies from './pages/ManageCompanies';
 
 function App() {
   const {
@@ -54,6 +55,7 @@ function App() {
           <Route path="/interns/:id" element={<InternDetails />} />
           <Route path="/applications/details/:id" element={<ApplicationDetails />} />
           <Route path="/scad-dashboard" element={<SCADDashboard />} />
+          <Route path="/manage-companies" element={<ManageCompanies />} />
     </Routes>
       </div>
     </Router>
