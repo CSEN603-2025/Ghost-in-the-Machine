@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const internships = [
@@ -50,27 +50,23 @@ const StudentDashboard = () => {
   const [selectedInterests, setSelectedInterests] = useState("Technology");
 
   const [internshipSearch, setInternshipSearch] = useState("");
-  const [internshipFilter, setInternshipFilter] = useState({
-    industry: "",
-    company: "",
-    paid: "",
-    duration: "",
-  });
 
   const [companyFilter, setCompanyFilter] = useState({
     industry: "",
     company: "",
   });
 
+  // Retrieve major and semester from localStorage
+  useEffect(() => {
+    const profile = JSON.parse(localStorage.getItem("studentProfile")) || {};
+    setSelectedMajor(profile.major || "");
+    setSelectedSemester(profile.semester || "");
+  }, []);
+
   const handleMajorChange = (e) => setSelectedMajor(e.target.value);
   const handleSemesterChange = (e) => setSelectedSemester(e.target.value);
   const handleInterestsChange = (e) => setSelectedInterests(e.target.value);
   const handleInternshipSearch = (e) => setInternshipSearch(e.target.value);
-
-  const handleInternshipFilterChange = (e) => {
-    const { name, value } = e.target;
-    setInternshipFilter({ ...internshipFilter, [name]: value });
-  };
 
   const handleCompanyFilterChange = (e) => {
     const { name, value } = e.target;
@@ -82,13 +78,7 @@ const StudentDashboard = () => {
       internship.title.toLowerCase().includes(internshipSearch.toLowerCase()) ||
       internship.company.toLowerCase().includes(internshipSearch.toLowerCase());
 
-    const matchesFilter =
-      (internshipFilter.industry === "" || internship.industry === internshipFilter.industry) &&
-      (internshipFilter.company === "" || internship.company === internshipFilter.company) &&
-      (internshipFilter.paid === "" || internship.paid.toString() === internshipFilter.paid) &&
-      (internshipFilter.duration === "" || internship.duration === internshipFilter.duration);
-
-    return matchesSearch && matchesFilter;
+    return matchesSearch;
   });
 
   const filteredCompanies = allSuggestedCompanies.filter((company) => {
@@ -115,11 +105,16 @@ const StudentDashboard = () => {
           <Link to="/student/my-applications"><button style={styles.navButton}>My Applications</button></Link>
           <Link to="/student/report"><button style={styles.navButton}>Submit Report</button></Link>
           <Link to="/student/edit-profile"><button style={styles.navButton}>Edit Profile</button></Link>
+          <Link to="/student/scad-internships"><button style={styles.navButton}>Scad Internships</button></Link>
         </div>
       </nav>
 
       <div style={styles.content}>
-        <h1 style={{ textAlign: "left", marginBottom: "10px" }}>Student Dashboard</h1>
+        <h1 style={{ textAlign: "left", marginBottom: "10px", fontWeight: "bold" }}>Student Dashboard</h1>
+
+        {/* Display Major and Semester */}
+        <h3 style={{ textAlign: "left" }}>Major: {selectedMajor}</h3>
+        <h3 style={{ textAlign: "left" }}>Semester: {selectedSemester}</h3>
 
         <input
           type="text"
@@ -130,52 +125,6 @@ const StudentDashboard = () => {
         />
 
         <h2 style={styles.heading}>Suggested Internships for You</h2>
-
-        <div style={styles.filterContainer}>
-          <select value={selectedMajor} onChange={handleMajorChange} style={styles.filterSelect}>
-            <option value="">Select Major</option>
-            {majorList.map((major, index) => (
-              <option key={index} value={major}>{major}</option>
-            ))}
-          </select>
-
-          <select value={selectedSemester} onChange={handleSemesterChange} style={styles.filterSelect}>
-            <option value="">Select Semester</option>
-            {semesterList.map((s) => (
-              <option key={s} value={s}>Semester {s}</option>
-            ))}
-          </select>
-
-          <select name="industry" value={internshipFilter.industry} onChange={handleInternshipFilterChange} style={styles.filterSelect}>
-            <option value="">All Industries</option>
-            <option value="Technology">Technology</option>
-            <option value="Engineering">Engineering</option>
-            <option value="Pharmaceutical">Pharmaceutical</option>
-            <option value="Business">Business</option>
-          </select>
-
-          <select name="company" value={internshipFilter.company} onChange={handleInternshipFilterChange} style={styles.filterSelect}>
-            <option value="">All Companies</option>
-            {allSuggestedCompanies.map((company) => (
-              <option key={company.name} value={company.name}>
-                {company.name}
-              </option>
-            ))}
-          </select>
-
-          <select name="paid" value={internshipFilter.paid} onChange={handleInternshipFilterChange} style={styles.filterSelect}>
-            <option value="">All Paid Status</option>
-            <option value="true">Paid</option>
-            <option value="false">Unpaid</option>
-          </select>
-
-          <select name="duration" value={internshipFilter.duration} onChange={handleInternshipFilterChange} style={styles.filterSelect}>
-            <option value="">All Durations</option>
-            <option value="2 Months">2 Months</option>
-            <option value="3 Months">3 Months</option>
-            <option value="4 Months">4 Months</option>
-          </select>
-        </div>
 
         <div style={styles.cardContainer}>
           {filteredInternships.length > 0 ? (
@@ -192,7 +141,7 @@ const StudentDashboard = () => {
               </div>
             ))
           ) : (
-            <p style={styles.noData}>No internships found based on your criteria.</p>
+            <p style={styles.noData}>No internships found based on your search.</p>
           )}
         </div>
 
@@ -305,35 +254,42 @@ const styles = {
     marginBottom: "20px",
   },
   filterSelect: {
-    padding: "8px",
-    borderRadius: "6px",
-    border: "1px solid #ccc",
+    padding: "10px",
     fontSize: "14px",
+    borderRadius: "8px",
+    border: "1px solid #ddd",
+    width: "200px",
   },
   cardContainer: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-    gap: "20px",
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "30px", // Increase gap for better spacing
+    justifyContent: "center",
+    marginTop: "20px",
   },
   card: {
     backgroundColor: "white",
-    padding: "20px",
-    borderRadius: "12px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+    padding: "30px",  // Increased padding to make the cards larger
+    borderRadius: "8px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    width: "300px",  // Increased width for larger cards
     textAlign: "left",
+    transition: "transform 0.3s ease-in-out",
+  },
+  cardHover: {
+    transform: "scale(1.05)",
   },
   button: {
-    marginTop: "10px",
-    padding: "10px 16px",
     backgroundColor: "#2b7de9",
     color: "white",
+    padding: "10px",
     border: "none",
     borderRadius: "8px",
     cursor: "pointer",
+    marginTop: "10px",
   },
   noData: {
     color: "#888",
-    fontStyle: "italic",
   },
 };
 

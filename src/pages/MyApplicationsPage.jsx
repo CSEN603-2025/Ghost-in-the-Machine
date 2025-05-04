@@ -1,59 +1,55 @@
-// src/pages/MyApplicationsPage.jsx
 import React from "react";
-import { Link } from "react-router-dom";
 
 const MyApplicationsPage = () => {
-  const internships = [
+  // Hardcoded internships with different statuses
+  const hardcodedInternships = [
     {
       id: 1,
       title: "Frontend Developer Intern",
-      company: "Valeo",
+      company: "TechCorp",
       duration: "3 Months",
-      paid: true,
-      industry: "Technology",
+      status: "accepted", // Status: accepted
     },
     {
       id: 2,
-      title: "Data Science Intern",
-      company: "IBM",
-      duration: "2 Months",
-      paid: false,
-      industry: "Technology",
+      title: "Data Analyst Intern",
+      company: "DataWorks",
+      duration: "6 Months",
+      status: "rejected", // Status: rejected
     },
+      {
+        id: 3,
+        title: "Backend Intern",
+        company: "Valeo",
+        duration: "2 Months",
+        status: "finalized", // Status: rejected
+      },
+    
     {
-      id: 3,
-      title: "Mobile App Developer Intern",
-      company: "Instabug",
-      duration: "3 Months",
-      paid: true,
-      industry: "Technology",
+      id: 4,
+      title: "UI/UX Design Intern",
+      company: "Creative Design Studio",
+      duration: "4 Months",
+      status: "pending", // Status: pending
     },
   ];
-
-  const applications = [
-    { internshipId: 1, status: "pending" },
-    { internshipId: 2, status: "accepted" },
-    { internshipId: 3, status: "rejected" },
-  ];
-
-  const getApplicationStatus = (internshipId) => {
-    const application = applications.find((app) => app.internshipId === internshipId);
-    return application ? application.status : "Not Applied";
-  };
 
   return (
     <div style={styles.container}>
       <h2 style={styles.heading}>My Applications</h2>
       <div style={styles.cardContainer}>
-        {internships.map((internship) => (
-          <div key={internship.id} style={styles.card}>
+        {hardcodedInternships.map((internship, index) => (
+          <div
+            key={index}
+            style={{
+              ...styles.card,
+              backgroundColor: internship.status === "accepted" ? "#d4edda" : "#f0f0f0", // Green highlight for accepted internships
+            }}
+          >
             <h3>{internship.title}</h3>
             <p><strong>Company:</strong> {internship.company}</p>
             <p><strong>Duration:</strong> {internship.duration}</p>
-            <p><strong>Status:</strong> {getApplicationStatus(internship.id)}</p>
-            <Link to={`/student/internship/${internship.id}`}>
-              <button style={styles.button}>View Details</button>
-            </Link>
+            <p><strong>Status:</strong> {internship.status}</p>
           </div>
         ))}
       </div>
@@ -78,19 +74,9 @@ const styles = {
     justifyContent: "center",
   },
   card: {
-    backgroundColor: "#f0f0f0",
     padding: "15px",
     borderRadius: "8px",
     width: "300px",
-  },
-  button: {
-    backgroundColor: "#2b7de9",
-    color: "white",
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    transition: "transform 0.1s ease-in-out",
   },
 };
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import InputField from '../components/InputField';
 import MainActionButton from '../components/MainActionButton';
 import { useNavigate } from 'react-router-dom';
-import { FaEye } from 'react-icons/fa';
+import {FaEye} from 'react-icons/fa';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -11,7 +11,6 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegisterClick = () => navigate('/register-company');
 
@@ -31,7 +30,8 @@ function LoginPage() {
     } else if (email === 'rep@corp.com' && password === '1234') {
       setSuccess('Company login successful!');
       navigate('/dashboard');
-    } else if (email === 'officer@scad.com' && password === '12345') {
+    }
+    else if (email === 'officer@scad.com' && password === '12345') {
       setSuccess('SCAD login successful!');
       navigate('/scad-dashboard');
     } else {
@@ -40,59 +40,50 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white py-12 px-4">
-      <div className="w-full max-w-sm bg-[#F5F5F5] shadow-lg rounded-lg p-8 border border-[#E0E6EF]">
-
-        <h2 className="text-2xl font-semibold text-[#20368F] mb-8 text-center">Login</h2>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email Field */}
-          <div>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-[#E1E4E8] rounded-lg focus:ring-2 focus:ring-[#20368F] focus:outline-none transition"
-            />
-          </div>
-
-          {/* Password Field */}
-          <div className="relative">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              className="w-full px-4 py-3 pr-12 border-2 border-[#E1E4E8] rounded-lg focus:ring-2 focus:ring-[#20368F] focus:outline-none transition"
-            />
-            <button
-              type="button"
-              onMouseDown={() => setShowPassword(true)}
-              onMouseUp={() => setShowPassword(false)}
-              onMouseLeave={() => setShowPassword(false)}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
-            >
-              <FaEye size={20} />
-            </button>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full py-3 bg-gradient-to-r from-[#20368F] to-[#1D4D8C] text-white font-semibold rounded-lg hover:opacity-90 transition"
+    <div style={styles.container}>
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <InputField
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          style={{ width: '100%' }} // ensures email input fills container
+        />
+        <div style={{ position: 'relative' }}>
+          <InputField
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            style={{ width: '100%', paddingRight: '40px' }} // full width with extra right padding for the icon
+          />
+          <button 
+            type="button"
+            onMouseDown={() => setShowPassword(true)}
+            onMouseUp={() => setShowPassword(false)}
+            onMouseLeave={() => setShowPassword(false)}
+            style={{
+              position: 'absolute',
+              right: 10,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+            }}
           >
-            Log In
+            <FaEye />
           </button>
+        </div>
+        <MainActionButton type="submit" style={styles.button}>
+          Log In
+        </MainActionButton>
 
-          {/* Error and Success Messages */}
-          {error && (
-            <p className="text-red-500 text-sm font-bold mt-2 text-center">{error}</p>
-          )}
-          {success && (
-            <p className="text-green-600 text-sm font-bold mt-2 text-center">{success}</p>
-          )}
-        </form>
+        {error && <p style={styles.error}>{error}</p>}
+        {success && <p style={styles.success}>{success}</p>}
+      </form>
 
         {/* Register Button */}
         <button
