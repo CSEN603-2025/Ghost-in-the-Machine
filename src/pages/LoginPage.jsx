@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import InputField from '../components/InputField';
-import MainActionButton from '../components/MainActionButton';
 import { useNavigate } from 'react-router-dom';
 import { FaEye } from 'react-icons/fa';
 
@@ -19,24 +17,52 @@ function LoginPage() {
     e.preventDefault();
     setError(null);
     setSuccess(null);
-
+  
     if (!email || !password) {
       setError('Please fill in all fields');
       return;
     }
-
-    if (email === 'student@guc.com' && password === '123') {
-      setSuccess('Student login successful!');
-      navigate('/student-dashboard');
-    } else if (email === 'rep@corp.com' && password === '1234') {
-      setSuccess('Company login successful!');
-      navigate('/dashboard');
-    } else if (email === 'officer@scad.com' && password === '12345') {
-      setSuccess('SCAD login successful!');
-      navigate('/scad-dashboard');
+  
+    // check if email matches any known emails
+    const validUsers = {
+      'student@guc.com': '123',
+      'rep@corp.com': '1234',
+      'officer@scad.com': '12345',
+    };
+  
+    if (email in validUsers) {
+      // email correct
+      if (password === validUsers[email]) {
+        // password correct
+        if (email === 'student@guc.com') {
+          setSuccess('Student login successful!');
+          navigate('/student-dashboard');
+        } else if (email === 'rep@corp.com') {
+          setSuccess('Company login successful!');
+          navigate('/dashboard');
+        } else if (email === 'officer@scad.com') {
+          setSuccess('SCAD login successful!');
+          navigate('/scad-dashboard');
+        }
+      } else {
+        // password wrong
+        setError('Wrong password');
+      }
     } else {
-      setError('Invalid email or password');
+      // email wrong
+      if (Object.values(validUsers).includes(password)) {
+        // password correct but email wrong
+        setError('Invalid email');
+      } else {
+        // both email and password wrong
+        setError('Invalid email and password');
+      }
     }
+  };
+  
+
+  const handleCloseError = () => {
+    setError(null);
   };
 
   return (
@@ -77,6 +103,53 @@ function LoginPage() {
             </button>
           </div>
 
+          {/* Error Box */}
+          {error && (
+            <div className="relative w-full flex flex-wrap items-center justify-center py-3 pl-4 pr-14 rounded-lg text-base font-medium transition-all border border-[#f85149] text-[#b22b2b] group bg-[linear-gradient(#f851491a,#f851491a)]">
+              <button
+                type="button"
+                aria-label="close-error"
+                onClick={handleCloseError}
+                className="absolute right-4 p-1 rounded-md transition-opacity text-[#f85149] border border-[#f85149] opacity-40 hover:opacity-100"
+              >
+                <svg
+                  stroke="currentColor"
+                  fill="none"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  height="16"
+                  width="16"
+                  className="h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M18 6 6 18"></path>
+                  <path d="m6 6 12 12"></path>
+                </svg>
+              </button>
+              <p className="flex flex-row items-center mr-auto gap-x-2">
+                <svg
+                  stroke="currentColor"
+                  fill="none"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  height="28"
+                  width="28"
+                  className="h-7 w-7"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                  <path d="M12 9v4"></path>
+                  <path d="M12 17h.01"></path>
+                </svg>
+                {error}
+              </p>
+            </div>
+          )}
+
           {/* Submit Button */}
           <button
             type="submit"
@@ -85,10 +158,7 @@ function LoginPage() {
             Log In
           </button>
 
-          {/* Error and Success Messages */}
-          {error && (
-            <p className="text-red-500 text-sm font-bold mt-2 text-center">{error}</p>
-          )}
+          {/* Success Message */}
           {success && (
             <p className="text-green-600 text-sm font-bold mt-2 text-center">{success}</p>
           )}

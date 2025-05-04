@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 function RegisterCompanyPage() {
   const navigate = useNavigate();
-  
+
   const [companyName, setCompanyName] = useState('');
   const [industry, setIndustry] = useState('');
   const [companySize, setCompanySize] = useState('');
@@ -14,6 +14,7 @@ function RegisterCompanyPage() {
   const [documentFile, setDocumentFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const [globalError, setGlobalError] = useState('');
 
   const [errors, setErrors] = useState({
     companyName: '',
@@ -52,6 +53,8 @@ function RegisterCompanyPage() {
 
     if (Object.values(formErrors).some((error) => error !== '')) {
       setErrors(formErrors);
+      setGlobalError('Please fix the highlighted fields.');
+      setSuccessMessage('');
       return;
     }
 
@@ -78,6 +81,7 @@ function RegisterCompanyPage() {
       imageFile: '',
       documentFile: ''
     });
+    setGlobalError('');
     setSuccessMessage('Company registered successfully!');
   };
 
@@ -86,13 +90,6 @@ function RegisterCompanyPage() {
       <div className="w-full max-w-lg mx-auto bg-[#F5F5F5] shadow-lg rounded-lg p-10 space-y-8 border border-[#E0E6EF]">
 
         <h2 className="text-3xl font-semibold text-[#20368F] tracking-wide">Register Your Company</h2>
-
-        {/* Success Message */}
-        {successMessage && (
-          <div className="bg-green-100 text-green-700 font-semibold p-3 rounded-lg mb-6">
-            {successMessage}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-7">
 
@@ -173,7 +170,7 @@ function RegisterCompanyPage() {
             {errors.companySize && <p className="text-red-500 text-sm font-bold mt-1">{errors.companySize}</p>}
           </div>
 
-          {/* Company Image Upload */}
+          {/* Upload Image */}
           <div>
             <label className="block text-[#20368F] font-semibold mb-2">Upload Company Image</label>
             <input
@@ -198,7 +195,7 @@ function RegisterCompanyPage() {
             {errors.imageFile && <p className="text-red-500 text-sm font-bold mt-1">{errors.imageFile}</p>}
           </div>
 
-          {/* Company Document Upload */}
+          {/* Upload Document */}
           <div>
             <label className="block text-[#20368F] font-semibold mb-2">Upload Company Document</label>
             <input
@@ -213,6 +210,38 @@ function RegisterCompanyPage() {
             {errors.documentFile && <p className="text-red-500 text-sm font-bold mt-1">{errors.documentFile}</p>}
           </div>
 
+          {/* Error Message */}
+          {globalError && (
+            <div className="relative w-full flex flex-wrap items-center justify-center py-3 pl-4 pr-14 rounded-lg text-base font-medium transition-all border-solid border border-[#f85149] text-[#b22b2b] bg-[linear-gradient(#f851491a,#f851491a)]">
+              <p className="flex flex-row items-center mr-auto gap-x-2 text-sm">
+                <svg
+                  stroke="currentColor"
+                  fill="none"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  height="20"
+                  width="20"
+                  className="h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                  <path d="M12 9v4" />
+                  <path d="M12 17h.01" />
+                </svg>
+                {globalError}
+              </p>
+            </div>
+          )}
+
+          {/* Success Message */}
+          {successMessage && (
+            <div className="bg-green-100 text-green-700 font-semibold p-3 rounded-lg">
+              {successMessage}
+            </div>
+          )}
+
           {/* Submit Button */}
           <button
             type="submit"
@@ -221,7 +250,7 @@ function RegisterCompanyPage() {
             Register
           </button>
 
-          {/* Already Registered Button */}
+          {/* Already Registered */}
           <button
             type="button"
             onClick={() => navigate('/welcome')}
