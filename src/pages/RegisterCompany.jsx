@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 function RegisterCompanyPage() {
   const navigate = useNavigate();
+  
   const [companyName, setCompanyName] = useState('');
   const [industry, setIndustry] = useState('');
   const [companySize, setCompanySize] = useState('');
@@ -12,6 +13,7 @@ function RegisterCompanyPage() {
   const [imageFile, setImageFile] = useState(null);
   const [documentFile, setDocumentFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const [errors, setErrors] = useState({
     companyName: '',
@@ -76,16 +78,24 @@ function RegisterCompanyPage() {
       imageFile: '',
       documentFile: ''
     });
-
-    alert('Company registered successfully!');
+    setSuccessMessage('Company registered successfully!');
   };
 
   return (
     <div className="min-h-screen bg-white py-20 px-4 text-center">
       <div className="w-full max-w-lg mx-auto bg-[#F5F5F5] shadow-lg rounded-lg p-10 space-y-8 border border-[#E0E6EF]">
+
         <h2 className="text-3xl font-semibold text-[#20368F] tracking-wide">Register Your Company</h2>
 
+        {/* Success Message */}
+        {successMessage && (
+          <div className="bg-green-100 text-green-700 font-semibold p-3 rounded-lg mb-6">
+            {successMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-7">
+
           {/* Company Name */}
           <div>
             <label className="block text-[#20368F] font-semibold mb-2">Company Name</label>
@@ -95,7 +105,7 @@ function RegisterCompanyPage() {
               onChange={(e) => setCompanyName(e.target.value)}
               className="w-full px-5 py-3 border-2 border-[#E1E4E8] rounded-lg focus:ring-2 focus:ring-[#20368F] focus:outline-none transition"
             />
-            {errors.companyName && <p className="text-red-500 text-sm mt-1">{errors.companyName}</p>}
+            {errors.companyName && <p className="text-red-500 text-sm font-bold mt-1">{errors.companyName}</p>}
           </div>
 
           {/* Industry */}
@@ -107,7 +117,7 @@ function RegisterCompanyPage() {
               onChange={(e) => setIndustry(e.target.value)}
               className="w-full px-5 py-3 border-2 border-[#E1E4E8] rounded-lg focus:ring-2 focus:ring-[#20368F] focus:outline-none transition"
             />
-            {errors.industry && <p className="text-red-500 text-sm mt-1">{errors.industry}</p>}
+            {errors.industry && <p className="text-red-500 text-sm font-bold mt-1">{errors.industry}</p>}
           </div>
 
           {/* Email */}
@@ -119,10 +129,10 @@ function RegisterCompanyPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-5 py-3 border-2 border-[#E1E4E8] rounded-lg focus:ring-2 focus:ring-[#20368F] focus:outline-none transition"
             />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+            {errors.email && <p className="text-red-500 text-sm font-bold mt-1">{errors.email}</p>}
           </div>
 
-          {/* Phone Number */}
+          {/* Phone */}
           <div>
             <label className="block text-[#20368F] font-semibold mb-2">Phone Number</label>
             <input
@@ -131,7 +141,7 @@ function RegisterCompanyPage() {
               onChange={(e) => setPhone(e.target.value)}
               className="w-full px-5 py-3 border-2 border-[#E1E4E8] rounded-lg focus:ring-2 focus:ring-[#20368F] focus:outline-none transition"
             />
-            {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+            {errors.phone && <p className="text-red-500 text-sm font-bold mt-1">{errors.phone}</p>}
           </div>
 
           {/* Address */}
@@ -143,7 +153,7 @@ function RegisterCompanyPage() {
               onChange={(e) => setAddress(e.target.value)}
               className="w-full px-5 py-3 border-2 border-[#E1E4E8] rounded-lg focus:ring-2 focus:ring-[#20368F] focus:outline-none transition"
             />
-            {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
+            {errors.address && <p className="text-red-500 text-sm font-bold mt-1">{errors.address}</p>}
           </div>
 
           {/* Company Size */}
@@ -160,7 +170,7 @@ function RegisterCompanyPage() {
               <option value="Large">Large (101–500 employees)</option>
               <option value="Corporate">Corporate (&gt;500 employees)</option>
             </select>
-            {errors.companySize && <p className="text-red-500 text-sm mt-1">{errors.companySize}</p>}
+            {errors.companySize && <p className="text-red-500 text-sm font-bold mt-1">{errors.companySize}</p>}
           </div>
 
           {/* Company Image Upload */}
@@ -185,7 +195,7 @@ function RegisterCompanyPage() {
                 className="w-24 h-24 object-cover mt-4 rounded-lg border border-[#E1E4E8]"
               />
             )}
-            {errors.imageFile && <p className="text-red-500 text-sm mt-1">{errors.imageFile}</p>}
+            {errors.imageFile && <p className="text-red-500 text-sm font-bold mt-1">{errors.imageFile}</p>}
           </div>
 
           {/* Company Document Upload */}
@@ -197,7 +207,10 @@ function RegisterCompanyPage() {
               onChange={(e) => setDocumentFile(e.target.files[0])}
               className="w-full py-3 border-2 border-[#E1E4E8] rounded-lg focus:ring-2 focus:ring-[#20368F] focus:outline-none transition"
             />
-            {errors.documentFile && <p className="text-red-500 text-sm mt-1">{errors.documentFile}</p>}
+            {documentFile && (
+              <p className="text-gray-500 text-sm mt-2">{documentFile.name}</p>
+            )}
+            {errors.documentFile && <p className="text-red-500 text-sm font-bold mt-1">{errors.documentFile}</p>}
           </div>
 
           {/* Submit Button */}
@@ -216,6 +229,7 @@ function RegisterCompanyPage() {
           >
             Already registered? Login
           </button>
+
         </form>
       </div>
     </div>
