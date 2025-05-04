@@ -16,6 +16,8 @@ import ApplicationDetails from './components/ApplicationDetails';
 import VideoCallPage from './pages/VideoCallPage';
 import SCADDashboard from './pages/SCADDashboard';
 import ManageCompanies from './pages/ManageCompanies';
+import ManageStudents from './pages/ManageStudents'; 
+import StudentProfile from './pages/StudentProfile';
 
 function App() {
   const {
@@ -56,6 +58,8 @@ function App() {
           <Route path="/applications/details/:id" element={<ApplicationDetails />} />
           <Route path="/scad-dashboard" element={<SCADDashboard />} />
           <Route path="/manage-companies" element={<ManageCompanies />} />
+          <Route path="/students" element={<ManageStudents />} />
+        <Route path="/students/:id" element={<StudentProfile />} />
     </Routes>
       </div>
     </Router>
