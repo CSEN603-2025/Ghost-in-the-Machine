@@ -9,7 +9,7 @@ const SCADDashboard = () => {
   };
 
   const handleLogout = () => {
-    navigate('/welcoome');
+    navigate('/welcome');
   };
 
   const handleHome = () => {
