@@ -105,7 +105,6 @@ const StudentDashboard = () => {
           <Link to="/student/my-applications"><button style={styles.navButton}>My Applications</button></Link>
           <Link to="/student/report"><button style={styles.navButton}>Submit Report</button></Link>
           <Link to="/student/edit-profile"><button style={styles.navButton}>Edit Profile</button></Link>
-          <Link to="/student/scad-internships"><button style={styles.navButton}>Scad Internships</button></Link>
         </div>
       </nav>
 

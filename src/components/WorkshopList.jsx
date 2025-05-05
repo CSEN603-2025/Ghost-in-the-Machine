@@ -1,4 +1,4 @@
-export default function WorkshopList({ workshops, onDelete }) {
+export default function WorkshopList({ workshops, onDelete, onEdit }) {
     return (
       <div className="workshop-list">
         {workshops.map(workshop => (
@@ -7,6 +7,7 @@ export default function WorkshopList({ workshops, onDelete }) {
             <p><strong>Speaker:</strong> {workshop.speaker}</p>
             <p><strong>Date:</strong> {workshop.date}</p>
             <p><strong>Description:</strong> {workshop.description}</p>
+            <button onClick={() => onEdit(workshop)}>Edit</button>
             <button onClick={() => onDelete(workshop.id)}>Delete</button>
           </div>
         ))}
