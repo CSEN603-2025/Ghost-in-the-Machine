@@ -14,7 +14,7 @@ export const ApplicationsProvider = ({ children }) => {
       phone: '+201234567890',
       cv: 'CV_Ahmed.pdf',
       internshipTitle: 'Frontend Developer Intern',
-      status: 'Pending',
+      status: 'Current Intern', // ✅ Now a Current Intern
     },
     {
       id: 2,
@@ -24,7 +24,7 @@ export const ApplicationsProvider = ({ children }) => {
       phone: '+201098765432',
       cv: 'CV_Mona.pdf',
       internshipTitle: 'Data Analyst Intern',
-      status: 'Accepted',
+      status: 'Internship Complete', // ✅ Ready for Evaluation
     },
     {
       id: 3,
@@ -34,7 +34,7 @@ export const ApplicationsProvider = ({ children }) => {
       phone: '+201112223334',
       cv: 'CV_Khaled.pdf',
       internshipTitle: 'Mobile Developer Intern',
-      status: 'Pending',
+      status: 'Current Intern', // ✅ Now a Current Intern
     },
     {
       id: 4,
@@ -44,7 +44,7 @@ export const ApplicationsProvider = ({ children }) => {
       phone: '+201234111222',
       cv: 'CV_Sarah.pdf',
       internshipTitle: 'Data Analyst Intern',
-      status: 'Pending',
+      status: 'Internship Complete', // ✅ Ready for Evaluation
     },
   ]);
 

@@ -5,11 +5,12 @@ import CompanyProfileCard from '../components/CompanyProfileCard';
 import PostsList from '../components/PostsList';
 import ApplicationsList from '../components/ApplicationsList';
 import InternList from '../components/InternList'; // 🔵 IMPORT InternList
+import EvaluationsList from '../components/EvaluationsList';
 import { toast } from 'react-hot-toast';
 
 
 function CompanyDashboard() {
-  useEffect(() => {toast("Welcome to the login page!");}, []);
+  useEffect(() => {toast("Welcome to the Dashboard!");}, []);
   const [activeSection, setActiveSection] = useState('home');
   const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
@@ -118,7 +119,8 @@ function CompanyDashboard() {
                 {activeSection === 'posts' && <PostsList posts={posts} setPosts={setPosts} />}
                 {activeSection === 'applications' && <ApplicationsList posts={posts} />}
                 {activeSection === 'interns' && <InternList />} {/* 🔵 Show InternList */}
-                {activeSection === 'evaluation' && <p>Evaluation Section will be implemented soon.</p>}
+                {activeSection === 'evaluation' && <EvaluationsList />}
+
             </div>
         </div>
     );
