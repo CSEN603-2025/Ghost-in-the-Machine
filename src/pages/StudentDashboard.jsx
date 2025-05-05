@@ -32,13 +32,6 @@ const allSuggestedCompanies = [
   { name: "Valeo", industry: "Technology", recommendations: 4.5 },
   { name: "IBM", industry: "Technology", recommendations: 4.0 },
   { name: "Instabug", industry: "Technology", recommendations: 4.8 },
-  { name: "Microsoft", industry: "Technology", recommendations: 4.7 },
-  { name: "Siemens", industry: "Engineering", recommendations: 4.3 },
-  { name: "Pfizer", industry: "Pharmaceutical", recommendations: 4.2 },
-  { name: "Google", industry: "Technology", recommendations: 4.6 },
-  { name: "Coca-Cola", industry: "Business", recommendations: 4.1 },
-  { name: "Tesla", industry: "Engineering", recommendations: 4.4 },
-  { name: "Johnson & Johnson", industry: "Pharmaceutical", recommendations: 4.5 },
 ];
 
 const majorList = ["Computer Engineering", "Business", "Pharmacy", "Management"];
@@ -105,6 +98,8 @@ const StudentDashboard = () => {
           <Link to="/student/my-applications"><button style={styles.navButton}>My Applications</button></Link>
           <Link to="/student/report"><button style={styles.navButton}>Submit Report</button></Link>
           <Link to="/student/edit-profile"><button style={styles.navButton}>Edit Profile</button></Link>
+          <Link to="/student/evaluation"><button style={styles.navButton}>Evaluation</button></Link>
+          <Link to="/student/scad-internships"><button style={styles.navButton}>SCAD Internships</button></Link>
         </div>
       </nav>
 
@@ -117,10 +112,10 @@ const StudentDashboard = () => {
 
         <input
           type="text"
-          placeholder="Search internships..."
+          placeholder="Search internships 🔍..."
           value={internshipSearch}
           onChange={handleInternshipSearch}
-          style={styles.searchInput}
+          style={styles.searchInput }
         />
 
         <h2 style={styles.heading}>Suggested Internships for You</h2>
@@ -129,13 +124,13 @@ const StudentDashboard = () => {
           {filteredInternships.length > 0 ? (
             filteredInternships.map((internship) => (
               <div key={internship.id} style={styles.card}>
-                <h3>{internship.title}</h3>
-                <p><strong>Company:</strong> {internship.company}</p>
-                <p><strong>Duration:</strong> {internship.duration}</p>
-                <p><strong>Paid:</strong> {internship.paid ? "Yes" : "No"}</p>
-                <p><strong>Industry:</strong> {internship.industry}</p>
+                <h3>{internship.title} 📝</h3>
+                <p><strong>Company:</strong> {internship.company} 🏢</p>
+                <p><strong>Duration:</strong> {internship.duration} ⏳</p>
+                <p><strong>Paid:</strong> {internship.paid ? "Yes 💰" : "No 🚫"}</p>
+                <p><strong>Industry:</strong> {internship.industry} 🌐</p>
                 <Link to={`/student/internship/${internship.id}`}>
-                  <button style={styles.button}>View Details</button>
+                  <button style={styles.button}>View Details 🔍</button>
                 </Link>
               </div>
             ))
@@ -171,11 +166,11 @@ const StudentDashboard = () => {
           {sortedCompanies.length > 0 ? (
             sortedCompanies.map((company, index) => (
               <div key={index} style={styles.card}>
-                <h3>{company.name}</h3>
-                <p><strong>Industry:</strong> {company.industry}</p>
-                <p><strong>Recommendations:</strong> {company.recommendations} / 5</p>
+                <h3>{company.name} 🏢</h3>
+                <p><strong>Industry:</strong> {company.industry} 🌐</p>
+                <p><strong>Recommendations:</strong> {company.recommendations} / 5 ⭐</p>
                 <Link to={`/student/company/${company.name}`}>
-                  <button style={styles.button}>View Details</button>
+                  <button style={styles.button}>View Profile </button>
                 </Link>
               </div>
             ))
@@ -244,51 +239,45 @@ const styles = {
     marginTop: "30px",
     marginBottom: "10px",
     textAlign: "left",
-    color: "#333",
-  },
-  filterContainer: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "10px",
-    marginBottom: "20px",
-  },
-  filterSelect: {
-    padding: "10px",
-    fontSize: "14px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    width: "200px",
+    color: "#444",
   },
   cardContainer: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "30px", // Increase gap for better spacing
-    justifyContent: "center",
-    marginTop: "20px",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+    gap: "20px",
   },
   card: {
     backgroundColor: "white",
-    padding: "30px",  // Increased padding to make the cards larger
-    borderRadius: "8px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    width: "300px",  // Increased width for larger cards
+    padding: "15px",
+    borderRadius: "10px",
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
     textAlign: "left",
-    transition: "transform 0.3s ease-in-out",
-  },
-  cardHover: {
-    transform: "scale(1.05)",
   },
   button: {
     backgroundColor: "#2b7de9",
     color: "white",
-    padding: "10px",
+    padding: "8px 15px",
     border: "none",
-    borderRadius: "8px",
+    borderRadius: "5px",
     cursor: "pointer",
-    marginTop: "10px",
+    fontSize: "14px",
   },
   noData: {
-    color: "#888",
+    color: "grey",
+    fontSize: "16px",
+    textAlign: "center",
+  },
+  filterContainer: {
+    display: "flex",
+    gap: "10px",
+    justifyContent: "center",
+    marginBottom: "20px",
+  },
+  filterSelect: {
+    padding: "10px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+    fontSize: "16px",
   },
 };
 
