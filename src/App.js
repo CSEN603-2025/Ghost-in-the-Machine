@@ -14,6 +14,8 @@ import ManageStudents from './pages/ManageStudents';
 import StudentProfile from './pages/StudentProfile';
 import { ToastContainer } from 'react-toastify';
 import RegisteredStudents from './pages/RegisteredStudents';
+import ViewAllInternships from './pages/ViewAllInternships';
+
 
 
 function App() {
@@ -41,6 +43,9 @@ function App() {
       <Route path="/students/:id" element={<StudentProfile />} />
       <Route path="/registered-students" element={<RegisteredStudents/>} />
         <Route path="/dashboard" element={<CompanyDashboard />} />
+        <Route path="/view-all-internships" element={<ViewAllInternships />} />
+        
+
     </Routes>
    
   );
