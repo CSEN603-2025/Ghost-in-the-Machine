@@ -4,8 +4,11 @@ import CompanyProfileCard from '../components/CompanyProfileCard';
 import PostsList from '../components/PostsList';
 import ApplicationsList from '../components/ApplicationsList';
 import InternList from '../components/InternList';
+import {useEffect} from 'react';
+import {toast} from 'react-toastify';
 
 function CompanyDashboard() {
+  useEffect(() => {toast("Welcome to the login page!");}, []);
   const [activeSection, setActiveSection] = useState('home');
   const [posts, setPosts] = useState([]);
   const navigate = useNavigate();

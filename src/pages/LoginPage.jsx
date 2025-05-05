@@ -26,8 +26,9 @@ function LoginPage() {
     // check if email matches any known emails
     const validUsers = {
       'student@guc.com': '123',
-      'rep@corp.com': '1234',
-      'officer@scad.com': '12345',
+      'prostudent@guc.com': '123',
+      'rep@corp.com': '123',
+      'officer@scad.com': '123',
     };
   
     if (email in validUsers) {

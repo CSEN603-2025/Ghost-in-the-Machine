@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
 import './App.css';
 import LoginPage from './pages/LoginPage';
 import RegisterCompanyPage from './pages/RegisterCompany';
@@ -12,6 +12,7 @@ import SCADDashboard from './pages/SCADDashboard';
 import ManageCompanies from './pages/ManageCompanies';
 import ManageStudents from './pages/ManageStudents'; 
 import StudentProfile from './pages/StudentProfile';
+import { ToastContainer } from 'react-toastify';
 
 
 
