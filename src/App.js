@@ -14,6 +14,9 @@ import ManageStudents from './pages/ManageStudents';
 import StudentProfile from './pages/StudentProfile';
 import { ToastContainer } from 'react-toastify';
 import RegisteredStudents from './pages/RegisteredStudents';
+import ApplicationDetails from './components/ApplicationDetails';
+import InternDetails from './components/InternDetails';
+import InternList from './components/InternList';
 
 
 function App() {
@@ -41,6 +44,10 @@ function App() {
       <Route path="/students/:id" element={<StudentProfile />} />
       <Route path="/registered-students" element={<RegisteredStudents/>} />
         <Route path="/dashboard" element={<CompanyDashboard />} />
+        <Route path="/interns" element={<InternList />} />
+          <Route path="/interns/:id" element={<InternDetails />} />
+          <Route path="/applications/details/:id" element={<ApplicationDetails />} />
+        
     </Routes>
    
   );
