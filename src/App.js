@@ -23,7 +23,6 @@ import StudentReportEditor from './pages/StudentReportEditor';
 import FinalizedReport from "./pages/FinalizedReport";
 import StudentEvaluation from "./pages/StudentEvaluation";
 import SCADInternshipsPage from "./pages/SCADInternshipsPage";
-
 import ApplicationDetails from './components/ApplicationDetails';
 import InternDetails from './components/InternDetails';
 import InternList from './components/InternList';
@@ -54,7 +53,6 @@ function App() {
       <Route path="/students/:id" element={<StudentProfile />} />
       <Route path="/registered-students" element={<RegisteredStudents/>} />
       <Route path="/dashboard" element={<CompanyDashboard />} />
-
       <Route path="student/edit-profile" element={<EditProfilePage />} />
       <Route path="student/internships" element={<InternshipPage />} />
       <Route path="student/apply/:id" element={<ApplicationPage />} />
@@ -64,11 +62,9 @@ function App() {
       <Route path="/student/view-report" element={<FinalizedReport />} />
       <Route path="/student/evaluation" element={<StudentEvaluation />} />
       <Route path="student/scad-internships" element={<SCADInternshipsPage />} />
-
-
-        <Route path="/interns" element={<InternList />} />
-          <Route path="/interns/:id" element={<InternDetails />} />
-          <Route path="/applications/details/:id" element={<ApplicationDetails />} />
+      <Route path="/interns" element={<InternList />} />
+      <Route path="/interns/:id" element={<InternDetails />} />
+      <Route path="/applications/details/:id" element={<ApplicationDetails />} />
         
     </Routes>
    
