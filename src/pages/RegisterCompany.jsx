@@ -184,8 +184,8 @@ function RegisterCompanyPage() {
           </button>
         </form>
       </div>
-    </div>
-  );
+  
+);
 }
 
 const styles = {

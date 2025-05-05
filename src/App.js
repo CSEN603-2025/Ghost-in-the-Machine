@@ -6,7 +6,9 @@ import CompanyDashboard from './pages/CompanyDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import MyApplicationsPage from './pages/MyApplicationsPage';
 import WorkshopsPage from './pages/WorkshopsPage';
-import LandingPage from './pages/LandingPage'
+import LandingPage from './pages/LandingPage';
+import { useNotifications } from './hooks/useNotifications';
+
 
 function App() {
   const {

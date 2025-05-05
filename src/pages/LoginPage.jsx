@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {FaEye} from 'react-icons/fa';
 
 function LoginPage() {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // ✅ ADD THIS
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
   
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-
+   
   const handleRegisterClick = () => navigate('/register-company');
 
   const handleSubmit = (e) => {
@@ -20,72 +22,147 @@ function LoginPage() {
       setError('Please fill in all fields');
       return;
     }
+  
+    // check if email matches any known emails
+    const validUsers = {
+      'student@guc.com': '123',
+      'rep@corp.com': '1234',
+      'officer@scad.com': '12345',
+    };
+  
+    if (email in validUsers) {
+      // email correct
+      if (password === validUsers[email]) {
+        // password correct
+        if (email === 'student@guc.com') {
+          setSuccess('Student login successful!');
+          navigate('/student-dashboard');
+        } else if (email === 'rep@corp.com') {
+          setSuccess('Company login successful!');
+          navigate('/dashboard');
+        } else if (email === 'officer@scad.com') {
+          setSuccess('SCAD login successful!');
+          navigate('/scad-dashboard');
+        }
+      } else {
+        // password wrong
+        setError('Wrong password');
+      }
+    } else {
+      // email wrong
+      if (Object.values(validUsers).includes(password)) {
+        // password correct but email wrong
+        setError('Invalid email');
+      } else {
+        // both email and password wrong
+        setError('Invalid email and password');
+      }
+    }
+  };
+  
 
-    if (email === 'student@guc.com' && password === '123') {
-      setSuccess('Student login successful!');
-      // redirect to student dashboard
-      navigate('/student-dashboard');
-    }
-    else if (email === 'rep@corp.com' && password === '1234') {
-      setSuccess('Company login successful!');
-      navigate('/dashboard');
-    }
-    else if (email === 'officer@scad.com' && password === '12345') {
-      setSuccess('SCAD login successful!');
-      navigate('/scad-dashboard');
-    }
-    else {
-      setError('Invalid email or password');
-    }
-
-    console.log('Logging in with', email, password);
+  const handleCloseError = () => {
+    setError(null);
   };
 
   return (
-    <div style={styles.container}>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <InputField
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          style={{ width: '100%' }} // ensures email input fills container
-        />
-        <div style={{ position: 'relative' }}>
-          <InputField
-            type={showPassword ? 'text' : 'password'}
-            placeholder="Password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            style={{ width: '100%', paddingRight: '40px' }} // full width with extra right padding for the icon
-          />
-          <button 
-            type="button"
-            onMouseDown={() => setShowPassword(true)}
-            onMouseUp={() => setShowPassword(false)}
-            onMouseLeave={() => setShowPassword(false)}
-            style={{
-              position: 'absolute',
-              right: 10,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-            }}
-          >
-            <FaEye />
-          </button>
-        </div>
-        <MainActionButton type="submit" style={styles.button}>
-          Log In
-        </MainActionButton>
+    <div className="min-h-screen flex items-center justify-center bg-white py-12 px-4">
+      <div className="w-full max-w-sm bg-[#F5F5F5] shadow-lg rounded-lg p-8 border border-[#E0E6EF]">
 
-        {error && <p style={styles.error}>{error}</p>}
-        {success && <p style={styles.success}>{success}</p>}
-      </form>
+        <h2 className="text-2xl font-semibold text-[#20368F] mb-8 text-center">Login</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Email Field */}
+          <div>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              className="w-full px-4 py-3 border-2 border-[#E1E4E8] rounded-lg focus:ring-2 focus:ring-[#20368F] focus:outline-none transition"
+            />
+          </div>
+
+          {/* Password Field */}
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              className="w-full px-4 py-3 pr-12 border-2 border-[#E1E4E8] rounded-lg focus:ring-2 focus:ring-[#20368F] focus:outline-none transition"
+            />
+            <button
+              type="button"
+              onMouseDown={() => setShowPassword(true)}
+              onMouseUp={() => setShowPassword(false)}
+              onMouseLeave={() => setShowPassword(false)}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+            >
+              <FaEye size={20} />
+            </button>
+          </div>
+
+          {/* Error Box */}
+          {error && (
+            <div className="relative w-full flex flex-wrap items-center justify-center py-3 pl-4 pr-14 rounded-lg text-base font-medium transition-all border border-[#f85149] text-[#b22b2b] group bg-[linear-gradient(#f851491a,#f851491a)]">
+              <button
+                type="button"
+                aria-label="close-error"
+                onClick={handleCloseError}
+                className="absolute right-4 p-1 rounded-md transition-opacity text-[#f85149] border border-[#f85149] opacity-40 hover:opacity-100"
+              >
+                <svg
+                  stroke="currentColor"
+                  fill="none"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  height="16"
+                  width="16"
+                  className="h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M18 6 6 18"></path>
+                  <path d="m6 6 12 12"></path>
+                </svg>
+              </button>
+              <p className="flex flex-row items-center mr-auto gap-x-2">
+                <svg
+                  stroke="currentColor"
+                  fill="none"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  height="28"
+                  width="28"
+                  className="h-7 w-7"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                  <path d="M12 9v4"></path>
+                  <path d="M12 17h.01"></path>
+                </svg>
+                {error}
+              </p>
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full py-3 bg-gradient-to-r from-[#20368F] to-[#1D4D8C] text-white font-semibold rounded-lg hover:opacity-90 transition"
+          >
+            Log In
+          </button>
+
+          {/* Success Message */}
+          {success && (
+            <p className="text-green-600 text-sm font-bold mt-2 text-center">{success}</p>
+          )}
+        </form>
 
         {/* Register Button */}
         <button

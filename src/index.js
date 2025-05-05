@@ -8,7 +8,9 @@ import { ApplicationsProvider } from './contexts/ApplicationsContext';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
+  <ApplicationsProvider>
   <BrowserRouter>
     <App />
   </BrowserRouter>
+   </ApplicationsProvider>
 );
