@@ -40,6 +40,11 @@ const SCADDashboard = () => {
       details: 'Set, view and change the cycle dates of the next internship cycle',
       nextPage: '/cycle-dates'
     },
+    {
+      header: 'Students',
+      details: 'view a list of all students on the system',
+      nextPage: '/registered-students'
+    },
   ];
 
   return (

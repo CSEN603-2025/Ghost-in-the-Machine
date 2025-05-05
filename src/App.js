@@ -8,7 +8,15 @@ import MyApplicationsPage from './pages/MyApplicationsPage';
 import WorkshopsPage from './pages/WorkshopsPage';
 import LandingPage from './pages/LandingPage';
 import { useNotifications } from './hooks/useNotifications';
+import SCADDashboard from './pages/SCADDashboard'; 
+import ManageCompanies from './pages/ManageCompanies';
+import ManageStudents from './pages/ManageStudents'; 
+import StudentProfile from './pages/StudentProfile';
+import { ToastContainer } from 'react-toastify';
+import RegisteredStudents from './pages/RegisteredStudents';
 
+
+import LandingPage from './pages/LandingPage'
 
 function App() {
   const {
@@ -28,6 +36,12 @@ function App() {
       <Route path="/student-dashboard" element={<StudentDashboard />} />
       <Route path="student/my-applications" element={<MyApplicationsPage />} /> {/* New route */}
       <Route path="/workshops" element={<WorkshopsPage />} />
+      <Route path="/dashboard" element={<CompanyDashboard />} />
+      <Route path="/scad-dashboard" element={<SCADDashboard />} />
+      <Route path="/manage-companies" element={<ManageCompanies />} />
+      <Route path="/students" element={<ManageStudents />} />
+      <Route path="/students/:id" element={<StudentProfile />} />
+      <Route path="/registered-students" element={<RegisteredStudents/>} />
         <Route path="/dashboard" element={<CompanyDashboard />} />
     </Routes>
    
