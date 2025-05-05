@@ -16,8 +16,6 @@ import { ToastContainer } from 'react-toastify';
 import RegisteredStudents from './pages/RegisteredStudents';
 
 
-import LandingPage from './pages/LandingPage'
-
 function App() {
   const {
     notifications,
