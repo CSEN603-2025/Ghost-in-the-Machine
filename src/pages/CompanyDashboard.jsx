@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import CompanyProfileCard from '../components/CompanyProfileCard';
 import PostsList from '../components/PostsList';
 import ApplicationsList from '../components/ApplicationsList';
-import InternList from '../components/InternList';
-import {useEffect} from 'react';
-import {toast} from 'react-toastify';
+import InternList from '../components/InternList'; // 🔵 IMPORT InternList
 
 function CompanyDashboard() {
   useEffect(() => {toast("Welcome to the login page!");}, []);
@@ -111,16 +109,16 @@ function CompanyDashboard() {
         ))}
       </div>
 
-      {/* Main Content */}
-      <div style={styles.contentArea}>
-        {activeSection === 'home' && <p>Welcome to the Home Section.</p>}
-        {activeSection === 'posts' && <PostsList posts={posts} setPosts={setPosts} />}
-        {activeSection === 'applications' && <ApplicationsList posts={posts} />}
-        {activeSection === 'interns' && <InternList />}
-        {activeSection === 'evaluation' && <p>Evaluation Section will be implemented soon.</p>}
-      </div>
-    </div>
-  );
+            {/* Main Content */}
+            <div style={styles.contentArea}>
+                {activeSection === 'home' && <p>Welcome to the Home Section.</p>}
+                {activeSection === 'posts' && <PostsList posts={posts} setPosts={setPosts} />}
+                {activeSection === 'applications' && <ApplicationsList posts={posts} />}
+                {activeSection === 'interns' && <InternList />} {/* 🔵 Show InternList */}
+                {activeSection === 'evaluation' && <p>Evaluation Section will be implemented soon.</p>}
+            </div>
+        </div>
+    );
 }
 
 const styles = {

@@ -16,6 +16,7 @@ import { ToastContainer } from 'react-toastify';
 import RegisteredStudents from './pages/RegisteredStudents';
 
 
+import LandingPage from './pages/LandingPage'
 
 function App() {
   const {
@@ -27,6 +28,7 @@ function App() {
   } = useNotifications();
 
   return (
+    
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/welcome" element={<LoginPage />} />
@@ -40,7 +42,9 @@ function App() {
       <Route path="/students" element={<ManageStudents />} />
       <Route path="/students/:id" element={<StudentProfile />} />
       <Route path="/registered-students" element={<RegisteredStudents/>} />
+        <Route path="/dashboard" element={<CompanyDashboard />} />
     </Routes>
+   
   );
 }
 
