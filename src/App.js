@@ -14,6 +14,16 @@ import ManageStudents from './pages/ManageStudents';
 import StudentProfile from './pages/StudentProfile';
 import { ToastContainer } from 'react-toastify';
 import RegisteredStudents from './pages/RegisteredStudents';
+import EditProfilePage from './pages/EditProfilePage';
+import InternshipPage from './pages/InternshipPage';
+import ApplicationPage from './pages/ApplicationPage';
+import InternshipDetailsPage from './pages/InternshipDetailsPage';
+import CompanyDetailsPage from './pages/CompanyDetailsPage';
+import StudentReportEditor from './pages/StudentReportEditor';
+import FinalizedReport from "./pages/FinalizedReport";
+import StudentEvaluation from "./pages/StudentEvaluation";
+import SCADInternshipsPage from "./pages/SCADInternshipsPage";
+
 
 
 function App() {
@@ -40,7 +50,19 @@ function App() {
       <Route path="/students" element={<ManageStudents />} />
       <Route path="/students/:id" element={<StudentProfile />} />
       <Route path="/registered-students" element={<RegisteredStudents/>} />
-        <Route path="/dashboard" element={<CompanyDashboard />} />
+      <Route path="/dashboard" element={<CompanyDashboard />} />
+
+      <Route path="student/edit-profile" element={<EditProfilePage />} />
+      <Route path="student/internships" element={<InternshipPage />} />
+      <Route path="student/apply/:id" element={<ApplicationPage />} />
+      <Route path="student/internship/:id" element={<InternshipDetailsPage />} />
+      <Route path="/student/company/:companyName" element={<CompanyDetailsPage />} />
+      <Route path="student/report" element={<StudentReportEditor />} />
+      <Route path="/student/view-report" element={<FinalizedReport />} />
+      <Route path="/student/evaluation" element={<StudentEvaluation />} />
+      <Route path="student/scad-internships" element={<SCADInternshipsPage />} />
+
+
     </Routes>
    
   );

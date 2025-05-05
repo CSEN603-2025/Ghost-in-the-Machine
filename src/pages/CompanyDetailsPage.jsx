@@ -2,21 +2,45 @@ import React from "react";
 import { useParams, Link } from "react-router-dom";
 
 const allSuggestedCompanies = [
-  { name: "Valeo", industry: "Technology", recommendations: 4.5 },
-  { name: "IBM", industry: "Technology", recommendations: 4.0 },
-  { name: "Instabug", industry: "Technology", recommendations: 4.8 },
-  { name: "Microsoft", industry: "Technology", recommendations: 4.7 },
-  { name: "Siemens", industry: "Engineering", recommendations: 4.3 },
-  { name: "Pfizer", industry: "Pharmaceutical", recommendations: 4.2 },
-  { name: "Google", industry: "Technology", recommendations: 4.6 },
-  { name: "Coca-Cola", industry: "Business", recommendations: 4.1 },
-  { name: "Tesla", industry: "Engineering", recommendations: 4.4 },
-  { name: "Johnson & Johnson", industry: "Pharmaceutical", recommendations: 4.5 },
+  {
+    name: "Instabug",
+    industry: "Technology",
+    size: "Medium (51–100 employees)",
+    email: "contact@instabug.com",
+    phone: "+1 555-123-4567",
+    address: "123 Cairo Street, Egypt",
+    imageUrl: "/images/instabug.png",
+    documentName: "Instabug_Profile.pdf",
+    recommendations: 4.8,
+  },
+  {
+    name: "Valeo",
+    industry: "Technology",
+    size: "Corporate (>500 employees)",
+    email: "hr@valeo.com",
+    phone: "+1 555-111-2222",
+    address: "56 Smart Village, Giza, Egypt",
+    imageUrl: "/images/valeo.png",
+    documentName: "Valeo_Cert.pdf",
+    recommendations: 4.5,
+  },
+  {
+    name: "IBM",
+    industry: "Technology",
+    size: "Corporate (>500 employees)",
+    email: "contact@ibm.com",
+    phone: "+1 555-222-3333",
+    address: "Tech Park Avenue, Cairo",
+    imageUrl: "/images/ibm.png",
+    documentName: "IBM_Overview.pdf",
+    recommendations: 4.0,
+  },
+  // Add more companies as needed
 ];
 
 const CompanyDetailsPage = () => {
   const { companyName } = useParams();
-  const company = allSuggestedCompanies.find(c => c.name === companyName);
+  const company = allSuggestedCompanies.find((c) => c.name === companyName);
 
   if (!company) {
     return (
@@ -31,9 +55,21 @@ const CompanyDetailsPage = () => {
 
   return (
     <div style={styles.container}>
-      <h1>{company.name}</h1>
+      <h1 style={styles.title}>{company.name}</h1>
+      {company.imageUrl && (
+        <img
+          src={company.imageUrl}
+          alt={`${company.name} logo`}
+          style={styles.image}
+        />
+      )}
       <p><strong>Industry:</strong> {company.industry}</p>
+      <p><strong>Company Size:</strong> {company.size}</p>
+      <p><strong>Email:</strong> {company.email}</p>
+      <p><strong>Phone:</strong> {company.phone}</p>
+      <p><strong>Address:</strong> {company.address}</p>
       <p><strong>Recommendations:</strong> {company.recommendations} / 5</p>
+      <p><strong>Document:</strong> {company.documentName}</p>
 
       <Link to="/student-dashboard">
         <button style={styles.button}>Back to Dashboard</button>
@@ -52,6 +88,18 @@ const styles = {
     boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
     textAlign: "left",
     marginTop: "80px",
+  },
+  title: {
+    fontSize: "28px",
+    fontWeight: "bold",
+    marginBottom: "16px",
+  },
+  image: {
+    width: "120px",
+    height: "120px",
+    objectFit: "cover",
+    borderRadius: "8px",
+    marginBottom: "16px",
   },
   button: {
     marginTop: "20px",
