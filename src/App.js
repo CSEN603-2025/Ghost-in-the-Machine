@@ -13,6 +13,7 @@ import ManageCompanies from './pages/ManageCompanies';
 import ManageStudents from './pages/ManageStudents'; 
 import StudentProfile from './pages/StudentProfile';
 import { ToastContainer } from 'react-toastify';
+import RegisteredStudents from './pages/RegisteredStudents';
 
 
 
@@ -38,6 +39,7 @@ function App() {
       <Route path="/manage-companies" element={<ManageCompanies />} />
       <Route path="/students" element={<ManageStudents />} />
       <Route path="/students/:id" element={<StudentProfile />} />
+      <Route path="/registered-students" element={<RegisteredStudents/>} />
     </Routes>
   );
 }
