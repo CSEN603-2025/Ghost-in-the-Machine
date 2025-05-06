@@ -26,6 +26,8 @@ import SCADInternshipsPage from "./pages/SCADInternshipsPage";
 import ApplicationDetails from './components/ApplicationDetails';
 import InternDetails from './components/InternDetails';
 import InternList from './components/InternList';
+import ViewAllInternships from './pages/ViewAllInternships';
+
 
 
 function App() {
@@ -66,6 +68,9 @@ function App() {
       <Route path="/interns/:id" element={<InternDetails />} />
       <Route path="/applications/details/:id" element={<ApplicationDetails />} />
         
+        <Route path="/view-all-internships" element={<ViewAllInternships />} />
+        
+
     </Routes>
    
   );
