@@ -7,8 +7,8 @@ const EditProfilePage = () => {
     { company: "", role: "", duration: "", startDate: "", endDate: "", status: "current" },
   ]);
   const [activities, setActivities] = useState("");
-  const [major, setMajor] = useState(""); // New state for major
-  const [semester, setSemester] = useState(""); // New state for semester
+  const [major, setMajor] = useState("");
+  const [semester, setSemester] = useState("");
 
   const navigate = useNavigate();
 
@@ -28,12 +28,10 @@ const EditProfilePage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Filter out internships that don't have any valid data
     const validInternships = internships.filter((intern) => {
       return intern.company || intern.role || intern.duration || intern.startDate || intern.endDate;
     });
 
-    // If there are valid internships, update the profile
     const storedProfile = JSON.parse(localStorage.getItem("studentProfile")) || {};
     const updatedInternships = [
       ...(storedProfile.internships || []),
@@ -45,7 +43,7 @@ const EditProfilePage = () => {
       internships: updatedInternships,
       activities,
       major,
-      semester, // Save major and semester
+      semester,
     };
 
     localStorage.setItem("studentProfile", JSON.stringify(profileData));
@@ -67,7 +65,6 @@ const EditProfilePage = () => {
           style={styles.input}
         />
 
-        {/* Major Dropdown */}
         <label style={styles.label}>Major</label>
         <select
           value={major}
@@ -81,7 +78,6 @@ const EditProfilePage = () => {
           <option value="Management">Management</option>
         </select>
 
-        {/* Semester Dropdown */}
         <label style={styles.label}>Semester</label>
         <select
           value={semester}
@@ -112,19 +108,24 @@ const EditProfilePage = () => {
               style={styles.input}
             />
             <div style={styles.inlineContainer}>
-              <input
-                placeholder="Duration"
+              <select
                 value={intern.duration}
                 onChange={(e) => handleInternshipChange(i, "duration", e.target.value)}
                 style={{ ...styles.input, flex: 1 }}
-              />
+              >
+                <option value="">Select duration</option>
+                <option value="1 month">1 month</option>
+                <option value="2 months">2 months</option>
+                <option value="3 months">3 months</option>
+                <option value="6 months">6 months</option>
+              </select>
               <select
                 value={intern.status}
                 onChange={(e) => handleInternshipChange(i, "status", e.target.value)}
                 style={{ ...styles.input, flex: 1 }}
               >
                 <option value="current">Current</option>
-                <option value="completed">Completed</option>
+                <option value="completed">completed</option>
               </select>
             </div>
 
@@ -242,7 +243,7 @@ const styles = {
   },
   dateLabel: {
     marginBottom: "5px",
-    fontWeight: "normal", // not bold
+    fontWeight: "normal",
   },
 };
 

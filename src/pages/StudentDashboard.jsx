@@ -1,146 +1,121 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const internships = [
-  {
-    id: 1,
-    title: "Frontend Developer Intern",
-    company: "Valeo",
-    duration: "3 Months",
-    paid: true,
-    industry: "Technology",
-  },
-  {
-    id: 2,
-    title: "Data Science Intern",
-    company: "IBM",
-    duration: "2 Months",
-    paid: false,
-    industry: "Technology",
-  },
-  {
-    id: 3,
-    title: "Mobile App Developer Intern",
-    company: "Instabug",
-    duration: "3 Months",
-    paid: true,
-    industry: "Technology",
-  },
-];
-
 const allSuggestedCompanies = [
-  { name: "Valeo", industry: "Technology", recommendations: 4.5 },
-  { name: "IBM", industry: "Technology", recommendations: 4.0 },
-  { name: "Instabug", industry: "Technology", recommendations: 4.8 },
+  { name: "Tech Solutions", industry: "Technology", recommendations: 5 },
+  { name: "BuildRight", industry: "Engineering", recommendations: 4 },
+  { name: "PharmaPlus", industry: "Pharmaceutical", recommendations: 5 },
+  { name: "BizPros", industry: "Business", recommendations: 3 },
+  { name: "CodeCrafters", industry: "Technology", recommendations: 4 },
+  { name: "HealthCore", industry: "Pharmaceutical", recommendations: 4 },
+  { name: "MarketMasters", industry: "Business", recommendations: 5 },
 ];
-
-const majorList = ["Computer Engineering", "Business", "Pharmacy", "Management"];
-const semesterList = Array.from({ length: 10 }, (_, i) => i + 1);
 
 const StudentDashboard = () => {
   const [selectedMajor, setSelectedMajor] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
   const [selectedInterests, setSelectedInterests] = useState("Technology");
+  const [companyFilter, setCompanyFilter] = useState({ industry: "", company: "" });
+  const [searchText, setSearchText] = useState("");
+  const [isPro, setIsPro] = useState(false);
 
-  const [internshipSearch, setInternshipSearch] = useState("");
-
-  const [companyFilter, setCompanyFilter] = useState({
-    industry: "",
-    company: "",
-  });
-
-  // Retrieve major and semester from localStorage
   useEffect(() => {
     const profile = JSON.parse(localStorage.getItem("studentProfile")) || {};
     setSelectedMajor(profile.major || "");
     setSelectedSemester(profile.semester || "");
   }, []);
 
-  const handleMajorChange = (e) => setSelectedMajor(e.target.value);
-  const handleSemesterChange = (e) => setSelectedSemester(e.target.value);
-  const handleInterestsChange = (e) => setSelectedInterests(e.target.value);
-  const handleInternshipSearch = (e) => setInternshipSearch(e.target.value);
+  useEffect(() => {
+    const lastSeenStatus = localStorage.getItem("lastSeenReportStatus");
+    const currentStatus = localStorage.getItem("reportStatus");
+
+    if (currentStatus && lastSeenStatus && currentStatus !== lastSeenStatus) {
+      alert(`🔔 Your internship report status has changed to: ${currentStatus.toUpperCase()}`);
+    }
+
+    if (currentStatus) {
+      localStorage.setItem("lastSeenReportStatus", currentStatus);
+    }
+  }, []);
+
+  useEffect(() => {
+    const internships = JSON.parse(localStorage.getItem("studentInternships")) || [];
+    const totalMonths = internships
+      .filter((i) => i.status === "completed")
+      .reduce((sum, intern) => {
+        const months = parseInt(intern.duration?.match(/\d+/)?.[0] || "0", 10);
+        return sum + months;
+      }, 0);
+
+    setIsPro(totalMonths >= 3);
+  }, []);
 
   const handleCompanyFilterChange = (e) => {
     const { name, value } = e.target;
     setCompanyFilter({ ...companyFilter, [name]: value });
   };
 
-  const filteredInternships = internships.filter((internship) => {
-    const matchesSearch =
-      internship.title.toLowerCase().includes(internshipSearch.toLowerCase()) ||
-      internship.company.toLowerCase().includes(internshipSearch.toLowerCase());
-
-    return matchesSearch;
-  });
-
   const filteredCompanies = allSuggestedCompanies.filter((company) => {
-    const matchesIndustry =
-      companyFilter.industry === "" || company.industry === companyFilter.industry;
-    const matchesCompany =
-      companyFilter.company === "" || company.name === companyFilter.company;
-    const matchesInterest =
-      selectedInterests === "" || company.industry === selectedInterests;
+    const matchesIndustry = companyFilter.industry === "" || company.industry === companyFilter.industry;
+    const matchesCompany = companyFilter.company === "" || company.name === companyFilter.company;
+    const matchesInterest = selectedInterests === "" || company.industry === selectedInterests;
+    const matchesSearch = company.name.toLowerCase().includes(searchText.toLowerCase());
 
-    return matchesIndustry && matchesCompany && matchesInterest;
+    return matchesIndustry && matchesCompany && matchesInterest && matchesSearch;
   });
 
   const sortedCompanies = filteredCompanies.sort(
     (a, b) => b.recommendations - a.recommendations
   );
 
+  const dashboardLinks = [
+    { label: "Internships", path: "/student/internships" },
+    { label: "My Applications", path: "/student/my-applications" },
+    { label: "Submit Report", path: "/student/report" },
+    { label: "Edit Profile", path: "/student/edit-profile" },
+    { label: "Evaluation", path: "/student/evaluation" },
+    { label: "SCAD Internships", path: "/student/scad-internships" },
+    { label: "View Reports", path: "/student/reports" },
+  ];
+
   return (
     <div style={styles.container}>
       <nav style={styles.navbar}>
-        <h2 style={styles.title}>GUC Internship System</h2>
-        <div>
-          <Link to="/student/internships"><button style={styles.navButton}>Internships</button></Link>
-          <Link to="/student/my-applications"><button style={styles.navButton}>My Applications</button></Link>
-          <Link to="/student/report"><button style={styles.navButton}>Submit Report</button></Link>
-          <Link to="/student/edit-profile"><button style={styles.navButton}>Edit Profile</button></Link>
-          <Link to="/student/evaluation"><button style={styles.navButton}>Evaluation</button></Link>
-          <Link to="/student/scad-internships"><button style={styles.navButton}>SCAD Internships</button></Link>
-        </div>
+        <h2 style={styles.title}>
+          GUC Internship System
+          {isPro && <span style={{ color: "gold", marginLeft: "10px" }}>⭐ PRO</span>}
+        </h2>
       </nav>
 
       <div style={styles.content}>
         <h1 style={{ textAlign: "left", marginBottom: "10px", fontWeight: "bold" }}>Student Dashboard</h1>
 
-        {/* Display Major and Semester */}
         <h3 style={{ textAlign: "left" }}>Major: {selectedMajor}</h3>
         <h3 style={{ textAlign: "left" }}>Semester: {selectedSemester}</h3>
 
-        <input
-          type="text"
-          placeholder="Search internships 🔍..."
-          value={internshipSearch}
-          onChange={handleInternshipSearch}
-          style={styles.searchInput }
-        />
-
-        <h2 style={styles.heading}>Suggested Internships for You</h2>
-
-        <div style={styles.cardContainer}>
-          {filteredInternships.length > 0 ? (
-            filteredInternships.map((internship) => (
-              <div key={internship.id} style={styles.card}>
-                <h3>{internship.title} 📝</h3>
-                <p><strong>Company:</strong> {internship.company} 🏢</p>
-                <p><strong>Duration:</strong> {internship.duration} ⏳</p>
-                <p><strong>Paid:</strong> {internship.paid ? "Yes 💰" : "No 🚫"}</p>
-                <p><strong>Industry:</strong> {internship.industry} 🌐</p>
-                <Link to={`/student/internship/${internship.id}`}>
-                  <button style={styles.button}>View Details 🔍</button>
-                </Link>
+        <div style={{ ...styles.cardContainer, marginBottom: "30px" }}>
+          {dashboardLinks.map((link) => (
+            <Link to={link.path} key={link.label} style={{ textDecoration: "none" }}>
+              <div style={styles.dashboardCard}>
+                <h4 style={{ margin: 0, color: "#2b7de9" }}>{link.label}</h4>
               </div>
-            ))
-          ) : (
-            <p style={styles.noData}>No internships found based on your search.</p>
-          )}
+            </Link>
+          ))}
         </div>
 
+        {/* Suggested Companies Section */}
         <h2 style={styles.heading}>Suggested Companies Based on Your Job Interests</h2>
 
+        {/* Search Bar */}
+        <input
+          type="text"
+          placeholder="Search company by name..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          style={styles.searchInput}
+        />
+
+        {/* Filters */}
         <div style={styles.filterContainer}>
           <select name="industry" value={companyFilter.industry} onChange={handleCompanyFilterChange} style={styles.filterSelect}>
             <option value="">All Industries</option>
@@ -161,7 +136,11 @@ const StudentDashboard = () => {
               ))}
           </select>
         </div>
+        <h1 style={{ fontWeight: "bold" }}>
+          Student Dashboard {isPro && <span style={{ color: "gold" }}>⭐ PRO</span>}
+        </h1>
 
+        {/* Company Cards */}
         <div style={styles.cardContainer}>
           {sortedCompanies.length > 0 ? (
             sortedCompanies.map((company, index) => (
@@ -170,7 +149,7 @@ const StudentDashboard = () => {
                 <p><strong>Industry:</strong> {company.industry} 🌐</p>
                 <p><strong>Recommendations:</strong> {company.recommendations} / 5 ⭐</p>
                 <Link to={`/student/company/${company.name}`}>
-                  <button style={styles.button}>View Profile </button>
+                  <button style={styles.button}>View Profile</button>
                 </Link>
               </div>
             ))
@@ -202,17 +181,6 @@ const styles = {
     fontWeight: "bold",
     fontSize: "1.5em",
   },
-  navButton: {
-    backgroundColor: "#2b7de9",
-    color: "white",
-    border: "none",
-    borderRadius: "20px",
-    padding: "10px 16px",
-    marginLeft: "10px",
-    cursor: "pointer",
-    fontWeight: "500",
-    fontSize: "14px",
-  },
   container: {
     display: "flex",
     justifyContent: "center",
@@ -227,23 +195,9 @@ const styles = {
     width: "80%",
     maxWidth: "1000px",
   },
-  searchInput: {
-    width: "100%",
-    padding: "10px",
-    fontSize: "16px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
-    marginBottom: "20px",
-  },
-  heading: {
-    marginTop: "30px",
-    marginBottom: "10px",
-    textAlign: "left",
-    color: "#444",
-  },
   cardContainer: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
     gap: "20px",
   },
   card: {
@@ -252,6 +206,16 @@ const styles = {
     borderRadius: "10px",
     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
     textAlign: "left",
+  },
+  dashboardCard: {
+    backgroundColor: "#ffffff",
+    border: "1px solid #ddd",
+    borderRadius: "12px",
+    padding: "20px",
+    textAlign: "center",
+    boxShadow: "0 2px 5px rgba(0,0,0,0.05)",
+    cursor: "pointer",
+    transition: "0.3s",
   },
   button: {
     backgroundColor: "#2b7de9",
@@ -267,6 +231,12 @@ const styles = {
     fontSize: "16px",
     textAlign: "center",
   },
+  heading: {
+    marginTop: "30px",
+    marginBottom: "10px",
+    textAlign: "left",
+    color: "#444",
+  },
   filterContainer: {
     display: "flex",
     gap: "10px",
@@ -277,6 +247,14 @@ const styles = {
     padding: "10px",
     borderRadius: "5px",
     border: "1px solid #ccc",
+    fontSize: "16px",
+  },
+  searchInput: {
+    padding: "10px",
+    width: "50%",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+    marginBottom: "15px",
     fontSize: "16px",
   },
 };
