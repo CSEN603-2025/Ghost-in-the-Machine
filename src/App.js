@@ -29,6 +29,9 @@ import InternList from './components/InternList';
 import ViewAllInternships from './pages/ViewAllInternships';
 import ReportsPage from './pages/ReportsPage';
 import InternshipGuidelinesPage from './pages/InternshipGuidelinesPage';
+import ViewedCompaniesPage from './pages/ViewedCompaniesPage';
+import AssessmentsPage from './pages/AssessmentsPage';
+
 
 
 
@@ -72,6 +75,8 @@ function App() {
       <Route path="/view-all-internships" element={<ViewAllInternships />} />
       <Route path="student/reports" element={<ReportsPage />} />
       <Route path="student/internship-guidelines" element={<InternshipGuidelinesPage />} />
+      <Route path="student/viewed-profile" element={<ViewedCompaniesPage />} />
+      <Route path="student/online-assessment" element={<AssessmentsPage />} />
         
 
     </Routes>
