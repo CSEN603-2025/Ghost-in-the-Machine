@@ -8,69 +8,72 @@ const InternshipPage = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [startDateFilter, setStartDateFilter] = useState("");
   const [endDateFilter, setEndDateFilter] = useState("");
+  const [isProStudent, setIsProStudent] = useState(false);
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("studentProfile"));
     if (stored?.internships) {
-      setInternships(stored.internships);
-      setFilteredInternships(stored.internships);
+      const validInternships = stored.internships;
+      setInternships(validInternships);
+      setFilteredInternships(validInternships);
+
+      // Calculate the total duration of completed internships
+      const totalDuration = validInternships
+        .filter(i => i.status === "completed")
+        .reduce((acc, internship) => acc + internship.duration, 0);
+
+      // If total duration is 3 months or more, show PRO badge
+      if (totalDuration >= 3) {
+        setIsProStudent(true);
+      } else {
+        setIsProStudent(false);
+      }
     }
   }, []);
 
   const handleSearch = (e) => {
-    setSearch(e.target.value);
-    filterInternships(e.target.value, statusFilter, startDateFilter, endDateFilter);
+    const term = e.target.value;
+    setSearch(term);
+    filterInternships(term, statusFilter, startDateFilter, endDateFilter);
   };
 
   const handleStatusChange = (e) => {
-    setStatusFilter(e.target.value);
-    filterInternships(search, e.target.value, startDateFilter, endDateFilter);
+    const status = e.target.value;
+    setStatusFilter(status);
+    filterInternships(search, status, startDateFilter, endDateFilter);
   };
 
   const handleStartDateChange = (e) => {
-    setStartDateFilter(e.target.value);
-    filterInternships(search, statusFilter, e.target.value, endDateFilter);
+    const date = e.target.value;
+    setStartDateFilter(date);
+    filterInternships(search, statusFilter, date, endDateFilter);
   };
 
   const handleEndDateChange = (e) => {
-    setEndDateFilter(e.target.value);
-    filterInternships(search, statusFilter, startDateFilter, e.target.value);
+    const date = e.target.value;
+    setEndDateFilter(date);
+    filterInternships(search, statusFilter, startDateFilter, date);
   };
 
-  const filterInternships = (searchTerm, status, startDate, endDate) => {
+  const filterInternships = (searchTerm, status, start, end) => {
     let filtered = internships.filter(
-      (intern) =>
-        intern.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        intern.role.toLowerCase().includes(searchTerm.toLowerCase())
+      (i) =>
+        i.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        i.role.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Filter by status (current/completed)
     if (status === "current") {
-      filtered = filtered.filter((intern) => {
-        const endDate = new Date(intern.endDate);
-        return endDate >= new Date(); // Show internships that have an endDate in the future
-      });
+      filtered = filtered.filter((i) => new Date(i.endDate) >= new Date());
     } else if (status === "completed") {
-      filtered = filtered.filter((intern) => {
-        const endDate = new Date(intern.endDate);
-        return endDate < new Date(); // Show internships that have already completed
-      });
+      filtered = filtered.filter((i) => new Date(i.endDate) < new Date());
     }
 
-    // Filter by start date
-    if (startDate) {
-      filtered = filtered.filter((intern) => {
-        const startDateObj = new Date(intern.startDate);
-        return startDateObj >= new Date(startDate);
-      });
+    if (start) {
+      filtered = filtered.filter((i) => new Date(i.startDate) >= new Date(start));
     }
 
-    // Filter by end date
-    if (endDate) {
-      filtered = filtered.filter((intern) => {
-        const endDateObj = new Date(intern.endDate);
-        return endDateObj <= new Date(endDate);
-      });
+    if (end) {
+      filtered = filtered.filter((i) => new Date(i.endDate) <= new Date(end));
     }
 
     setFilteredInternships(filtered);
@@ -78,21 +81,40 @@ const InternshipPage = () => {
 
   return (
     <div style={{ padding: "30px" }}>
-      <h2 style={styles.title}>My Internships</h2>
+      {/* Navbar with conditionally rendered PRO badge */}
+      <nav style={{ backgroundColor: "#fff", padding: "10px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #ddd" }}>
+        <h2 style={{ margin: 0, fontWeight: "bold", fontSize: "1.5em" }}>GUC Internship System</h2>
+        {isProStudent && (
+          <span style={{ color: "gold", fontSize: "18px" }}>⭐ PRO</span>
+        )}
+      </nav>
+
+      <h2 style={styles.title}>💼 My Internships</h2>
+
+      {isProStudent && (
+        <div
+          style={{
+            backgroundColor: "#FFD700",
+            color: "#fff",
+            padding: "10px 20px",
+            borderRadius: "5px",
+            fontSize: "20px",
+            marginBottom: "20px",
+          }}
+        >
+          🏅 PRO Student Badge
+        </div>
+      )}
 
       <input
         type="text"
-        placeholder="Search by company or role"
+        placeholder="🔍 Search by company or role"
         value={search}
         onChange={handleSearch}
         style={inputStyle}
       />
 
-      <select
-        value={statusFilter}
-        onChange={handleStatusChange}
-        style={inputStyle}
-      >
+      <select value={statusFilter} onChange={handleStatusChange} style={inputStyle}>
         <option value="all">All</option>
         <option value="current">Current Internships</option>
         <option value="completed">Completed Internships</option>
@@ -100,7 +122,7 @@ const InternshipPage = () => {
 
       <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
         <div style={{ flex: 1 }}>
-          <label>Start Date:</label>
+          <label>📅 Start Date:</label>
           <input
             type="date"
             value={startDateFilter}
@@ -108,9 +130,8 @@ const InternshipPage = () => {
             style={inputStyle}
           />
         </div>
-
         <div style={{ flex: 1 }}>
-          <label>End Date:</label>
+          <label>📅 End Date:</label>
           <input
             type="date"
             value={endDateFilter}
@@ -126,30 +147,18 @@ const InternshipPage = () => {
         filteredInternships.map((intern, i) => (
           <Link
             key={i}
-            to={`/student/internship/${intern.id}`} // Correct routing to details page
+            to={`/student/internship/${intern.id}`}
             style={{
               ...internshipStyle,
-              backgroundColor: intern.status === "completed" ? "#d4edda" : "#ffffff", // Highlight completed internships in green
+              backgroundColor: intern.status === "completed" ? "#d4edda" : "#fff",
             }}
           >
-            <p>
-              <strong>Company:</strong> {intern.company}
-            </p>
-            <p>
-              <strong>Role:</strong> {intern.role}
-            </p>
-            <p>
-              <strong>Duration:</strong> {intern.duration}
-            </p>
-            <p>
-              <strong>Status:</strong> {intern.status}
-            </p>
-            <p>
-              <strong>Start Date:</strong> {intern.startDate}
-            </p>
-            <p>
-              <strong>End Date:</strong> {intern.endDate}
-            </p>
+            <p>🏢 <strong>Company:</strong> {intern.company}</p>
+            <p>👨‍💻 <strong>Role:</strong> {intern.role}</p>
+            <p>⏱️ <strong>Duration:</strong> {intern.duration} months</p>
+            <p>📌 <strong>Status:</strong> {intern.status}</p>
+            <p>📆 <strong>Start Date:</strong> {intern.startDate}</p>
+            <p>📆 <strong>End Date:</strong> {intern.endDate}</p>
           </Link>
         ))
       )}
@@ -168,12 +177,12 @@ const inputStyle = {
 const internshipStyle = {
   display: "block",
   marginBottom: "20px",
-  padding: "10px",
+  padding: "20px",
   border: "1px solid #ccc",
-  borderRadius: "8px",
+  borderRadius: "12px",
   textDecoration: "none",
   color: "inherit",
-  cursor: "pointer",
+  fontSize: "16px",
 };
 
 const styles = {

@@ -32,7 +32,9 @@ import ApplicationDetails from './components/ApplicationDetails';
 import InternDetails from './components/InternDetails';
 import InternList from './components/InternList';
 import ViewAllInternships from './pages/ViewAllInternships';
-//import WorkshopDetailsPage from './pages/WorkshopDetailsPage';
+import ReportsPage from './pages/ReportsPage';
+import InternshipGuidelinesPage from './pages/InternshipGuidelinesPage';
+
 
 
 function App() {
@@ -75,8 +77,9 @@ function App() {
       <Route path="/interns" element={<InternList />} />
       <Route path="/interns/:id" element={<InternDetails />} />
       <Route path="/applications/details/:id" element={<ApplicationDetails />} />
-        
-        <Route path="/view-all-internships" element={<ViewAllInternships />} />
+      <Route path="/view-all-internships" element={<ViewAllInternships />} />
+      <Route path="student/reports" element={<ReportsPage />} />
+      <Route path="student/internship-guidelines" element={<InternshipGuidelinesPage />} />
         
 
     </Routes>

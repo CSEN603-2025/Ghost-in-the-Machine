@@ -120,7 +120,21 @@ const ScadInternshipsPage = () => {
           <option value="unpaid">Unpaid</option>
         </select>
       </div>
-
+      <button
+  onClick={() => navigate("/student/internship-guidelines")}
+  style={{
+    marginBottom: "20px",
+    padding: "10px 16px",
+    backgroundColor: "#0059ff",
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  }}
+>
+  📹 View Internship Guidelines
+</button>
       {/* Internship Cards */}
       <div>
         {filteredInternships.length === 0 ? (
