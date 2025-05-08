@@ -798,3 +798,59 @@ body {
   padding: 10px;
   margin-bottom: 10px;
 }
+
+.reports-list {
+    padding: 20px;
+    text-align: center;
+}
+
+.report-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.report-card {
+    width: 250px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.filter {
+    margin-bottom: 20px;
+}
+
+.filter select {
+    margin-right: 10px;
+}
+
+.pagination {
+    margin-top: 20px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 50%;
+    text-align: left;
+}
+
+.modal-actions select {
+    margin-right: 10px;
+}

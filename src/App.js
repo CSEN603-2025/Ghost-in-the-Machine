@@ -34,8 +34,14 @@ import InternList from './components/InternList';
 import ViewAllInternships from './pages/ViewAllInternships';
 import ReportsPage from './pages/ReportsPage';
 import InternshipGuidelinesPage from './pages/InternshipGuidelinesPage';
-import ApplicationListPage from './components/ApplicationListPage'; 
-import ManageReportsAndEvaluations from './pages/ManageReportsAndEvaluations';
+
+
+
+import ViewedCompaniesPage from './pages/ViewedCompaniesPage';
+import ReportsListPage from './pages/ReportsListPage';
+import FacultyDashboardPage from './pages/FacultyDashboardPage';
+import AssessmentsPage from './pages/AssessmentsPage';
+
 
 
 
@@ -67,11 +73,13 @@ function App() {
       <Route path="/student-upcoming-workshops" element={<StudentUpcomingWorkshopsPage />} />
       <Route path="/registered-students" element={<RegisteredStudents/>} />
       <Route path="/dashboard" element={<CompanyDashboard />} />
+       <Route path="/faculty/internship-reports" element={<ReportsListPage />} /> 
       <Route path="student/edit-profile" element={<EditProfilePage />} />
       <Route path="student/internships" element={<InternshipPage />} />
       <Route path="student/apply/:id" element={<ApplicationPage />} />
       <Route path="student/internship/:id" element={<InternshipDetailsPage />} />
       <Route path="/student/company/:companyName" element={<CompanyDetailsPage />} />
+      <Route path="/faculty-dashboard" element={<FacultyDashboardPage />} />
       <Route path="student/report" element={<StudentReportEditor />} />
       <Route path="/student/view-report" element={<FinalizedReport />} />
       <Route path="/student/evaluation" element={<StudentEvaluation />} />
@@ -82,8 +90,11 @@ function App() {
       <Route path="/view-all-internships" element={<ViewAllInternships />} />
       <Route path="student/reports" element={<ReportsPage />} />
       <Route path="student/internship-guidelines" element={<InternshipGuidelinesPage />} />
-      <Route path="/scad-reports-evaluations" element={<ManageReportsAndEvaluations />} />
-      <Route path="/applications/:postId" element={<ApplicationListPage />} />
+        
+      <Route path="student/viewed-profile" element={<ViewedCompaniesPage />} />
+      <Route path="student/assessment" element={<AssessmentsPage />} />
+        
+
     </Routes>
    
   );

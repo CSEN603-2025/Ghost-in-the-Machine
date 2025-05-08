@@ -2,13 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const allSuggestedCompanies = [
-  { name: "Tech Solutions", industry: "Technology", recommendations: 5 },
-  { name: "BuildRight", industry: "Engineering", recommendations: 4 },
-  { name: "PharmaPlus", industry: "Pharmaceutical", recommendations: 5 },
+  { name: "Instabug", industry: "Technology", recommendations: 5 },
+  { name: "Valeo", industry: "Technology", recommendations: 4 },
+  { name: "IBM", industry: "Technology", recommendations: 5 },
   { name: "BizPros", industry: "Business", recommendations: 3 },
-  { name: "CodeCrafters", industry: "Technology", recommendations: 4 },
-  { name: "HealthCore", industry: "Pharmaceutical", recommendations: 4 },
-  { name: "MarketMasters", industry: "Business", recommendations: 5 },
 ];
 
 const StudentDashboard = () => {
@@ -18,6 +15,14 @@ const StudentDashboard = () => {
   const [companyFilter, setCompanyFilter] = useState({ industry: "", company: "" });
   const [searchText, setSearchText] = useState("");
   const [isPro, setIsPro] = useState(false);
+  const [assessmentScore, setAssessmentScore] = useState(null);
+
+  useEffect(() => {
+    const savedScore = localStorage.getItem("onlineAssessmentScore");
+    if (savedScore) {
+      setAssessmentScore(Number(savedScore));
+    }
+  }, []);
 
   useEffect(() => {
     const profile = JSON.parse(localStorage.getItem("studentProfile")) || {};
@@ -50,6 +55,13 @@ const StudentDashboard = () => {
     setIsPro(totalMonths >= 3);
   }, []);
 
+  useEffect(() => {
+    const storedScore = JSON.parse(localStorage.getItem("assessmentScore"));
+    if (storedScore && storedScore.score !== undefined && storedScore.posted === true) {
+      setAssessmentScore(storedScore);
+    }
+  }, []);
+
   const handleCompanyFilterChange = (e) => {
     const { name, value } = e.target;
     setCompanyFilter({ ...companyFilter, [name]: value });
@@ -76,23 +88,56 @@ const StudentDashboard = () => {
     { label: "Evaluation", path: "/student/evaluation" },
     { label: "SCAD Internships", path: "/student/scad-internships" },
     { label: "View Reports", path: "/student/reports" },
-    { label: "Workshops", path: "/student-upcoming-workshops" },
+    { label: "Online Assessments", path: "/student/assessment" },
+    { label: "Viewed Profile", path: "/student/viewed-profile" },
   ];
 
   return (
-    <div style={styles.container}>
-      <nav style={styles.navbar}>
-        <h2 style={styles.title}>
-          GUC Internship System
-          {isPro && <span style={{ color: "gold", marginLeft: "10px" }}>⭐ PRO</span>}
-        </h2>
-      </nav>
+    <div style={styles.container}><div className="fixed top-0 left-0 right-0 z-50 w-full bg-[#00106A] py-6 px-6 flex items-center justify-between">
+
+  {/* Empty div for spacing or future icons */}
+  <div className="w-1/3" />
+
+  {/* Centered Title */}
+  <div className="w-1/3 text-center">
+    <h1 className="text-3xl font-bold text-white">SCAD Dashboard</h1>
+  </div>
+
+  {/* Home & Logout Buttons */}
+  <div className="w-1/3 flex justify-end space-x-4">
+    <button
+      onClick={() => window.location.href = "/student"}
+      className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] hover:from-[#00D6A0] hover:to-[#00F0B5] text-black font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-300"
+    >
+      Home
+    </button>
+    <button
+      onClick={() => {
+        localStorage.clear();
+        window.location.href = "/";
+      }}
+      className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-600 hover:to-red-500 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-300"
+    >
+      Logout
+    </button>
+  </div>
+</div>
+
 
       <div style={styles.content}>
-        <h1 style={{ textAlign: "left", marginBottom: "10px", fontWeight: "bold" }}>Student Dashboard</h1>
+        <h1 style={{ textAlign: "left", marginBottom: "10px", fontWeight: "bold" }}>
+          Student Dashboard {isPro && <span style={{ color: "gold" }}>⭐ PRO</span>}
+        </h1>
 
         <h3 style={{ textAlign: "left" }}>Major: {selectedMajor}</h3>
         <h3 style={{ textAlign: "left" }}>Semester: {selectedSemester}</h3>
+
+        {/* Display assessment score here if posted */}
+        {assessmentScore !== null && (
+        <div style={{ marginTop: "10px", color: "#2b7de9" }}>
+          🧠 Latest Assessment Score: <strong>{assessmentScore} / 100</strong>
+        </div>
+        )}
 
         <div style={{ ...styles.cardContainer, marginBottom: "30px" }}>
           {dashboardLinks.map((link) => (
@@ -103,6 +148,7 @@ const StudentDashboard = () => {
             </Link>
           ))}
         </div>
+
 
         {/* Suggested Companies Section */}
         <h2 style={styles.heading}>Suggested Companies Based on Your Job Interests</h2>
@@ -137,9 +183,6 @@ const StudentDashboard = () => {
               ))}
           </select>
         </div>
-        <h1 style={{ fontWeight: "bold" }}>
-          Student Dashboard {isPro && <span style={{ color: "gold" }}>⭐ PRO</span>}
-        </h1>
 
         {/* Company Cards */}
         <div style={styles.cardContainer}>
@@ -187,7 +230,8 @@ const styles = {
     justifyContent: "center",
     minHeight: "100vh",
     backgroundColor: "#f4f4f9",
-    paddingTop: "60px",
+    paddingTop: "100px",
+
     width: "100%",
   },
   content: {
