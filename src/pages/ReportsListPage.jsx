@@ -12,6 +12,7 @@ export default function ReportsListPage() {
   const [filtered, setFiltered] = useState([]);
   const [selected, setSelected] = useState(null);
 
+  // Load data
   useEffect(() => {
     const mock = [
       {
@@ -38,12 +39,23 @@ export default function ReportsListPage() {
     setFiltered(mock);
   }, []);
 
+  // Filter handler
   const handleFilter = ({ major, status }) => {
     setFiltered(
       reports.filter(r =>
         (major ? r.major === major : true) &&
         (status ? r.status === status : true)
       )
+    );
+  };
+
+  // Update status in both reports + filtered
+  const handleStatusChange = (id, newStatus) => {
+    setReports(rs =>
+      rs.map(r => (r.id === id ? { ...r, status: newStatus } : r))
+    );
+    setFiltered(fs =>
+      fs.map(r => (r.id === id ? { ...r, status: newStatus } : r))
     );
   };
 
@@ -69,12 +81,12 @@ export default function ReportsListPage() {
         </button>
       </div>
 
-      {/* Filter Bar */}
+      {/* Filter */}
       <div className="px-6 py-4 bg-[#ffffff] border-b border-gray-200">
         <Filter onFilter={handleFilter} />
       </div>
 
-      {/* Reports Grid */}
+      {/* Grid of Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-6 pb-12 pt-10">
         {filtered.map(report => (
           <ReportCard
@@ -95,6 +107,7 @@ export default function ReportsListPage() {
         <ReportDetailsModal
           report={selected}
           onClose={() => setSelected(null)}
+          onStatusChange={handleStatusChange}
         />
       )}
     </div>
