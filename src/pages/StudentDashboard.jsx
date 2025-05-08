@@ -88,8 +88,6 @@ const StudentDashboard = () => {
     { label: "Evaluation", path: "/student/evaluation" },
     { label: "SCAD Internships", path: "/student/scad-internships" },
     { label: "View Reports", path: "/student/reports" },
-    { label: "Viewed Profile", path: "/student/viewed-profile" },
-    { label: "Online Assessment", path: "/student/online-assessment" },
   ];
 
   return (

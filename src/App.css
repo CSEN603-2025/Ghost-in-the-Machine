@@ -652,3 +652,205 @@ h1, h2, h3, h4 {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+.workshop-details-card {
+  padding: 30px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  max-width: 800px;
+  margin: 50px auto;
+  text-align: left;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.workshop-details-card h2 {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.workshop-details-card p {
+  margin: 10px 0;
+  font-size: 1.05rem;
+  color: #555;
+}
+
+.workshop-details-card .btn {
+  padding: 14px 28px;
+  margin-top: 25px;
+  background-color: #0077cc;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.workshop-details-card .btn:hover {
+  background-color: #005fa3;
+}
+
+
+/* ====================== */
+/* 📆 Upcoming Workshops UI */
+/* ====================== */
+
+body {
+  background: #f5f6f7;
+  font-family: 'SF Pro Display', 'Segoe UI', Tahoma, sans-serif;
+  color: #333;
+}
+
+.workshops-page-container {
+  padding: 50px 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.page-title {
+  font-size: 2.75rem;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 10px;
+}
+
+.page-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.workshop-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.workshop-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: left;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.workshop-card h3 {
+  font-size: 1.5rem;
+  color: #222;
+  margin-bottom: 12px;
+}
+
+.workshop-card p {
+  margin: 8px 0;
+  font-size: 0.98rem;
+  color: #444;
+}
+
+.view-details-btn {
+  margin-top: 20px;
+  padding: 12px 26px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.view-details-btn:hover {
+  background-color: #005fa3;
+  transform: translateY(-2px);
+}
+
+.video-player {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.notes-section, .feedback-section, .cert-download, .chat-box {
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.notes-section textarea, .feedback-section textarea, .chat-box input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.feedback-section input[type="number"] {
+  width: 60px;
+  margin: 10px;
+}
+
+.chat-messages {
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.reports-list {
+    padding: 20px;
+    text-align: center;
+}
+
+.report-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.report-card {
+    width: 250px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.filter {
+    margin-bottom: 20px;
+}
+
+.filter select {
+    margin-right: 10px;
+}
+
+.pagination {
+    margin-top: 20px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 50%;
+    text-align: left;
+}
+
+.modal-actions select {
+    margin-right: 10px;
+}
