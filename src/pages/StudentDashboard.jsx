@@ -76,6 +76,7 @@ const StudentDashboard = () => {
     { label: "Evaluation", path: "/student/evaluation" },
     { label: "SCAD Internships", path: "/student/scad-internships" },
     { label: "View Reports", path: "/student/reports" },
+    { label: "Workshops", path: "/student-upcoming-workshops" },
   ];
 
   return (
