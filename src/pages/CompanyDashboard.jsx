@@ -77,6 +77,25 @@ function CompanyDashboard() {
         </svg>
       ),
     },
+    {
+      section: 'email',
+      label: 'Email',
+      Icon: ({ color }) => (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke={color}
+          strokeWidth="2"
+        >
+          <path d="M4 4h16v16H4z" />
+          <polyline points="22,6 12,13 2,6" />
+        </svg>
+      ),
+      onClick: () => navigate('/email'),
+    },
   ];
 
   return (
