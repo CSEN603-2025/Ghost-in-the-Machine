@@ -36,6 +36,8 @@ import ReportsPage from './pages/ReportsPage';
 import InternshipGuidelinesPage from './pages/InternshipGuidelinesPage';
 import ApplicationListPage from './components/ApplicationListPage'; 
 import ManageReportsAndEvaluations from './pages/ManageReportsAndEvaluations';
+import FacultyDashboardPage from './pages/FacultyDashboardPage';
+
 import EmailClientPage from "./pages/EmailClientPage";
 
 
@@ -73,6 +75,7 @@ function App() {
       <Route path="student/apply/:id" element={<ApplicationPage />} />
       <Route path="student/internship/:id" element={<InternshipDetailsPage />} />
       <Route path="/student/company/:companyName" element={<CompanyDetailsPage />} />
+      <Route path="/faculty-dashboard" element={<FacultyDashboardPage />} />
       <Route path="student/report" element={<StudentReportEditor />} />
       <Route path="/student/view-report" element={<FinalizedReport />} />
       <Route path="/student/evaluation" element={<StudentEvaluation />} />
