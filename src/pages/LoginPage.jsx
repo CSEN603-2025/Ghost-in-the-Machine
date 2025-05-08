@@ -28,6 +28,7 @@ function LoginPage() {
       'student@guc.com': '123',
       'rep@corp.com': '1234',
       'officer@scad.com': '12345',
+      'faculty@guc.com': '123',
     };
   
     if (email in validUsers) {
@@ -44,6 +45,11 @@ function LoginPage() {
           setSuccess('SCAD login successful!');
           navigate('/scad-dashboard');
         } 
+        else if (email === 'faculty@guc.com') {
+          setSuccess('Fculty login successful!');
+          navigate('/faculty-dashboard');
+        } 
+        
       } else {
         // password wrong
         setError('Wrong password');

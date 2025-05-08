@@ -37,8 +37,10 @@ import InternshipGuidelinesPage from './pages/InternshipGuidelinesPage';
 import ApplicationListPage from './components/ApplicationListPage'; 
 import ManageReportsAndEvaluations from './pages/ManageReportsAndEvaluations';
 import FacultyDashboardPage from './pages/FacultyDashboardPage';
-
 import EmailClientPage from "./pages/EmailClientPage";
+import ReportsListPage         from './pages/ReportsListPage';
+
+
 
 
 
@@ -70,6 +72,7 @@ function App() {
       <Route path="/student-upcoming-workshops" element={<StudentUpcomingWorkshopsPage />} />
       <Route path="/registered-students" element={<RegisteredStudents/>} />
       <Route path="/dashboard" element={<CompanyDashboard />} />
+       <Route path="/faculty/internship-reports" element={<ReportsListPage />} /> 
       <Route path="student/edit-profile" element={<EditProfilePage />} />
       <Route path="student/internships" element={<InternshipPage />} />
       <Route path="student/apply/:id" element={<ApplicationPage />} />
