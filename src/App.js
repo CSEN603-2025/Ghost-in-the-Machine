@@ -37,6 +37,14 @@ import InternshipGuidelinesPage from './pages/InternshipGuidelinesPage';
 
 
 
+import ViewedCompaniesPage from './pages/ViewedCompaniesPage';
+import ReportsListPage from './pages/ReportsListPage';
+import FacultyDashboardPage from './pages/FacultyDashboardPage';
+import AssessmentsPage from './pages/AssessmentsPage';
+
+
+
+
 function App() {
   const {
     notifications,
@@ -82,6 +90,9 @@ function App() {
       <Route path="/view-all-internships" element={<ViewAllInternships />} />
       <Route path="student/reports" element={<ReportsPage />} />
       <Route path="student/internship-guidelines" element={<InternshipGuidelinesPage />} />
+        
+      <Route path="student/viewed-profile" element={<ViewedCompaniesPage />} />
+      <Route path="student/assessment" element={<AssessmentsPage />} />
         
 
     </Routes>

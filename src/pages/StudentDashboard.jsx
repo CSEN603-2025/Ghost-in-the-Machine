@@ -88,6 +88,8 @@ const StudentDashboard = () => {
     { label: "Evaluation", path: "/student/evaluation" },
     { label: "SCAD Internships", path: "/student/scad-internships" },
     { label: "View Reports", path: "/student/reports" },
+    { label: "Online Assessments", path: "/student/assessment" },
+    { label: "Viewed Profile", path: "/student/viewed-profile" },
   ];
 
   return (
@@ -146,6 +148,7 @@ const StudentDashboard = () => {
             </Link>
           ))}
         </div>
+
 
         {/* Suggested Companies Section */}
         <h2 style={styles.heading}>Suggested Companies Based on Your Job Interests</h2>

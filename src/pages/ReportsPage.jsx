@@ -43,8 +43,36 @@ const ReportsPage = () => {
   };
 
   return (
-    <div style={styles.page}>
-      <h1 style={styles.heading}>My Reports</h1>
+    <div style={styles.container}><div className="fixed top-0 left-0 right-0 z-50 w-full bg-[#00106A] py-6 px-6 flex items-center justify-between">
+
+  {/* Empty div for spacing or future icons */}
+  <div className="w-1/3" />
+
+  {/* Centered Title */}
+  <div className="w-1/3 text-center">
+    <h1 className="text-3xl font-bold text-white">My Reports </h1>
+  </div>
+
+  {/* Home & Logout Buttons */}
+  <div className="w-1/3 flex justify-end space-x-4">
+    <button
+      onClick={() => window.location.href = "/student"}
+      className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] hover:from-[#00D6A0] hover:to-[#00F0B5] text-black font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-300"
+    >
+      Home
+    </button>
+    <button
+      onClick={() => {
+        localStorage.clear();
+        window.location.href = "/";
+      }}
+      className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-600 hover:to-red-500 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-300"
+    >
+      Logout
+    </button>
+  </div>
+</div>
+
 
       {reports.map((report) => (
         <div
@@ -85,6 +113,15 @@ const ReportsPage = () => {
 };
 
 const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    paddingTop: "120px", // space for navbar
+    paddingBottom: "40px",
+    backgroundColor: "#f9f9f9",
+    minHeight: "100vh",
+  },
   page: {
     display: "flex",
     flexDirection: "column",
@@ -132,5 +169,6 @@ const styles = {
     cursor: "pointer",
   },
 };
+
 
 export default ReportsPage;

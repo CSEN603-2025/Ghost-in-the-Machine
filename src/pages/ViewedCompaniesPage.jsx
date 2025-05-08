@@ -16,8 +16,36 @@ const ViewedCompaniesPage = () => {
   }, []);
 
   return (
-    <div style={styles.container}>
-      <h1>Companies That Viewed Your Profile</h1>
+    <div style={styles.container}><div className="fixed top-0 left-0 right-0 z-50 w-full bg-[#00106A] py-6 px-6 flex items-center justify-between">
+
+  {/* Empty div for spacing or future icons */}
+  <div className="w-1/3" />
+
+  {/* Centered Title */}
+  <div className="w-1/3 text-center">
+    <h1 className="text-3xl font-bold text-white">Companies that viewed my profile </h1>
+  </div>
+
+  {/* Home & Logout Buttons */}
+  <div className="w-1/3 flex justify-end space-x-4">
+    <button
+      onClick={() => window.location.href = "/student"}
+      className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] hover:from-[#00D6A0] hover:to-[#00F0B5] text-black font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-300"
+    >
+      Home
+    </button>
+    <button
+      onClick={() => {
+        localStorage.clear();
+        window.location.href = "/";
+      }}
+      className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-600 hover:to-red-500 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-300"
+    >
+      Logout
+    </button>
+  </div>
+</div>
+
       <div style={styles.listContainer}>
         {viewedCompanies.length > 0 ? (
           viewedCompanies.map((company, index) => (
@@ -36,7 +64,7 @@ const ViewedCompaniesPage = () => {
 // Styles
 const styles = {
   container: {
-    padding: '20px',
+    padding: '100px',
     backgroundColor: '#f5f5f5',
     minHeight: '100vh',
   },
