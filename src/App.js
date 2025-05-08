@@ -1,3 +1,5 @@
+
+import { motion } from "framer-motion";
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
 import './App.css';
 import LoginPage from './pages/LoginPage';
@@ -11,7 +13,9 @@ import { useNotifications } from './hooks/useNotifications';
 import SCADDashboard from './pages/SCADDashboard'; 
 import ManageCompanies from './pages/ManageCompanies';
 import ManageStudents from './pages/ManageStudents'; 
+import StudentUpcomingWorkshopsPage from './pages/StudentUpcomingWorkshopsPage';
 import StudentProfile from './pages/StudentProfile';
+import VideoCallPage from './pages/VideoCallPage';
 import { ToastContainer } from 'react-toastify';
 import RegisteredStudents from './pages/RegisteredStudents';
 import EditProfilePage from './pages/EditProfilePage';
@@ -21,6 +25,7 @@ import InternshipDetailsPage from './pages/InternshipDetailsPage';
 import CompanyDetailsPage from './pages/CompanyDetailsPage';
 import StudentReportEditor from './pages/StudentReportEditor';
 import FinalizedReport from "./pages/FinalizedReport";
+import ViewWorkshopDetailsPage from './pages/ViewWorkshopDetailsPage';
 import StudentEvaluation from "./pages/StudentEvaluation";
 import SCADInternshipsPage from "./pages/SCADInternshipsPage";
 import ApplicationDetails from './components/ApplicationDetails';
@@ -53,9 +58,12 @@ function App() {
       <Route path="/workshops" element={<WorkshopsPage />} />
       <Route path="/dashboard" element={<CompanyDashboard />} />
       <Route path="/scad-dashboard" element={<SCADDashboard />} />
+      <Route path="/VideoCallPage" element={<VideoCallPage />} />
       <Route path="/manage-companies" element={<ManageCompanies />} />
       <Route path="/students" element={<ManageStudents />} />
+      <Route path="/workshop-details" element={<ViewWorkshopDetailsPage />} />
       <Route path="/students/:id" element={<StudentProfile />} />
+      <Route path="/student-upcoming-workshops" element={<StudentUpcomingWorkshopsPage />} />
       <Route path="/registered-students" element={<RegisteredStudents/>} />
       <Route path="/dashboard" element={<CompanyDashboard />} />
       <Route path="student/edit-profile" element={<EditProfilePage />} />
