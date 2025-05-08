@@ -37,7 +37,11 @@ import InternshipGuidelinesPage from './pages/InternshipGuidelinesPage';
 import ApplicationListPage from './components/ApplicationListPage'; 
 import ManageReportsAndEvaluations from './pages/ManageReportsAndEvaluations';
 import FacultyDashboardPage from './pages/FacultyDashboardPage';
+import EmailClientPage from "./pages/EmailClientPage";
 import ReportsListPage         from './pages/ReportsListPage';
+
+
+
 
 
 function App() {
@@ -87,6 +91,7 @@ function App() {
       <Route path="student/internship-guidelines" element={<InternshipGuidelinesPage />} />
       <Route path="/scad-reports-evaluations" element={<ManageReportsAndEvaluations />} />
       <Route path="/applications/:postId" element={<ApplicationListPage />} />
+      <Route path="/corp-emails" element={<EmailClientPage/>} />
     </Routes>
    
   );
