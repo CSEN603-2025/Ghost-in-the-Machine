@@ -43,7 +43,7 @@ function LoginPage() {
         } else if (email === 'officer@scad.com') {
           setSuccess('SCAD login successful!');
           navigate('/scad-dashboard');
-        }
+        } 
       } else {
         // password wrong
         setError('Wrong password');

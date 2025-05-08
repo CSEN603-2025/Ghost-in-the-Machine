@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import EmailSidebar from '../components/EmailSidebar';
+import EmailFilter from '../components/EmailFilter';
 import EmailItem from '../components/EmailItem';
 import EmailContent from '../components/EmailContent';
 
@@ -17,8 +17,14 @@ const EmailClientPage = () => {
 
   const [selectedFolder, setSelectedFolder] = useState('Inbox');
   const [selectedEmail, setSelectedEmail] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredEmails = dummyEmails.filter(email => email.folder === selectedFolder);
+  const filteredEmails = dummyEmails.filter(email =>
+    email.folder === selectedFolder &&
+    (email.sender.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     email.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     email.snippet.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   const handleHome = () => navigate('/');
   const handleLogout = () => navigate('/login');
@@ -46,18 +52,27 @@ const EmailClientPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 px-6 py-6">
-        <EmailSidebar
-          folders={folders}
-          selectedFolder={selectedFolder}
-          onSelectFolder={folder => { setSelectedFolder(folder); setSelectedEmail(null); }}
-        />
-        <div className="bg-white shadow-lg h-full overflow-auto">
-          {filteredEmails.map(email => (
-            <EmailItem key={email.id} email={email} onClick={setSelectedEmail} />
-          ))}
+      <div className="flex px-6 py-6 h-[calc(100vh-5rem)]">
+        {/* Left half: filter + email list */}
+        <div className="w-1/2 flex flex-col">
+          <EmailFilter
+            folders={folders}
+            selectedFolder={selectedFolder}
+            onSelectFolder={folder => { setSelectedFolder(folder); setSelectedEmail(null); }}
+            searchTerm={searchTerm}
+            onSearchTermChange={setSearchTerm}
+          />
+          <div className="flex-1 bg-white shadow-lg overflow-auto">
+            {filteredEmails.map(email => (
+              <EmailItem key={email.id} email={email} onClick={setSelectedEmail} />
+            ))}
+          </div>
         </div>
-        <EmailContent email={selectedEmail} />
+
+        {/* Right half: email content */}
+        <div className="w-1/2 flex flex-col">
+          <EmailContent email={selectedEmail} />
+        </div>
       </div>
     </div>
   );
