@@ -34,6 +34,7 @@ import InternList from './components/InternList';
 import ViewAllInternships from './pages/ViewAllInternships';
 import ReportsPage from './pages/ReportsPage';
 import InternshipGuidelinesPage from './pages/InternshipGuidelinesPage';
+import ApplicationListPage from './components/ApplicationListPage'; 
 
 
 
@@ -80,8 +81,7 @@ function App() {
       <Route path="/view-all-internships" element={<ViewAllInternships />} />
       <Route path="student/reports" element={<ReportsPage />} />
       <Route path="student/internship-guidelines" element={<InternshipGuidelinesPage />} />
-        
-
+      <Route path="/applications/:postId" element={<ApplicationListPage />} />
     </Routes>
    
   );

@@ -24,6 +24,8 @@ export default function RegisterCompanyPage() {
   const [errors,        setErrors]        = useState({});
   const [showFormError, setShowFormError] = useState(false);
   const [loading,       setLoading]       = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
 
   // Inject loader + pulse keyframes once
   useEffect(() => {
@@ -103,46 +105,129 @@ export default function RegisterCompanyPage() {
   };
 
   // Submit handler with validation & loader
-  const handleSubmit = e => {
-    e.preventDefault();
-    const newErrors = {};
-    if (!companyName.trim())         newErrors.companyName     = true;
-    if (!industry.trim())            newErrors.industry        = true;
-    if (!email.trim())               newErrors.email           = true;
-    if (!phone.trim())               newErrors.phone           = true;
-    if (!address.trim())             newErrors.address         = true;
-    if (!companySize)                newErrors.companySize     = true;
-    if (!imageFile)                  newErrors.imageFile       = true;
-    if (documentFiles.length === 0)  newErrors.documentFiles   = true;
+  // Submit handler with validation & loader
+const handleSubmit = e => {
+  e.preventDefault();
+  const newErrors = {};
+  if (!companyName.trim())         newErrors.companyName     = true;
+  if (!industry.trim())            newErrors.industry        = true;
+  if (!email.trim())               newErrors.email           = true;
+  if (!phone.trim())               newErrors.phone           = true;
+  if (!address.trim())             newErrors.address         = true;
+  if (!companySize)                newErrors.companySize     = true;
+  if (!imageFile)                  newErrors.imageFile       = true;
+  if (documentFiles.length === 0)  newErrors.documentFiles   = true;
 
-    if (Object.keys(newErrors).length) {
-      setErrors(newErrors);
-      setShowFormError(true);
-      return;
-    }
-
-    // Start loader
-    setShowFormError(false);
-    setLoading(true);
-
-    // Mock async registration
-    setTimeout(() => {
-      setLoading(false);
-      alert('You registered successfully!');
-      navigate('/welcome');
-    }, 2000);
-  };
-
-  // Show loader full-screen
-  if (loading) {
-    return (
-      <div style={styles.loaderContainer}>
-        <svg className="loader" viewBox="0 0 50 50">
-          <circle cx="25" cy="25" r="20"></circle>
-        </svg>
-      </div>
-    );
+  if (Object.keys(newErrors).length) {
+    setErrors(newErrors);
+    setShowFormError(true);
+    return;
   }
+
+  // Start loader
+  setShowFormError(false);
+  setLoading(true);
+
+  // Mock async registration
+  setTimeout(() => {
+    setLoading(false);
+    setShowSuccess(true);
+  }, 2000);
+};
+if (loading) {
+  return (
+    <div style={styles.loaderContainer}>
+      <svg className="loader" viewBox="0 0 50 50">
+        <circle cx="25" cy="25" r="20"></circle>
+      </svg>
+    </div>
+  );
+}
+
+if (showSuccess) {
+  return (
+    <div style={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      minHeight: '100vh', 
+      backgroundColor: '#f5f5f5' 
+    }}>
+      <div style={{
+        position: 'relative',
+        maxWidth: '400px',
+        width: '90%',
+        backgroundColor: '#fff',
+        borderRadius: '20px',
+        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
+        padding: '30px',
+        textAlign: 'center'
+      }}>
+        {/* Close (Dismiss) Button */}
+        <button
+          type="button"
+          onClick={() => {
+            setShowSuccess(false);
+            navigate('/welcome');
+          }}
+          style={{
+            position: 'absolute',
+            top: '15px',
+            right: '15px',
+            background: 'transparent',
+            border: 'none',
+            fontSize: '20px',
+            color: '#999',
+            cursor: 'pointer'
+          }}
+        >
+          ✕
+        </button>
+
+        {/* Pulsing Green Circle */}
+        <div style={{
+          margin: '0 auto',
+          width: '70px',
+          height: '70px',
+          backgroundColor: '#e2feee',
+          borderRadius: '50%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: '20px',
+          animation: 'pulse 1s infinite alternate',
+          transformOrigin: 'center',
+        }}>
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none">
+            <path d="M5 13l4 4L19 7" stroke="#000000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+
+        {/* Title */}
+        <h2 style={{ color: '#066e29', fontSize: '22px', fontWeight: '600', marginBottom: '10px' }}>
+          Registration Received
+        </h2>
+
+        {/* Message */}
+        <p style={{ color: '#595b5f', fontSize: '15px', lineHeight: '1.5' }}>
+          The GUCI Internship System received your registration and will soon respond to you.
+        </p>
+      </div>
+
+      {/* Keyframes animation inline inside <style> */}
+      <style>
+        {`
+          @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.09); }
+          }
+        `}
+      </style>
+    </div>
+  );
+}
+
+
 
   // Main form
   return (
