@@ -1,8 +1,21 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
+import VideoCallPrompt from '../components/VideoCallPrompt';
+import { video } from 'framer-motion/client';
 
 const SCADDashboard = () => {
   const navigate = useNavigate();
+
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [callStatus, setCallStatus] = useState('ringing');
+  const [micEnabled, setMicEnabled] = useState(true);
+  const [videoEnabled, setVideoEnabled] = useState(true);
+  const [screenSharing, setScreenSharing] = useState(false);
+
+  useEffect(() => {
+   const timer = setTimeout(() => setShowPrompt(true), 5000);
+   return () => clearTimeout(timer);
+  }, []);
 
   const handleCardClick = (route) => {
     navigate(route);
@@ -87,6 +100,20 @@ const SCADDashboard = () => {
           <p className="text-gray-600">Access and download reports, evaluations, etc.</p>
         </div>
       </div>
+      {showPrompt && (
+      <VideoCallPrompt
+      videoCallStatus={callStatus}
+      participantName="John Doe"
+      micEnabled={micEnabled}
+      videoEnabled={videoEnabled}
+      screenSharing={screenSharing}
+      onAccept={() => setCallStatus('in-progress')}
+      onReject={() => setShowPrompt(false)}
+      onEndCall={() => setShowPrompt(false)}
+      onToggleMic={() => setMicEnabled(v => !v)}
+      onToggleVideo={() => setVideoEnabled(v => !v)}
+      onToggleScreen={() => setScreenSharing(s => !s)}
+      />)}
     </div>
   );
 };
