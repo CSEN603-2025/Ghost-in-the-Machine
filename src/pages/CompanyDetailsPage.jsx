@@ -15,7 +15,7 @@ const allSuggestedCompanies = [
   },
   {
     name: "Valeo",
-    industry: "Technology",
+    industry: "Engineering",
     size: "Corporate (>500 employees)",
     email: "hr@valeo.com",
     phone: "+1 555-111-2222",

@@ -114,10 +114,10 @@ const EditProfilePage = () => {
                 style={{ ...styles.input, flex: 1 }}
               >
                 <option value="">Select duration</option>
-                <option value="1 month">1 month</option>
-                <option value="2 months">2 months</option>
-                <option value="3 months">3 months</option>
-                <option value="6 months">6 months</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                
               </select>
               <select
                 value={intern.status}
