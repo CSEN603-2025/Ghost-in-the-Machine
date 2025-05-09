@@ -34,16 +34,18 @@ import InternList from './components/InternList';
 import ViewAllInternships from './pages/ViewAllInternships';
 import ReportsPage from './pages/ReportsPage';
 import InternshipGuidelinesPage from './pages/InternshipGuidelinesPage';
+import ApplicationListPage from './components/ApplicationListPage'; 
+import ManageReportsAndEvaluations from './pages/ManageReportsAndEvaluations';
+import FacultyDashboardPage from './pages/FacultyDashboardPage';
+import EmailClientPage from "./pages/EmailClientPage";
+import EvaluationReportsPage from './pages/EvaluationReportsPage';
 
 
 
 import ViewedCompaniesPage from './pages/ViewedCompaniesPage';
 import ReportsListPage from './pages/ReportsListPage';
-import FacultyDashboardPage from './pages/FacultyDashboardPage';
-import EmailClientPage from "./pages/EmailClientPage";
-import ReportsListPage         from './pages/ReportsListPage';
-import EvaluationReportsPage from './pages/EvaluationReportsPage';
 import AssessmentsPage from './pages/AssessmentsPage';
+
 
 
 
