@@ -39,7 +39,7 @@ import ManageReportsAndEvaluations from './pages/ManageReportsAndEvaluations';
 import FacultyDashboardPage from './pages/FacultyDashboardPage';
 import EmailClientPage from "./pages/EmailClientPage";
 import ReportsListPage         from './pages/ReportsListPage';
-
+import EvaluationReportsPage from './pages/EvaluationReportsPage';
 
 
 
@@ -66,6 +66,7 @@ function App() {
       <Route path="/scad-dashboard" element={<SCADDashboard />} />
       <Route path="/VideoCallPage" element={<VideoCallPage />} />
       <Route path="/manage-companies" element={<ManageCompanies />} />
+      <Route path="/faculty/evaluation-reports" element={<EvaluationReportsPage />}/>
       <Route path="/students" element={<ManageStudents />} />
       <Route path="/workshop-details" element={<ViewWorkshopDetailsPage />} />
       <Route path="/students/:id" element={<StudentProfile />} />
