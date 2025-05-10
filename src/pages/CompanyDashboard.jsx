@@ -1,149 +1,144 @@
-import React, { useState, useEffect } from 'react';
 
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CompanyProfileCard from '../components/CompanyProfileCard';
-import PostsList from '../components/PostsList';
-import ApplicationsList from '../components/ApplicationsList';
-import InternList from '../components/InternList'; // 🔵 IMPORT InternList
-import EvaluationsList from '../components/EvaluationsList';
-import { toast } from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
-
-function CompanyDashboard() {
-  useEffect(() => {toast("Welcome to the Dashboard!");}, []);
-  const [activeSection, setActiveSection] = useState('home');
-  const [posts, setPosts] = useState([]);
+const CompanyDashboard = () => {
   const navigate = useNavigate();
+  const [activeSection, setActiveSection] = useState('home');
+
+
+  useEffect(() => {
+    console.log("Welcome to the Company Dashboard");
+  }, []);
 
   const myCompany = {
     name: "Google LLC",
     industry: "Technology",
     size: "Corporate",
     email: "contact@google.com",
-    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", // ✅ added company logo URL
-  };
-  
-
-  const handleLogout = () => {
-    navigate('/');
+    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
   };
 
-  const navButtons = [
+  const cards = [
     {
-      section: 'posts',
-      label: 'Posts',
-      Icon: ({ color }) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="2">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-          <polyline points="14 2 14 8 20 8" />
-          <line x1="16" y1="13" x2="8" y2="13" />
-          <line x1="16" y1="17" x2="8" y2="17" />
-          <line x1="10" y1="9" x2="8" y2="9" />
-        </svg>
-      ),
+      title: 'Posts',
+      desc: 'Manage job posts and internship listings.',
+      route: '/posts',
+      color: 'from-blue-500 to-blue-600',
     },
     {
-      section: 'applications',
-      label: 'Applications',
-      Icon: ({ color }) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="2">
-          <path d="M22 12V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7" />
-          <path d="M22 12v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7" />
-          <polyline points="22,5 12,13 2,5" />
-        </svg>
-      ),
+      title: 'Applications',
+      desc: 'Track and manage student applications.',
+      route: '/applications',
+      color: 'from-blue-600 to-blue-700',
     },
     {
-      section: 'interns',
-      label: 'Interns',
-      Icon: ({ color }) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="2">
-          <path d="M22 12v7H2v-7" />
-          <path d="M2 5l10-3 10 3-10 3z" />
-          <path d="M6 12v5" />
-        </svg>
-      ),
+      title: 'Interns',
+      desc: 'Monitor intern assignments and performance.',
+      route: '/interns',
+      color: 'from-blue-700 to-blue-800',
     },
     {
-      section: 'evaluation',
-      label: 'Evaluation',
-      Icon: ({ color }) => (
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth="2">
-          <path d="M9 12h6" />
-          <path d="M9 16h6" />
-          <path d="M13 8h-2" />
-          <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
-          <path d="M9 2v4h6V2" />
-        </svg>
-      ),
+      title: 'Evaluation',
+      desc: 'Access submitted reports and evaluations.',
+      route: '/evaluations',
+      color: 'from-blue-800 to-blue-900',
     },
     {
-      section: 'email',
-      label: 'Email',
-      Icon: ({ color }) => (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="22"
-          height="22"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke={color}
-          strokeWidth="2"
-        >
-          <path d="M4 4h16v16H4z" />
-          <polyline points="22,6 12,13 2,6" />
-        </svg>
-      ),
-      onClick: () => navigate('/email'),
+      title: 'Email',
+      desc: 'Manage and review internship emails.',
+      route: '/email',
+      color: 'from-blue-900 to-blue-950',
     },
   ];
 
   return (
-    <div style={styles.pageContainer}>
-      {/* Top Navbar */}
-      <div style={styles.topNavbar}>
-        <button style={styles.topNavButton} onClick={() => setActiveSection('home')}>Home</button>
-        <button style={styles.topNavButton} onClick={handleLogout}>Logout</button>
-      </div>
-
-      {/* Greeting */}
-      <div style={styles.greeting}>
-        <h2>Hi {myCompany.name}, welcome to the dashboard.</h2>
-      </div>
-
-      {/* Company Profile */}
-      <div style={styles.profileCardContainer}>
-        <CompanyProfileCard companyInfo={myCompany} />
-      </div>
-
-      {/* Navigation Buttons */}
-      <div className="flex items-center justify-center gap-2 mb-8">
-        {navButtons.map(({ section, label, Icon }) => (
-          <button
-            key={section}
-            onClick={() => setActiveSection(section)}
-            className={`relative inline-flex items-center justify-center gap-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-16 rounded-md px-5 group
-              ${activeSection === section ? 'bg-[#274472] text-white' : 'bg-[#274472] text-white hover:bg-[#41729F]'}
-            `}
+    <div className="min-h-screen">
+      {/* --- Top Navbar --- */}
+      <motion.div 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="w-full bg-white bg-opacity-80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50 shadow-sm"
+      >
+        <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+          <div 
+            onClick={() => navigate('/')}
+            className="flex items-center cursor-pointer"
           >
-            <Icon color="#C3E0E5" />
-            <span className="origin-left transition-transform">{label}</span>
-          </button>
-        ))}
-      </div>
-
-            {/* Main Content */}
-            <div style={styles.contentArea}>
-                {activeSection === 'home' && <p>Welcome to the Home Section.</p>}
-                {activeSection === 'posts' && <PostsList posts={posts} setPosts={setPosts} />}
-                {activeSection === 'applications' && <ApplicationsList posts={posts} />}
-                {activeSection === 'interns' && <InternList />} {/* 🔵 Show InternList */}
-                {activeSection === 'evaluation' && <EvaluationsList />}
-
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-r from-[#00106A] to-[#00D6A0] flex items-center justify-center text-white font-bold mr-2">
+              CO
             </div>
+            <span className="text-xl font-bold text-gray-800">Company Portal</span>
+          </div>
+
+          <div className="flex space-x-3">
+           <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/')}
+              className="px-5 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all"
+            >
+              Home
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/welcome')}
+              className="px-5 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all"
+            >
+              Logout
+            </motion.button>
+          </div>
         </div>
-    );
-}
+      </motion.div>
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-gray-800">Hi {myCompany.name}, welcome to the dashboard.</h2>
+        </div>
+
+        <div className="mb-8 flex justify-center">
+          <CompanyProfileCard companyInfo={myCompany} />
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ staggerChildren: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {cards.map((card, index) => (
+            <motion.div
+              key={index}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              whileHover={{
+                y: -5,
+                boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)"
+              }}
+              onClick={() => navigate(card.route)}
+              className={`bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 h-full flex flex-col border border-gray-100`}
+            >
+              <div className={`h-2 w-full bg-gradient-to-r ${card.color}`}></div>
+              <div className="p-6 flex-1 flex flex-col">
+                <h3 className="text-xl font-bold text-gray-800 mb-3">{card.title}</h3>
+                <p className="text-gray-600 mb-4 flex-1">{card.desc}</p>
+                <div className="text-[#00D6A0] font-medium flex items-center">
+                  Open feature
+                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
 
 const styles = {
   pageContainer: {
