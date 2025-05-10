@@ -22,24 +22,14 @@ const FacultyDashboardPage = () => {
       route: "/faculty/evaluation-reports",
       color: "from-blue-600 to-blue-700"
     },
-    {
-      title: "Appointments",
-      desc: "Manage video-call requests and career guidance.",
-      route: "/faculty/appointments",
-      color: "from-blue-700 to-blue-800"
-    },
+
     {
       title: "Statistics",
       desc: "View real-time system metrics and reports.",
       route: "/faculty/statistics",
       color: "from-blue-800 to-blue-900"
     },
-    {
-      title: "Download Documents",
-      desc: "Access and download evaluations, reports, and files.",
-      route: "/faculty/download-docs",
-      color: "from-blue-800 to-blue-900"
-    }
+
   ];
 
   return (
