@@ -45,29 +45,34 @@ const ManageStudents = () => {
   const [selectedStatus, setSelectedStatus] = useState('All');
   const navigate = useNavigate();
 
-  const filteredStudents =
-    selectedStatus === 'All'
-      ? dummyStudents
-      : dummyStudents.filter((s) => s.internshipStatus === selectedStatus);
+  const filteredStudents = selectedStatus === 'All' 
+    ? dummyStudents 
+    : dummyStudents.filter(s => s.internshipStatus === selectedStatus);
+
+  const handleCardClick = (studentId, studentImage) => {
+    navigate(`/students/${studentId}`, {
+      state: { 
+        animateFrom: 'card',
+        cardImage: studentImage
+      }
+    });
+  };
 
   return (
-    <div className="min-h-screen bg-[#f9fafb]">
-      {/* Hero Section */}
-      <div className="bg-[#00106A] text-white py-12 px-6 md:px-20 text-center">
-        <h1 className="text-4xl font-bold mb-2">Student Internship Management</h1>
-        <p className="text-lg text-blue-100">Track and manage student internship progress with ease and clarity.</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="bg-[#00106A] text-white py-16 px-6 text-center">
+        <h1 className="text-4xl font-bold mb-3">Student Management</h1>
+        <p className="text-xl text-blue-100">Track student internship progress</p>
       </div>
 
-      <div className="p-6 md:p-10 max-w-7xl mx-auto">
-        {/* Section Title */}
-        <h2 className="text-2xl font-bold text-[#00106A] mb-6 text-center">Manage Students</h2>
-
-        {/* Filter */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex justify-center flex-wrap gap-4 mb-10">
           {['All', 'In Progress', 'Completed', 'Not Started'].map((status) => (
-            <button
+            <motion.button
               key={status}
-              className={`px-5 py-2.5 rounded-full border shadow-sm transition-all duration-300 font-medium ${
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`px-5 py-2.5 rounded-full border shadow-sm font-medium ${
                 selectedStatus === status
                   ? 'bg-[#00106A] text-white'
                   : 'bg-white text-[#00106A] hover:bg-gray-100'
@@ -75,31 +80,30 @@ const ManageStudents = () => {
               onClick={() => setSelectedStatus(status)}
             >
               {status}
-            </button>
+            </motion.button>
           ))}
         </div>
 
-        {/* Student Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {filteredStudents.map((student) => (
             <motion.div
               key={student.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               whileHover={{ scale: 1.02 }}
-              className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all cursor-pointer"
-              onClick={() => navigate(`/students/${student.id}`)}
+              className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg cursor-pointer"
+              onClick={() => handleCardClick(student.id, student.image)}
             >
-              <img
+              <motion.img
                 src={student.image}
                 alt={student.name}
                 className="w-24 h-24 rounded-full mx-auto mb-4 object-cover shadow-sm"
+                layoutId={`student-image-${student.id}`}
               />
               <div className="text-center">
                 <h3 className="text-xl font-semibold text-[#00106A]">{student.name}</h3>
                 <p className="text-sm text-gray-600">{student.major}</p>
-                <p className="text-xs text-gray-500">{student.year}</p>
-                <span
-                  className={`inline-block mt-3 text-xs font-medium px-3 py-1 rounded-full ${statusColors[student.internshipStatus]}`}
-                >
+                <span className={`inline-block mt-3 text-xs font-medium px-3 py-1 rounded-full ${statusColors[student.internshipStatus]}`}>
                   {student.internshipStatus}
                 </span>
               </div>
