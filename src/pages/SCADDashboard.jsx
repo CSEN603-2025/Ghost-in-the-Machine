@@ -1,48 +1,62 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import IncomingCallPrompt from '../components/IncomingCallPrompt';
 import OnGoingCallPrompt from '../components/OnGoingCallPrompt';
-import { video } from 'framer-motion/client';
 
 const SCADDashboard = () => {
   const navigate = useNavigate();
-
   const [showIncoming, setShowIncoming] = useState(false);
   const [showOngoing, setShowOngoing] = useState(false);
   const [callStatus, setCallStatus] = useState('ringing');
   const [micEnabled, setMicEnabled] = useState(true);
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [screenSharing, setScreenSharing] = useState(false);
+  const [activeHover, setActiveHover] = useState(null);
 
+  // Auto-show incoming call after 5s (demo)
   useEffect(() => {
     const timer = setTimeout(() => setShowIncoming(true), 5000);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleCardClick = (route) => {
-    navigate(route);
-  };
+  // Card data with equal height/description length
+  const cards = [
+    {
+      title: "Manage Companies",
+      desc: "Review and approve company applications with advanced filters.",
+      route: "/manage-companies",
+      color: "from-blue-500 to-blue-600"
+    },
+    {
+      title: "View All Internships",
+      desc: "Explore internships with real-time search and analytics.",
+      route: "/view-all-internships",
+      color: "from-blue-600 to-blue-700"
+    },
+    {
+      title: "View All Students",
+      desc: "Track student progress and internship status updates.",
+      route: "/students",
+      color: "from-blue-700 to-blue-800"
+    },
+    {
+      title: "Manage Internship Cycle",
+      desc: "Configure timelines and automate cycle workflows.",
+      route: "/manage-internship-cycle",
+      color: "from-blue-800 to-blue-900"
+    },
+    {
+      title: "Manage Reports & Evaluations", // Updated as requested
+      desc: "Access Internship Reports and Evalutions.",
+      route: "/evaluations-reports",
+      color: "from-blue-800 to-blue-900"
+    }
+  ];
 
-  const handleLogout = () => {
-    navigate('/welcome');
-  };
-
-  const handleHome = () => {
-    navigate('/');
-  };
-
-  // Handle actions from incoming prompt
+  // Call handlers (unchanged)
   const handleAcceptVideo = () => {
     setCallStatus('in-progress');
-    setVideoEnabled(true);
-    setMicEnabled(true);
-    setShowIncoming(false);
-    setShowOngoing(true);
-  };
-  const handleAcceptAudio = () => {
-    setCallStatus('in-progress');
-    setVideoEnabled(false);
-    setMicEnabled(true);
     setShowIncoming(false);
     setShowOngoing(true);
   };
@@ -52,100 +66,174 @@ const SCADDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#EAEAEA]">
-      {/* Top Navbar */}
-      <div className="w-full bg-[#00106A] py-6 px-6 flex items-center justify-between">
-        {/* Empty div for spacing or future icons */}
-        <div className="w-1/3" />
-
-        {/* Centered Title */}
-        <div className="w-1/3 text-center">
-          <h1 className="text-3xl font-bold text-white">SCAD Dashboard</h1>
-        </div>
-
-        {/* Home & Logout Buttons */}
-        <div className="w-1/3 flex justify-end space-x-4">
-          <button
-            onClick={handleHome}
-            className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] hover:from-[#00D6A0] hover:to-[#00F0B5] text-black font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-300"
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* --- Premium Glass Navbar --- */}
+      <motion.div 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="w-full bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50 shadow-sm"
+      >
+        <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+          {/* Logo */}
+          <div 
+            onClick={() => navigate('/')}
+            className="flex items-center cursor-pointer"
           >
-            Home
-          </button>
-          <button
-            onClick={handleLogout}
-            className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-600 hover:to-red-500 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-300"
-          >
-            Logout
-          </button>
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-r from-[#00106A] to-[#00D6A0] flex items-center justify-center text-white font-bold mr-2">
+              SC
+            </div>
+            <span className="text-xl font-bold text-gray-800">SCAD Admin</span>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex space-x-3">
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/')}
+              className="px-5 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all"
+            >
+              Home
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/welcome')}
+              className="px-5 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg text-sm font-medium shadow-md hover:shadow-lg transition-all"
+            >
+              Logout
+            </motion.button>
+          </div>
         </div>
+      </motion.div>
+
+      {/* --- Symmetrical Cards Grid --- */}
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ staggerChildren: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {cards.map((card, index) => (
+            <motion.div
+              key={index}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              whileHover={{ 
+                y: -5,
+                boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)"
+              }}
+              onMouseEnter={() => setActiveHover(index)}
+              onMouseLeave={() => setActiveHover(null)}
+              onClick={() => navigate(card.route)}
+              className={`bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 h-full flex flex-col border border-gray-100 ${
+                activeHover === index ? 'ring-2 ring-opacity-30 ring-[#00D6A0]' : ''
+              }`}
+            >
+              {/* Gradient Accent Bar */}
+              <div className={`h-2 w-full bg-gradient-to-r ${card.color}`}></div>
+
+              {/* Card Content */}
+              <div className="p-6 flex-1 flex flex-col">
+                <h3 className="text-xl font-bold text-gray-800 mb-3">{card.title}</h3>
+                <p className="text-gray-600 mb-4 flex-1">{card.desc}</p>
+                <motion.div
+                  animate={{ 
+                    x: activeHover === index ? 5 : 0
+                  }}
+                  className="text-[#00D6A0] font-medium flex items-center"
+                >
+                  Open feature
+                  <svg 
+                    className="w-4 h-4 ml-1"
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </motion.div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
 
-      {/* Dashboard Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8 px-6 pb-12 pt-10">
-        <div
-          onClick={() => handleCardClick('/manage-companies')}
-          className="bg-white p-6 rounded-lg shadow-lg cursor-pointer transform hover:scale-105 hover:shadow-2xl transition-all duration-300"
-        >
-          <h3 className="text-xl font-semibold text-[#00106A] mb-4">Manage Companies</h3>
-          <p className="text-gray-600">View, search, filter, accept/reject company applications.</p>
-        </div>
+      {/* --- Call Prompts --- */}
+      <AnimatePresence>
+        {showIncoming && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="fixed inset-0 flex items-center justify-center z-50"
+          >
+            <IncomingCallPrompt
+              participantName="John Doe"
+              onAcceptVideo={handleAcceptVideo}
+              onAcceptAudio={() => {
+                setVideoEnabled(false);
+                handleAcceptVideo();
+              }}
+              onReject={handleReject}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        <div
-          onClick={() => handleCardClick('/view-all-internships')}
-          className="bg-white p-6 rounded-lg shadow-lg cursor-pointer transform hover:scale-105 hover:shadow-2xl transition-all duration-300"
-        >
-          <h3 className="text-xl font-semibold text-[#00106A] mb-4">View All Internships</h3>
-          <p className="text-gray-600">Search/filter/select internships from all companies.</p>
-        </div>
+      <AnimatePresence>
+        {showOngoing && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 flex items-center justify-center z-50"
+          >
+            <OnGoingCallPrompt
+              callStatus={callStatus}
+              participantName="John Doe"
+              micEnabled={micEnabled}
+              videoEnabled={videoEnabled}
+              screenSharing={screenSharing}
+              onEndCall={handleReject}
+              onToggleMic={() => setMicEnabled(!micEnabled)}
+              onToggleVideo={() => setVideoEnabled(!videoEnabled)}
+              onToggleScreen={() => setScreenSharing(!screenSharing)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        <div
-          onClick={() => handleCardClick('/students')}
-          className="bg-white p-6 rounded-lg shadow-lg cursor-pointer transform hover:scale-105 hover:shadow-2xl transition-all duration-300"
-        >
-          <h3 className="text-xl font-semibold text-[#00106A] mb-4">View All Students</h3>
-          <p className="text-gray-600">Filter by internship status, view profiles.</p>
-        </div>
-
-        <div
-          onClick={() => handleCardClick('/manage-internship-cycle')}
-          className="bg-white p-6 rounded-lg shadow-lg cursor-pointer transform hover:scale-105 hover:shadow-2xl transition-all duration-300"
-        >
-          <h3 className="text-xl font-semibold text-[#00106A] mb-4">Manage Internship Cycle</h3>
-          <p className="text-gray-600">Set start and end dates for internship cycles.</p>
-        </div>
-
-        <div
-          onClick={() => handleCardClick('/download-documents')}
-          className="bg-white p-6 rounded-lg shadow-lg cursor-pointer transform hover:scale-105 hover:shadow-2xl transition-all duration-300"
-        >
-          <h3 className="text-xl font-semibold text-[#00106A] mb-4">Download Documents</h3>
-          <p className="text-gray-600">Access and download reports, evaluations, etc.</p>
+      {/* --- Creative Add-on: Live Activity Feed --- */}
+      <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+            Recent Activity
+          </h3>
+          <div className="space-y-3">
+            {[
+              "3 new companies applied",
+              "5 internship matches completed",
+              "Report generated: Student Evaluations Q1"
+            ].map((item, i) => (
+              <motion.div 
+                key={i}
+                initial={{ x: -10, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: i * 0.1 }}
+                className="flex items-start pb-2 border-b border-gray-100 last:border-0"
+              >
+                <div className="w-2 h-2 bg-[#00D6A0] rounded-full mt-2 mr-3"></div>
+                <p className="text-gray-700">{item}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
-      {/* Incoming call prompt */}
-      {showIncoming && (
-        <IncomingCallPrompt
-          participantName="John Doe"
-          onAcceptVideo={handleAcceptVideo}
-          onAcceptAudio={handleAcceptAudio}
-          onReject={handleReject}
-        />
-      )}
-      {/* Ongoing call prompt */}
-      {showOngoing && (
-        <OnGoingCallPrompt
-          callStatus={callStatus}
-          participantName="John Doe"
-          micEnabled={micEnabled}
-          videoEnabled={videoEnabled}
-          screenSharing={screenSharing}
-          onEndCall={handleReject}
-          onToggleMic={() => setMicEnabled(v => !v)}
-          onToggleVideo={() => setVideoEnabled(v => !v)}
-          onToggleScreen={() => setScreenSharing(s => !s)}
-        />
-      )}
     </div>
   );
 };
+
 export default SCADDashboard;

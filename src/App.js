@@ -98,6 +98,7 @@ function App() {
         
       <Route path="student/viewed-profile" element={<ViewedCompaniesPage />} />
       <Route path="student/assessment" element={<AssessmentsPage />} />
+      <Route path="/evaluations-reports" element={<ManageReportsAndEvaluations />} />
         
 
     </Routes>

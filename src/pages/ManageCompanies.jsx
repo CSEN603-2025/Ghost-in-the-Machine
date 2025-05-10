@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { FaBuilding, FaIndustry, FaUsers, FaMapMarkerAlt, FaEnvelope, FaPhone, FaGlobe, FaLinkedin, FaLaptopCode, FaLeaf, FaHeartbeat } from 'react-icons/fa';
+import { FaBuilding, FaIndustry, FaUsers, FaMapMarkerAlt, FaEnvelope, FaPhone, FaGlobe, FaLinkedin, FaLaptopCode, FaLeaf, FaHeartbeat, FaSearch } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Sample company data
 const sampleCompanies = [
   {
     id: 1,
@@ -48,10 +47,9 @@ const sampleCompanies = [
   },
 ];
 
-// Icons for each industry
 const industryIcons = {
-  IT: <FaLaptopCode size={40} className="text-blue-500" />,
-  Environment: <FaLeaf size={40} className="text-green-500" />,
+  IT: <FaLaptopCode size={40} className="text-blue-600" />,
+  Environment: <FaLeaf size={40} className="text-[#00D6A0]" />,
   Healthcare: <FaHeartbeat size={40} className="text-red-500" />,
 };
 
@@ -67,7 +65,7 @@ const ManageCompanies = () => {
         company.id === id ? { ...company, status } : company
       )
     );
-    setSelectedCompany(null); // Close modal after decision
+    setSelectedCompany(null);
   };
 
   const filteredCompanies = companies.filter(c =>
@@ -82,63 +80,164 @@ const ManageCompanies = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800">
-      {/* Hero */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-12 px-6 text-center shadow-md">
-        <h1 className="text-4xl font-bold mb-2">Manage Company Requests</h1>
-        <p className="text-lg">Review and manage company sign-up requests with ease</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Premium Hero Section */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
+        <div className="max-w-7xl mx-auto px-6 py-20 relative z-10">
+          <div className="text-center">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-4xl md:text-5xl font-bold text-white mb-4"
+            >
+              Manage Company Applications
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-xl text-blue-100 max-w-2xl mx-auto mb-8"
+            >
+              Review, approve, and manage company registration requests with our comprehensive dashboard
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="flex justify-center"
+            >
+              <div className="w-full max-w-md relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaSearch className="text-blue-300" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search companies..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-blue-300/30 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
+      </motion.div>
 
-      {/* Filters */}
-      <div className="p-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white shadow">
-        <input
-          type="text"
-          placeholder="Search companies..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="w-full sm:w-1/2 px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring focus:border-blue-400"
-        />
-        <select
-          value={filter}
-          onChange={e => setFilter(e.target.value)}
-          className="px-4 py-2 border rounded shadow-sm focus:outline-none"
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8 -mt-10 relative z-20">
+        {/* Filters */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100"
         >
-          <option value="">All Industries</option>
-          <option value="IT">IT</option>
-          <option value="Environment">Environment</option>
-          <option value="Healthcare">Healthcare</option>
-        </select>
-      </div>
-
-      {/* Company Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-        {filteredCompanies.map(company => (
-          <div
-            key={company.id}
-            className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition cursor-pointer"
-            onClick={() => setSelectedCompany(company)}
-          >
-            <div className="flex items-center mb-4">
-              {industryIcons[company.industry] || <FaBuilding size={40} className="text-gray-500" />}
-              <div className="ml-4">
-                <h2 className="text-xl font-bold">{company.name}</h2>
-                <p className="text-sm text-gray-600">{company.industry}</p>
-              </div>
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="flex-1 w-full">
+              <label htmlFor="industry-filter" className="block text-sm font-medium text-gray-700 mb-1">Filter by Industry</label>
+              <select
+                id="industry-filter"
+                value={filter}
+                onChange={e => setFilter(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">All Industries</option>
+                <option value="IT">IT</option>
+                <option value="Environment">Environment</option>
+                <option value="Healthcare">Healthcare</option>
+              </select>
             </div>
-
-            <p className="mb-4 text-sm text-gray-700 text-center">{company.description}</p>
-
-            <div className="flex justify-between items-center mt-4">
-              <div className={`px-3 py-1 rounded-full text-xs font-bold ${company.status === 'Accepted' ? 'bg-green-100 text-green-700' : company.status === 'Rejected' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                {company.status}
-              </div>
-              <span className="text-sm text-blue-600 underline hover:cursor-pointer">View Details</span>
+            <div className="w-full md:w-auto">
+              <div className="text-sm text-gray-500 mb-1">Showing {filteredCompanies.length} companies</div>
+              <div className="h-1 bg-gradient-to-r from-blue-500 to-[#00D6A0] rounded-full"></div>
             </div>
           </div>
-        ))}
+        </motion.div>
+
+        {/* Company Cards */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ staggerChildren: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {filteredCompanies.map(company => (
+            <motion.div
+              key={company.id}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              whileHover={{ 
+                y: -5,
+                boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)"
+              }}
+              onClick={() => setSelectedCompany(company)}
+              className="bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 h-full flex flex-col border border-gray-100 hover:ring-2 hover:ring-opacity-30 hover:ring-[#00D6A0]"
+            >
+              <div className="h-2 w-full bg-gradient-to-r from-blue-600 to-blue-800"></div>
+              <div className="p-6 flex-1 flex flex-col">
+                <div className="flex items-center mb-4">
+                  {industryIcons[company.industry] || <FaBuilding size={40} className="text-gray-500" />}
+                  <div className="ml-4">
+                    <h2 className="text-xl font-bold text-gray-800">{company.name}</h2>
+                    <p className="text-sm text-gray-600">{company.industry}</p>
+                  </div>
+                </div>
+
+                <p className="mb-4 text-gray-600">{company.description}</p>
+
+                <div className="mt-auto flex justify-between items-center">
+                  <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    company.status === 'Accepted' ? 'bg-green-100 text-green-800' : 
+                    company.status === 'Rejected' ? 'bg-red-100 text-red-800' : 
+                    'bg-blue-100 text-blue-800'
+                  }`}>
+                    {company.status}
+                  </div>
+                  <motion.div
+                    whileHover={{ x: 5 }}
+                    className="text-[#00D6A0] font-medium flex items-center"
+                  >
+                    Details
+                    <svg 
+                      className="w-4 h-4 ml-1"
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Empty State */}
+        {filteredCompanies.length === 0 && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="col-span-full text-center py-12"
+          >
+            <div className="mx-auto max-w-md">
+              <FaSearch className="mx-auto h-12 w-12 text-gray-400" />
+              <h3 className="mt-2 text-lg font-medium text-gray-900">No companies found</h3>
+              <p className="mt-1 text-gray-500">Try adjusting your search or filter criteria</p>
+            </div>
+          </motion.div>
+        )}
       </div>
 
-      {/* Modal with animation */}
+      {/* Company Details Modal */}
       <AnimatePresence>
         {selectedCompany && (
           <motion.div
@@ -151,44 +250,84 @@ const ManageCompanies = () => {
             onClick={() => setSelectedCompany(null)}
           >
             <motion.div
-              className="bg-white rounded-xl p-6 max-w-lg w-full shadow-xl relative"
+              className="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 relative"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                onClick={() => setSelectedCompany(null)}
-                className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-xl"
-              >
-                ×
-              </button>
-              <div className="flex items-center mb-4">
-                {industryIcons[selectedCompany.industry] || <FaBuilding size={40} className="text-gray-500" />}
-                <div className="ml-4">
-                  <h2 className="text-2xl font-bold">{selectedCompany.name}</h2>
-                  <p className="text-sm text-gray-600">{selectedCompany.industry}</p>
+              <div className="h-2 w-full bg-gradient-to-r from-blue-600 to-blue-800 rounded-t-xl"></div>
+              <div className="p-6">
+                <button
+                  onClick={() => setSelectedCompany(null)}
+                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+
+                <div className="flex items-center mb-6">
+                  {industryIcons[selectedCompany.industry] || <FaBuilding size={48} className="text-gray-500" />}
+                  <div className="ml-4">
+                    <h2 className="text-2xl font-bold text-gray-800">{selectedCompany.name}</h2>
+                    <p className="text-gray-600">{selectedCompany.industry} • {selectedCompany.size}</p>
+                  </div>
                 </div>
-              </div>
-              <p className="mb-2"><FaUsers className="inline mr-2" /> {selectedCompany.size}</p>
-              <p className="mb-2"><FaMapMarkerAlt className="inline mr-2" /> {selectedCompany.headquarters}</p>
-              <p className="mb-2"><FaEnvelope className="inline mr-2" /> {selectedCompany.email}</p>
-              <p className="mb-2"><FaPhone className="inline mr-2" /> {selectedCompany.phone}</p>
-              <p className="mb-2"><FaGlobe className="inline mr-2" /> <a href={selectedCompany.website} className="text-blue-600 hover:underline">{selectedCompany.website}</a></p>
-              <p className="mb-4"><FaLinkedin className="inline mr-2" /> <a href={selectedCompany.linkedin} className="text-blue-600 hover:underline">LinkedIn</a></p>
-              <p className="mb-4">{selectedCompany.description}</p>
-              <h3 className="font-semibold mb-2">About Us</h3>
-              <p className="mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus laoreet ipsum eu purus facilisis, sed iaculis dolor ullamcorper. Pellentesque ac mi vehicula, feugiat metus non, tincidunt nunc. Cras ultricies orci at nunc cursus tincidunt.</p>
-              <div className="flex justify-between">
-                <button
-                  onClick={() => handleDecision(selectedCompany.id, 'Accepted')}
-                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md shadow"
-                >
-                  Accept
-                </button>
-                <button
-                  onClick={() => handleDecision(selectedCompany.id, 'Rejected')}
-                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md shadow"
-                >
-                  Reject
-                </button>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div className="flex items-center">
+                    <FaMapMarkerAlt className="text-gray-500 mr-3" />
+                    <span>{selectedCompany.headquarters}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <FaEnvelope className="text-gray-500 mr-3" />
+                    <a href={`mailto:${selectedCompany.email}`} className="text-blue-600 hover:underline">
+                      {selectedCompany.email}
+                    </a>
+                  </div>
+                  <div className="flex items-center">
+                    <FaPhone className="text-gray-500 mr-3" />
+                    <span>{selectedCompany.phone}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <FaGlobe className="text-gray-500 mr-3" />
+                    <a href={selectedCompany.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      {selectedCompany.website}
+                    </a>
+                  </div>
+                  <div className="flex items-center">
+                    <FaLinkedin className="text-gray-500 mr-3" />
+                    <a href={selectedCompany.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      LinkedIn Profile
+                    </a>
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="font-semibold text-lg mb-2 text-gray-800">About the Company</h3>
+                  <p className="text-gray-600 mb-4">{selectedCompany.description}</p>
+                  <p className="text-gray-600">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus laoreet ipsum eu purus facilisis, 
+                    sed iaculis dolor ullamcorper. Pellentesque ac mi vehicula, feugiat metus non, tincidunt nunc.
+                  </p>
+                </div>
+
+                <div className="flex justify-end space-x-4">
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleDecision(selectedCompany.id, 'Rejected')}
+                    className="px-6 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition-colors"
+                  >
+                    Reject
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleDecision(selectedCompany.id, 'Accepted')}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Approve
+                  </motion.button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
