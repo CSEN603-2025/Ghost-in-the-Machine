@@ -100,7 +100,7 @@ const StudentDashboard = () => {
 
   {/* Centered Title */}
   <div className="w-1/3 text-center">
-    <h1 className="text-3xl font-bold text-white">SCAD Dashboard</h1>
+    <h1 className="text-3xl font-bold text-white">Student Dashboard</h1>
   </div>
 
   {/* Home & Logout Buttons */}

@@ -39,9 +39,6 @@ import ManageReportsAndEvaluations from './pages/ManageReportsAndEvaluations';
 import FacultyDashboardPage from './pages/FacultyDashboardPage';
 import EmailClientPage from "./pages/EmailClientPage";
 import EvaluationReportsPage from './pages/EvaluationReportsPage';
-
-
-
 import ViewedCompaniesPage from './pages/ViewedCompaniesPage';
 import ReportsListPage from './pages/ReportsListPage';
 import AssessmentsPage from './pages/AssessmentsPage';

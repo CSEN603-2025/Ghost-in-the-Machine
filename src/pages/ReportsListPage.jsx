@@ -1,100 +1,159 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import Filter from '../components/Filter';
 import Pagination from '../components/Pagination';
-import ReportCard from '../components/ReportCard';
 import ReportDetailsModal from '../components/ReportDetailsModal';
 
 export default function ReportsListPage() {
   const navigate = useNavigate();
+
+  // Full list + filtered view
   const [reports, setReports] = useState([]);
   const [filtered, setFiltered] = useState([]);
-  const [selected, setSelected] = useState(null);
 
-  // Load data
+  // Search & filter state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterData, setFilterData] = useState({ major: '', status: '' });
+
+  // Modal
+  const [selectedReport, setSelectedReport] = useState(null);
+
+  // Load mock data
   useEffect(() => {
     const mock = [
       {
         id: 1,
         studentName: 'John Doe',
-        companyName: 'TechCorp',
         major: 'Computer Science',
+        semester: 'Fall 2024',
+        submissionDate: '2025-03-15',
         status: 'Pending',
         title: 'Internship Report 1',
-        reportContent: 'Detailed report content...',
+        reportContent: 'Introduction...\nBody...\nCourses used: CS101, CS102',
+        companyName: 'TechCorp',
       },
       {
         id: 2,
         studentName: 'Jane Smith',
-        companyName: 'DesignCo',
         major: 'Graphic Design',
+        semester: 'Spring 2025',
+        submissionDate: '2025-03-20',
         status: 'Accepted',
         title: 'Internship Report 2',
-        reportContent: 'Another report content...',
+        reportContent: 'Intro...\nBody...\nCourses used: GD201, GD202',
+        companyName: 'DesignCo',
       },
-      // …
+      // …add more as needed
     ];
     setReports(mock);
     setFiltered(mock);
   }, []);
 
-  // Filter handler
-  const handleFilter = ({ major, status }) => {
-    setFiltered(
-      reports.filter(r =>
-        (major ? r.major === major : true) &&
-        (status ? r.status === status : true)
-      )
-    );
-  };
+  // Re-filter whenever searchTerm, filterData, or reports change
+  useEffect(() => {
+    let temp = reports;
 
-  // Update status in both reports + filtered
-  const handleStatusChange = (id, newStatus) => {
-    setReports(rs =>
-      rs.map(r => (r.id === id ? { ...r, status: newStatus } : r))
-    );
-    setFiltered(fs =>
-      fs.map(r => (r.id === id ? { ...r, status: newStatus } : r))
-    );
-  };
+    // apply major/status filters
+    if (filterData.major) {
+      temp = temp.filter(r => r.major === filterData.major);
+    }
+    if (filterData.status) {
+      temp = temp.filter(r => r.status === filterData.status);
+    }
 
-  const goHome = () => navigate('/');
-  const logout = () => navigate('/welcome');
+    // apply search
+    if (searchTerm) {
+      const key = searchTerm.toLowerCase();
+      temp = temp.filter(r =>
+        r.studentName.toLowerCase().includes(key) ||
+        r.title.toLowerCase().includes(key)
+      );
+    }
+
+    setFiltered(temp);
+  }, [searchTerm, filterData, reports]);
+
+  const handleFilter = (data) => setFilterData(data);
+
+  // Download PDF helper
+  const downloadPdf = (id) => {
+    const link = document.createElement('a');
+    link.href = `/api/reports/${id}/download`;
+    link.download = `report-${id}.pdf`;
+    link.click();
+  };
 
   return (
     <div className="min-h-screen bg-[#EAEAEA]">
       {/* Top Navbar */}
       <div className="w-full bg-[#00106A] py-6 px-6 flex items-center justify-between">
-        <button
-          onClick={goHome}
-          className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] hover:from-[#00D6A0] hover:to-[#00F0B5] text-black font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-300"
-        >
+        <button onClick={() => navigate('/')} className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-300">
           Home
         </button>
         <h1 className="text-3xl font-bold text-white">Internship Reports</h1>
-        <button
-          onClick={logout}
-          className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-600 hover:to-red-500 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-300"
-        >
+        <button onClick={() => navigate('/welcome')} className="bg-gradient-to-r from-red-500 to-red-400 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-300">
           Logout
         </button>
       </div>
 
-      {/* Filter */}
-      <div className="px-6 py-4 bg-[#ffffff] border-b border-gray-200">
+      {/* Search & Filter */}
+      <div className="px-6 py-4 bg-white border-b border-gray-200 flex flex-wrap items-center gap-4">
+        <input
+          type="text"
+          placeholder="Search by student name or report title"
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          className="w-full md:w-1/2 rounded-md border-gray-300 py-2 px-3 shadow-sm focus:border-[#00106A] focus:ring focus:ring-[#00106A]/50"
+        />
         <Filter onFilter={handleFilter} />
       </div>
 
-      {/* Grid of Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-6 pb-12 pt-10">
-        {filtered.map(report => (
-          <ReportCard
-            key={report.id}
-            report={report}
-            onSelect={setSelected}
-          />
-        ))}
+      {/* Reports Table */}
+      <div className="overflow-x-auto px-6 py-8">
+        <table className="min-w-full bg-white rounded-lg overflow-hidden">
+          <thead className="bg-[#00106A]/90 text-white">
+            <tr>
+              <th className="p-3 text-left">Student Name</th>
+              <th className="p-3 text-left">Major</th>
+              <th className="p-3 text-left">Semester</th>
+              <th className="p-3 text-left">Submission Date</th>
+              <th className="p-3 text-left">Status</th>
+              <th className="p-3 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map(report => (
+              <tr key={report.id} className="border-b last:border-none">
+                <td className="p-3">{report.studentName}</td>
+                <td className="p-3">{report.major}</td>
+                <td className="p-3">{report.semester}</td>
+                <td className="p-3">{report.submissionDate}</td>
+                <td className="p-3">{report.status}</td>
+                <td className="p-3 flex items-center space-x-4">
+                  <button
+                    onClick={() => setSelectedReport(report)}
+                    className="px-3 py-1 bg-[#274472] text-white rounded hover:bg-[#41729F] transition"
+                  >
+                    View Details
+                  </button>
+                  <button
+                    onClick={() => downloadPdf(report.id)}
+                    className="text-gray-500 hover:text-gray-700 transition"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none"
+                      viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round"
+                        d="M12 4v16m8-8H4"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {filtered.length === 0 && (
+              <tr><td colSpan="6" className="p-3 text-center text-gray-500">No reports found.</td></tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {/* Pagination */}
@@ -103,11 +162,14 @@ export default function ReportsListPage() {
       </div>
 
       {/* Details Modal */}
-      {selected && (
+      {selectedReport && (
         <ReportDetailsModal
-          report={selected}
-          onClose={() => setSelected(null)}
-          onStatusChange={handleStatusChange}
+          isOpen={!!selectedReport}
+          onClose={() => setSelectedReport(null)}
+          report={selectedReport}
+          onStatusChange={(id, newStatus) => {
+            setReports(rs => rs.map(r => r.id === id ? { ...r, status: newStatus } : r));
+          }}
         />
       )}
     </div>
