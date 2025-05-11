@@ -49,7 +49,7 @@ const SCADDashboard = () => {
     {
       title: "Manage Reports & Evaluations",
       desc: "Access internship reports and evaluation summaries.",
-      route: "/faculty/reports",
+      route: "/evaluations-reports",
       color: "from-blue-800 to-blue-900"
     },
     {
