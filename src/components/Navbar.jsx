@@ -11,7 +11,7 @@ const Navbar = () => {
   return (
     <div className="bg-[#000B4F] text-white fixed top-0 left-0 w-full shadow-md z-50">
       <div className="flex justify-between items-center h-20 max-w-[1240px] mx-auto px-6">
-        <h1 className="text-3xl font-bold text-[#EBEBEB]">GUC.</h1>
+        <h1 className="text-3xl font-bold text-[#EBEBEB]">GUC</h1>
 
         <ul className="hidden md:flex gap-8 text-[#EBEBEB]">
           <li className="hover:text-[#829CD0] transition duration-300 cursor-pointer">Home</li>
@@ -30,7 +30,7 @@ const Navbar = () => {
           nav ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <h1 className="text-3xl font-bold m-4 text-[#EBEBEB]">GUC.</h1>
+        <h1 className="text-3xl font-bold m-4 text-[#EBEBEB]">GUC</h1>
         <ul className="pt-10 uppercase">
           <li className="p-4 border-b border-[#829CD0] hover:text-[#EBEBEB]">Home</li>
           <li className="p-4 border-b border-[#829CD0] hover:text-[#EBEBEB]">About</li>

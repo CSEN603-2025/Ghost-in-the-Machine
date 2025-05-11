@@ -94,7 +94,7 @@ function App() {
       <Route path="/view-all-internships" element={<ViewAllInternships />} />
       <Route path="student/reports" element={<ReportsPage />} />
       <Route path="student/internship-guidelines" element={<InternshipGuidelinesPage />} />
-        
+      <Route path="/email" element={<EmailClientPage />} />  
       <Route path="student/viewed-profile" element={<ViewedCompaniesPage />} />
       <Route path="student/assessment" element={<AssessmentsPage />} />
       <Route path="/evaluations-reports" element={<ManageReportsAndEvaluations />} />
