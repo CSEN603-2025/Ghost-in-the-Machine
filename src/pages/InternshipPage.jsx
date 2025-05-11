@@ -1,5 +1,7 @@
+// src/pages/InternshipPage.jsx
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const InternshipPage = () => {
   const [internships, setInternships] = useState([]);
@@ -13,184 +15,173 @@ const InternshipPage = () => {
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("studentProfile"));
     if (stored?.internships) {
-      const validInternships = stored.internships;
-      setInternships(validInternships);
-      setFilteredInternships(validInternships);
+      const valid = stored.internships;
+      setInternships(valid);
+      setFilteredInternships(valid);
 
-      // Calculate the total duration of completed internships
-      const totalDuration = validInternships
+      const totalMonths = valid
         .filter(i => i.status === "completed")
-        .reduce((acc, internship) => acc + internship.duration, 0);
+        .reduce((acc, i) => acc + i.duration, 0);
 
-      // If total duration is 3 months or more, show PRO badge
-      if (totalDuration >= 3) {
-        setIsProStudent(true);
-      } else {
-        setIsProStudent(false);
-      }
+      setIsProStudent(totalMonths >= 3);
     }
   }, []);
 
-  const handleSearch = (e) => {
-    const term = e.target.value;
-    setSearch(term);
-    filterInternships(term, statusFilter, startDateFilter, endDateFilter);
-  };
-
-  const handleStatusChange = (e) => {
-    const status = e.target.value;
-    setStatusFilter(status);
-    filterInternships(search, status, startDateFilter, endDateFilter);
-  };
-
-  const handleStartDateChange = (e) => {
-    const date = e.target.value;
-    setStartDateFilter(date);
-    filterInternships(search, statusFilter, date, endDateFilter);
-  };
-
-  const handleEndDateChange = (e) => {
-    const date = e.target.value;
-    setEndDateFilter(date);
-    filterInternships(search, statusFilter, startDateFilter, date);
-  };
-
-  const filterInternships = (searchTerm, status, start, end) => {
-    let filtered = internships.filter(
-      (i) =>
-        i.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        i.role.toLowerCase().includes(searchTerm.toLowerCase())
+  const filterInternships = (term, status, start, end) => {
+    let f = internships.filter(i =>
+      i.company.toLowerCase().includes(term.toLowerCase()) ||
+      i.role.toLowerCase().includes(term.toLowerCase())
     );
-
     if (status === "current") {
-      filtered = filtered.filter((i) => new Date(i.endDate) >= new Date());
+      f = f.filter(i => new Date(i.endDate) >= new Date());
     } else if (status === "completed") {
-      filtered = filtered.filter((i) => new Date(i.endDate) < new Date());
+      f = f.filter(i => new Date(i.endDate) < new Date());
     }
-
     if (start) {
-      filtered = filtered.filter((i) => new Date(i.startDate) >= new Date(start));
+      f = f.filter(i => new Date(i.startDate) >= new Date(start));
     }
-
     if (end) {
-      filtered = filtered.filter((i) => new Date(i.endDate) <= new Date(end));
+      f = f.filter(i => new Date(i.endDate) <= new Date(end));
     }
+    setFilteredInternships(f);
+  };
 
-    setFilteredInternships(filtered);
+  const handleSearch = e => {
+    const t = e.target.value;
+    setSearch(t);
+    filterInternships(t, statusFilter, startDateFilter, endDateFilter);
+  };
+  const handleStatusChange = e => {
+    const v = e.target.value;
+    setStatusFilter(v);
+    filterInternships(search, v, startDateFilter, endDateFilter);
+  };
+  const handleStartDateChange = e => {
+    const v = e.target.value;
+    setStartDateFilter(v);
+    filterInternships(search, statusFilter, v, endDateFilter);
+  };
+  const handleEndDateChange = e => {
+    const v = e.target.value;
+    setEndDateFilter(v);
+    filterInternships(search, statusFilter, startDateFilter, v);
   };
 
   return (
-    <div style={{ padding: "30px" }}>
-      {/* Navbar with conditionally rendered PRO badge */}
-      <nav style={{ backgroundColor: "#fff", padding: "10px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #ddd" }}>
-        <h2 style={{ margin: 0, fontWeight: "bold", fontSize: "1.5em" }}>GUC Internship System</h2>
-        {isProStudent && (
-          <span style={{ color: "gold", fontSize: "18px" }}>⭐ PRO</span>
-        )}
-      </nav>
-
-      <h2 style={styles.title}>💼 My Internships</h2>
-
-      {isProStudent && (
-        <div
-          style={{
-            backgroundColor: "#FFD700",
-            color: "#fff",
-            padding: "10px 20px",
-            borderRadius: "5px",
-            fontSize: "20px",
-            marginBottom: "20px",
-          }}
-        >
-          🏅 PRO Student Badge
+    <div className="min-h-screen bg-gray-50 pb-12">
+      {/* Animated Navbar */}
+      <motion.nav
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        className="bg-white shadow sticky top-0 z-30"
+      >
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-800">GUC Internship System</h2>
+          {isProStudent && (
+            <span className="bg-yellow-300 text-white px-4 py-1 rounded-full font-semibold">
+              ⭐ PRO Student
+            </span>
+          )}
         </div>
-      )}
+      </motion.nav>
 
-      <input
-        type="text"
-        placeholder="🔍 Search by company or role"
-        value={search}
-        onChange={handleSearch}
-        style={inputStyle}
-      />
+      <div className="max-w-4xl mx-auto px-6">
+        {/* Page Title */}
+        <motion.h1
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mt-8 text-4xl font-extrabold text-gray-800"
+        >
+          💼 My Internships
+        </motion.h1>
 
-      <select value={statusFilter} onChange={handleStatusChange} style={inputStyle}>
-        <option value="all">All</option>
-        <option value="current">Current Internships</option>
-        <option value="completed">Completed Internships</option>
-      </select>
-
-      <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
-        <div style={{ flex: 1 }}>
-          <label>📅 Start Date:</label>
+        {/* Filters & Search */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        >
+          <input
+            type="text"
+            placeholder="🔍 Search by company or role"
+            value={search}
+            onChange={handleSearch}
+            className="col-span-1 sm:col-span-2 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent"
+          />
+          <select
+            value={statusFilter}
+            onChange={handleStatusChange}
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent"
+          >
+            <option value="all">All Statuses</option>
+            <option value="current">Current</option>
+            <option value="completed">Completed</option>
+          </select>
           <input
             type="date"
             value={startDateFilter}
             onChange={handleStartDateChange}
-            style={inputStyle}
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent"
           />
-        </div>
-        <div style={{ flex: 1 }}>
-          <label>📅 End Date:</label>
           <input
             type="date"
             value={endDateFilter}
             onChange={handleEndDateChange}
-            style={inputStyle}
+            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent"
           />
-        </div>
-      </div>
+        </motion.div>
 
-      {filteredInternships.length === 0 ? (
-        <p>No internships found.</p>
-      ) : (
-        filteredInternships.map((intern, i) => (
-          <Link
-            key={i}
-            to={`/student/internship/${intern.id}`}
-            style={{
-              ...internshipStyle,
-              backgroundColor: intern.status === "completed" ? "#d4edda" : "#fff",
-            }}
-          >
-            <p>🏢 <strong>Company:</strong> {intern.company}</p>
-            <p>👨‍💻 <strong>Role:</strong> {intern.role}</p>
-            <p>⏱️ <strong>Duration:</strong> {intern.duration} months</p>
-            <p>📌 <strong>Status:</strong> {intern.status}</p>
-            <p>📆 <strong>Start Date:</strong> {intern.startDate}</p>
-            <p>📆 <strong>End Date:</strong> {intern.endDate}</p>
-          </Link>
-        ))
-      )}
+        {/* Internship Cards */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+          }}
+          className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          {filteredInternships.length === 0 ? (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="col-span-full text-center text-gray-500"
+            >
+              No internships found.
+            </motion.p>
+          ) : (
+            filteredInternships.map((i, idx) => (
+              <motion.div
+                key={idx}
+                variants={{
+                  hidden: { y: 20, opacity: 0 },
+                  visible: { y: 0, opacity: 1 },
+                  hover: { scale: 1.03, boxShadow: "0 8px 20px rgba(0,0,0,0.1)" }
+                }}
+                whileHover="hover"
+                className={`bg-white rounded-xl p-6 transition-colors border ${
+                  i.status === "completed" ? "border-green-200" : "border-gray-200"
+                }`}
+              >
+                <Link to={`/student/internship/${i.id}`}>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    🏢 {i.company}
+                  </h3>
+                  <p className="text-gray-600 mb-1">👨‍💻 <strong>Role:</strong> {i.role}</p>
+                  <p className="text-gray-600 mb-1">⏱️ <strong>Duration:</strong> {i.duration} mo.</p>
+                  <p className="text-gray-600 mb-1">📌 <strong>Status:</strong> {i.status}</p>
+                  <p className="text-gray-600">📆 {i.startDate} → {i.endDate}</p>
+                </Link>
+              </motion.div>
+            ))
+          )}
+        </motion.div>
+      </div>
     </div>
   );
-};
-
-const inputStyle = {
-  padding: "10px",
-  marginBottom: "20px",
-  width: "100%",
-  borderRadius: "6px",
-  border: "1px solid #ccc",
-};
-
-const internshipStyle = {
-  display: "block",
-  marginBottom: "20px",
-  padding: "20px",
-  border: "1px solid #ccc",
-  borderRadius: "12px",
-  textDecoration: "none",
-  color: "inherit",
-  fontSize: "16px",
-};
-
-const styles = {
-  title: {
-    fontSize: "36px",
-    fontWeight: "bold",
-    marginBottom: "20px",
-  },
 };
 
 export default InternshipPage;
