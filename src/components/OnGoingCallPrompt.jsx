@@ -8,9 +8,9 @@ const VideoCallPrompt = ({
   videoEnabled,
   micEnabled,
   screenSharing,
-  onAccept,
+  onAcceptVideo,
+  onAcceptAudio,
   onReject,
-  onStartCall,
   onEndCall,
   onToggleMic,
   onToggleVideo,
@@ -34,8 +34,12 @@ const VideoCallPrompt = ({
     <div className="flex justify-center space-x-4 mb-4">
       {callStatus === 'ringing' ? (
         <>
-          <button onClick={onAccept}
-            className="bg-[#00D6A0] hover:bg-[#00F0B5] text-white p-2 rounded-full">
+          <button onClick={onAcceptVideo}
+            className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full">
+            <FiVideo size={24} />
+          </button>
+          <button onClick={onAcceptAudio}
+            className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full">
             <FiPhone size={24} />
           </button>
           <button onClick={onReject}
@@ -73,9 +77,9 @@ VideoCallPrompt.propTypes = {
   videoEnabled: PropTypes.bool.isRequired,
   micEnabled: PropTypes.bool.isRequired,
   screenSharing: PropTypes.bool,
-  onAccept: PropTypes.func,
+  onAcceptVideo: PropTypes.func,
+  onAcceptAudio: PropTypes.func,
   onReject: PropTypes.func,
-  onStartCall: PropTypes.func,
   onEndCall: PropTypes.func,
   onToggleMic: PropTypes.func,
   onToggleVideo: PropTypes.func,
@@ -84,9 +88,9 @@ VideoCallPrompt.propTypes = {
 
 VideoCallPrompt.defaultProps = {
   screenSharing: false,
-  onAccept: () => {},
+  onAcceptVideo: () => {},
+  onAcceptAudio: () => {},
   onReject: () => {},
-  onStartCall: () => {},
   onEndCall: () => {},
   onToggleMic: () => {},
   onToggleVideo: () => {},
