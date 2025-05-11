@@ -1,6 +1,6 @@
 import React from 'react';
 import { useWorkshops } from '../hooks/useWorkshops';
-import {WorkshopCard} from '../components/WorkshopCard';
+import WorkshopCard from '../components/WorkshopCard';
 
 export default function StudentUpcomingWorkshopsPage() {
   const { workshops } = useWorkshops();
