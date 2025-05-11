@@ -19,7 +19,6 @@ const StudentDashboard = () => {
   const [selectedInterests, setSelectedInterests] = useState("Technology");
   const [companyFilter, setCompanyFilter] = useState({ industry: "", company: "" });
   const [searchText, setSearchText] = useState("");
-  const [isPro, setIsPro] = useState(false);
   const [assessmentScore, setAssessmentScore] = useState(null);
 
   useEffect(() => {
@@ -46,18 +45,6 @@ const StudentDashboard = () => {
     if (currentStatus) {
       localStorage.setItem("lastSeenReportStatus", currentStatus);
     }
-  }, []);
-
-  useEffect(() => {
-    const internships = JSON.parse(localStorage.getItem("studentInternships")) || [];
-    const totalMonths = internships
-      .filter((i) => i.status === "completed")
-      .reduce((sum, intern) => {
-        const months = parseInt(intern.duration?.match(/\d+/)?.[0] || "0", 10);
-        return sum + months;
-      }, 0);
-
-    setIsPro(totalMonths >= 3);
   }, []);
 
   useEffect(() => {
@@ -102,42 +89,52 @@ const StudentDashboard = () => {
       <DashboardNavbar />
       <div style={styles.container}>
         <div style={styles.content}>
-          <StatusHeader major={selectedMajor} semester={selectedSemester} isPro={isPro} />
-          {assessmentScore !== null && (
-            <div style={{ marginTop: "10px", color: "#2b7de9" }}>
-              🧠 Latest Assessment Score: <strong>{assessmentScore} / 100</strong>
-            </div>
-          )}
 
-          <div style={{ ...styles.cardContainer, marginBottom: "30px" }}>
-            {dashboardLinks.map((link) => (
-              <DashboardLinkCard key={link.label} {...link} />
-            ))}
-          </div>
-
-          <h2 style={styles.heading}>Suggested Companies Based on Your Job Interests</h2>
-
-          <SearchBar
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            placeHolder="Search company by name..."
-          />
-
-          <CompanyFilter
-            companyFilter={companyFilter}
-            onFilterChange={handleCompanyFilterChange}
-            companies={allSuggestedCompanies}
-          />
-
-          <div style={styles.cardContainer}>
-            {sortedCompanies.length > 0 ? (
-              sortedCompanies.map((company) => (
-                <CompanyCard key={company.name} company={company} />
-              ))
-            ) : (
-              <p style={styles.noData}>No companies match your current interests and filters.</p>
+          {/* Profile Section */}
+          <div style={styles.section}>
+            <StatusHeader major={'DMET'} semester={'6th'} />
+            {assessmentScore !== null && (
+              <div style={{ marginTop: '10px', color: '#2b7de9' }}>
+                🧠 Latest Assessment Score: <strong>{assessmentScore} / 100</strong>
+              </div>
             )}
           </div>
+
+          {/* Links Section */}
+          <div style={styles.section}>
+            <div style={{ ...styles.cardContainer, marginBottom: '0' }}>
+              {dashboardLinks.map((link) => (
+                <DashboardLinkCard key={link.label} {...link} />
+              ))}
+            </div>
+          </div>
+
+          {/* Suggested Companies Section */}
+          <div style={styles.section}>
+            <h2 style={styles.heading}>Suggested Companies Based on Your Job Interests</h2>
+            <div style={{ marginBottom: '15px' }}>
+              <SearchBar
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                placeHolder="Search company by name..."
+              />
+            </div>
+            <CompanyFilter
+              companyFilter={companyFilter}
+              onFilterChange={handleCompanyFilterChange}
+              companies={allSuggestedCompanies}
+            />
+            <div style={styles.cardContainer}>
+              {sortedCompanies.length > 0 ? (
+                sortedCompanies.map((company) => (
+                  <CompanyCard key={company.name} company={company} />
+                ))
+              ) : (
+                <p style={styles.noData}>No companies match your current interests and filters.</p>
+              )}
+            </div>
+          </div>
+
         </div>
       </div>
     </>
@@ -145,6 +142,13 @@ const StudentDashboard = () => {
 };
 
 const styles = {
+  section: {
+    backgroundColor: '#ffffff',
+    padding: '20px',
+    borderRadius: '10px',
+    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+    marginBottom: '20px',
+  },
   container: {
     display: "flex",
     justifyContent: "center",

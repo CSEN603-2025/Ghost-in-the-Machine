@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
 import './App.css';
@@ -6,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterCompanyPage from './pages/RegisterCompany';
 import CompanyDashboard from './pages/CompanyDashboard';
 import StudentDashboard from './pages/StudentDashboard';
+import ProStudentDashboard from './pages/ProStudentDashboard';
 import MyApplicationsPage from './pages/MyApplicationsPage';
 import WorkshopsPage from './pages/WorkshopsPage';
 import LandingPage from './pages/LandingPage';
@@ -63,6 +63,7 @@ function App() {
       <Route path="/welcome" element={<LoginPage />} />
       <Route path="/register-company" element={<RegisterCompanyPage />} />
       <Route path="/student-dashboard" element={<StudentDashboard />} />
+      <Route path="/pro-student-dashboard" element={<ProStudentDashboard />} />
       <Route path="student/my-applications" element={<MyApplicationsPage />} /> {/* New route */}
       <Route path="/workshops" element={<WorkshopsPage />} />
       <Route path="/dashboard" element={<CompanyDashboard />} />
