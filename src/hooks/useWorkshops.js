@@ -13,12 +13,14 @@ export const useWorkshops = () => {
   const deleteWorkshop = (id) => {
     setWorkshops(prev => prev.filter(w => w.id !== id));
   };
+  
 
   const updateWorkshop = (updatedWorkshop) => {
     setWorkshops(prev =>
       prev.map(w => (w.id === updatedWorkshop.id ? updatedWorkshop : w))
     );
   };
+  
 
   return { workshops, addWorkshop, deleteWorkshop, updateWorkshop };
 };

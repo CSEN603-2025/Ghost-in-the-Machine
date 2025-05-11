@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import WorkshopDetailsCard from '../components/WorkshopDetailsCard';
-import { useNavigate } from 'react-router-dom';
 
 export default function ViewWorkshopDetailsPage() {
   const workshop = {
@@ -12,13 +11,9 @@ export default function ViewWorkshopDetailsPage() {
     speakerBio: "Dr. Smith is a career coach with 15 years of experience helping students."
   };
 
-  const navigate = useNavigate();
   const handleRegister = () => {
-    // Optional: add registration logic here
     alert("You registered for the workshop!");
-    navigate('/join-workshop');
   };
-
 
   return (
     <motion.div

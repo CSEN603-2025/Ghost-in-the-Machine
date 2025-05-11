@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-export function WorkshopCard({ workshop }) {
+export default function WorkshopCard({ workshop }) {
   const navigate = useNavigate();
 
   const handleViewDetails = () => {

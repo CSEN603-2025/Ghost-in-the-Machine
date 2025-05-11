@@ -92,7 +92,6 @@ export default function StudentDashboard() {
     { label: "View Reports", path: "/student/reports" },
     { label: "Online Assessments", path: "/student/assessment" },
     { label: "Viewed Profile", path: "/student/viewed-profile" },
-    { label: "Workshops", path: "/workshops" },
   ];
 
   return (

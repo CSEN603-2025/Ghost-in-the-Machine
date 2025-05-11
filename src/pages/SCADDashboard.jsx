@@ -20,7 +20,7 @@ const SCADDashboard = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Card data with equal height/description length
+  // Card data (including new Manage Workshops)
   const cards = [
     {
       title: "Manage Companies",
@@ -47,9 +47,15 @@ const SCADDashboard = () => {
       color: "from-blue-800 to-blue-900"
     },
     {
-      title: "Manage Reports & Evaluations", // Updated as requested
-      desc: "Access Internship Reports and Evalutions.",
-      route: "/evaluations-reports",
+      title: "Manage Reports & Evaluations",
+      desc: "Access internship reports and evaluation summaries.",
+      route: "/faculty/reports",
+      color: "from-blue-800 to-blue-900"
+    },
+    {
+      title: "Manage Workshops",
+      desc: "Create, edit, and schedule career workshops.",
+      route: "/workshops",
       color: "from-blue-800 to-blue-900"
     }
   ];
@@ -132,7 +138,7 @@ const SCADDashboard = () => {
               }`}
             >
               {/* Gradient Accent Bar */}
-              <div className={`h-2 w-full bg-gradient-to-r ${card.color}`}></div>
+              <div className={`h-2 w-full bg-gradient-to-r ${card.color}`} />
 
               {/* Card Content */}
               <div className="p-6 flex-1 flex flex-col">
@@ -205,11 +211,11 @@ const SCADDashboard = () => {
         )}
       </AnimatePresence>
 
-      {/* --- Creative Add-on: Live Activity Feed --- */}
+      {/* --- Live Activity Feed --- */}
       <div className="max-w-7xl mx-auto px-6 py-6">
         <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
           <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-            <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+            <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse" />
             Recent Activity
           </h3>
           <div className="space-y-3">
@@ -225,7 +231,7 @@ const SCADDashboard = () => {
                 transition={{ delay: i * 0.1 }}
                 className="flex items-start pb-2 border-b border-gray-100 last:border-0"
               >
-                <div className="w-2 h-2 bg-[#00D6A0] rounded-full mt-2 mr-3"></div>
+                <div className="w-2 h-2 bg-[#00D6A0] rounded-full mt-2 mr-3" />
                 <p className="text-gray-700">{item}</p>
               </motion.div>
             ))}
