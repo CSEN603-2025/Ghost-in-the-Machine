@@ -29,6 +29,7 @@ function LoginPage() {
       'rep@corp.com': '1234',
       'officer@scad.com': '12345',
       'faculty@guc.com': '123',
+      'prostudent@guc.com' : '123pro'
     };
   
     if (email in validUsers) {
@@ -44,11 +45,13 @@ function LoginPage() {
         } else if (email === 'officer@scad.com') {
           setSuccess('SCAD login successful!');
           navigate('/scad-dashboard');
-        } 
-        else if (email === 'faculty@guc.com') {
-          setSuccess('Fculty login successful!');
+        } else if (email === 'faculty@guc.com') {
+          setSuccess('Faculty login successful!');
           navigate('/faculty-dashboard');
-        } 
+        } else if (email === 'prostudent@guc.com'){
+          setSuccess('Pro student login successful!');
+          navigate('/pro-student-dashboard')
+        }
         
       } else {
         // password wrong
