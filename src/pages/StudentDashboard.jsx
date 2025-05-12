@@ -88,8 +88,8 @@ export default function StudentDashboard() {
     { label: "Evaluation", path: "/student/evaluation" },
     { label: "SCAD Internships", path: "/student/scad-internships" },
     { label: "View Reports", path: "/student/reports" },
-    { label: "Online Assessments", path: "/student/assessment" },
-    { label: "Viewed Profile", path: "/student/viewed-profile" },
+    
+   
   ];
 
   return (
@@ -101,11 +101,8 @@ export default function StudentDashboard() {
           {/* Profile Section */}
           <div style={styles.section}>
             <StatusHeader major={'DMET'} semester={'6th'} />
-            {assessmentScore !== null && (
-              <div style={{ marginTop: '10px', color: '#2b7de9' }}>
-                🧠 Latest Assessment Score: <strong>{assessmentScore} / 100</strong>
-              </div>
-            )}
+            
+            
           </div>
 
           {/* Links Section */}
