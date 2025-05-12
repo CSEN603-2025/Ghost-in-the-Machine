@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Filter from '../components/Filter';
 import Pagination from '../components/Pagination';
 import ReportDetailsModal from '../components/ReportDetailsModal';
-import MainActionButton from '../components/MainActionButton';
-import ReportsNavbar from '../components/GenericTopBar';
 
 export default function ReportsListPage() {
   const navigate = useNavigate();
@@ -88,7 +86,15 @@ export default function ReportsListPage() {
   return (
     <div className="min-h-screen bg-[#EAEAEA]">
       {/* Top Navbar */}
-      <ReportsNavbar title="Internship Reports" />
+      <div className="w-full bg-[#00106A] py-6 px-6 flex items-center justify-between">
+        <button onClick={() => navigate('/')} className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-300">
+          Home
+        </button>
+        <h1 className="text-3xl font-bold text-white">Internship Reports</h1>
+        <button onClick={() => navigate('/welcome')} className="bg-gradient-to-r from-red-500 to-red-400 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-300">
+          Logout
+        </button>
+      </div>
 
       {/* Search & Filter */}
       <div className="px-6 py-4 bg-white border-b border-gray-200 flex flex-wrap items-center gap-4">
@@ -124,18 +130,22 @@ export default function ReportsListPage() {
                 <td className="p-3">{report.submissionDate}</td>
                 <td className="p-3">{report.status}</td>
                 <td className="p-3 flex items-center space-x-4">
-                  <MainActionButton
-                    variant="primary"
+                  <button
                     onClick={() => setSelectedReport(report)}
+                    className="px-3 py-1 bg-[#274472] text-white rounded hover:bg-[#41729F] transition"
                   >
                     View Details
-                  </MainActionButton>
-                  <MainActionButton
-                    variant="secondary"
+                  </button>
+                  <button
                     onClick={() => downloadPdf(report.id)}
+                    className="text-gray-500 hover:text-gray-700 transition"
                   >
-                    Download as PDF
-                  </MainActionButton>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none"
+                      viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round"
+                        d="M12 4v16m8-8H4"/>
+                    </svg>
+                  </button>
                 </td>
               </tr>
             ))}
