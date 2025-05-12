@@ -1,6 +1,11 @@
 // src/pages/StudentDashboard.jsx
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import DashboardNavbar from "../components/dashboard/DashboardNavbar";
+import StatusHeader from "../components/dashboard/StatusHeader";
+import DashboardLinkCard from "../components/dashboard/DashboardLinkCard";
+import SearchBar from "../components/SearchBar";
+import CompanyFilter from "../components/dashboard/CompanyFilter";
+import CompanyCard from "../components/dashboard/CompanyCard";
 import { motion } from "framer-motion";
 
 const allSuggestedCompanies = [
@@ -29,18 +34,32 @@ export default function StudentDashboard() {
   const [selectedSemester, setSelectedSemester] = useState("");
   const [companyFilter, setCompanyFilter] = useState({ industry: "", company: "" });
   const [searchText, setSearchText] = useState("");
-  const [isPro, setIsPro] = useState(false);
   const [assessmentScore, setAssessmentScore] = useState(null);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("studentProfile")) || {};
-    setSelectedMajor(saved.major || "");
-    setSelectedSemester(saved.semester || "");
-    const internships = JSON.parse(localStorage.getItem("studentInternships")) || [];
-    const total = internships
-      .filter(i => i.status === "completed")
-      .reduce((sum, i) => sum + parseInt(i.duration?.match(/\d+/)?.[0] || "0", 10), 0);
-    setIsPro(total >= 3);
+    const savedScore = localStorage.getItem("onlineAssessmentScore");
+    if (savedScore) {
+      setAssessmentScore(Number(savedScore));
+    }
+  }, []);
+
+  useEffect(() => {
+    const profile = JSON.parse(localStorage.getItem("studentProfile")) || {};
+    setSelectedMajor(profile.major || "");
+    setSelectedSemester(profile.semester || "");
+  }, []);
+
+  useEffect(() => {
+    const lastSeenStatus = localStorage.getItem("lastSeenReportStatus");
+    const currentStatus = localStorage.getItem("reportStatus");
+
+    if (currentStatus && lastSeenStatus && currentStatus !== lastSeenStatus) {
+      alert(`🔔 Your internship report status has changed to: ${currentStatus.toUpperCase()}`);
+    }
+
+    if (currentStatus) {
+      localStorage.setItem("lastSeenReportStatus", currentStatus);
+    }
   }, []);
 
   useEffect(() => {
@@ -48,7 +67,7 @@ export default function StudentDashboard() {
     if (score) setAssessmentScore(Number(score));
   }, []);
 
-  const handleFilterChange = e => {
+  const handleCompanyFilterChange = e => {
     const { name, value } = e.target;
     setCompanyFilter(f => ({ ...f, [name]: value }));
   };
@@ -59,7 +78,7 @@ export default function StudentDashboard() {
     (!companyFilter.company || c.name === companyFilter.company) &&
     c.name.toLowerCase().includes(searchText.toLowerCase())
   );
-  const sorted = filtered.sort((a, b) => b.recommendations - a.recommendations);
+  const sortedCompanies = filtered.sort((a, b) => b.recommendations - a.recommendations);
 
   const dashboardLinks = [
     { label: "Internships", path: "/student/internships" },
@@ -74,143 +93,106 @@ export default function StudentDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
-      {/* Gradient Hero */}
-      <motion.div
-        initial={{ y: -30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gradient-to-r from-[#00D6A0] to-[#00106A] text-white py-16"
-      >
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <h1 className="text-5xl font-extrabold mb-4">
-            Welcome, Student! {isPro && <span className="text-yellow-300">⭐ PRO</span>}
-          </h1>
-          <p className="text-lg opacity-90 mb-6">
-            Your major: <strong>{selectedMajor}</strong> &ensp;|&ensp; Semester: <strong>{selectedSemester}</strong>
-          </p>
-          {assessmentScore !== null && (
-            <p className="bg-blue-100 text-blue-800 inline-block px-4 py-2 rounded-full font-medium">
-              🧠 Assessment Score: {assessmentScore} / 100
-            </p>
-          )}
-          {/* Home & Logout */}
-          <div className="mt-8 flex justify-center space-x-4">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => window.location.href = "/"}
-              className="bg-white text-gray-800 font-semibold py-2 px-6 rounded-full shadow hover:shadow-lg transition-all"
-            >
-              Home
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => { localStorage.clear(); window.location.href = "/"; }}
-              className="bg-red-500 text-white font-semibold py-2 px-6 rounded-full shadow hover:shadow-lg transition-all"
-            >
-              Logout
-            </motion.button>
+    <>
+      <DashboardNavbar />
+      <div style={styles.container}>
+        <div style={styles.content}>
+
+          {/* Profile Section */}
+          <div style={styles.section}>
+            <StatusHeader major={'DMET'} semester={'6th'} />
+            {assessmentScore !== null && (
+              <div style={{ marginTop: '10px', color: '#2b7de9' }}>
+                🧠 Latest Assessment Score: <strong>{assessmentScore} / 100</strong>
+              </div>
+            )}
           </div>
-        </div>
-      </motion.div>
 
-      <div className="max-w-5xl mx-auto px-6 mt-10">
-        {/* Dashboard Links */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={cardContainerVariants}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
-        >
-          {dashboardLinks.map(link => (
-            <motion.div
-              key={link.label}
-              variants={cardVariants}
-              whileHover="hover"
-            >
-              <Link to={link.path}>
-                <div className="bg-white rounded-xl border border-gray-200 p-6 text-center shadow hover:shadow-lg transition-all">
-                  <h4 className="text-lg font-medium text-[#00106A]">{link.label}</h4>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Suggested Companies */}
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-          Suggested Companies
-        </h2>
-        <input
-          type="text"
-          placeholder="🔍 Search by company name"
-          value={searchText}
-          onChange={e => setSearchText(e.target.value)}
-          className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:outline-none"
-        />
-        <div className="flex flex-wrap gap-4 mb-8">
-          <select
-            name="industry"
-            value={companyFilter.industry}
-            onChange={handleFilterChange}
-            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:outline-none"
-          >
-            <option value="">All Industries</option>
-            <option value="Technology">Technology</option>
-            <option value="Business">Business</option>
-          </select>
-          <select
-            name="company"
-            value={companyFilter.company}
-            onChange={handleFilterChange}
-            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:outline-none"
-          >
-            <option value="">All Companies</option>
-            {allSuggestedCompanies
-              .filter(c => !companyFilter.industry || c.industry === companyFilter.industry)
-              .map(c => (
-                <option key={c.name} value={c.name}>{c.name}</option>
+          {/* Links Section */}
+          <div style={styles.section}>
+            <div style={{ ...styles.cardContainer, marginBottom: '0' }}>
+              {dashboardLinks.map((link) => (
+                <DashboardLinkCard key={link.label} {...link} />
               ))}
-          </select>
-        </div>
+            </div>
+          </div>
 
-        {/* Company Cards */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={cardContainerVariants}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {sorted.length > 0 ? (
-            sorted.map((c, idx) => (
-              <motion.div
-                key={idx}
-                variants={cardVariants}
-                whileHover="hover"
-                className="bg-white rounded-xl border border-gray-200 p-6 shadow hover:shadow-lg transition-all"
-              >
-                <h3 className="text-xl font-semibold mb-2">{c.name} 🏢</h3>
-                <p className="text-gray-600 mb-1"><strong>Industry:</strong> {c.industry}</p>
-                <p className="text-gray-600 mb-4"><strong>Recs:</strong> {c.recommendations}/5 ⭐</p>
-                <Link to={`/student/company/${c.name}`}>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-gradient-to-r from-[#00D6A0] to-[#00106A] text-white px-4 py-2 rounded-full shadow hover:shadow-xl transition-all"
-                  >
-                    View Profile
-                  </motion.button>
-                </Link>
-              </motion.div>
-            ))
-          ) : (
-            <p className="col-span-full text-center text-gray-500 py-12">
-              No companies match your filters.
-            </p>
-          )}
-        </motion.div>
+          {/* Suggested Companies Section */}
+          <div style={styles.section}>
+            <h2 style={styles.heading}>Suggested Companies Based on Your Job Interests</h2>
+            <div style={{ marginBottom: '15px' }}>
+              <SearchBar
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                placeHolder="Search company by name..."
+              />
+            </div>
+            <CompanyFilter
+              companyFilter={companyFilter}
+              onFilterChange={handleCompanyFilterChange} //handleCompanyFilterChange
+              companies={allSuggestedCompanies}
+            />
+            <div style={styles.cardContainer}>
+              {sortedCompanies.length > 0 ? ( //sortedCompanies
+                sortedCompanies.map((company) => ( //sortedCompanies
+                  <CompanyCard key={company.name} company={company} />
+                ))
+              ) : (
+                <p style={styles.noData}>No companies match your current interests and filters.</p>
+              )}
+            </div>
+          </div>
+
+        </div>
       </div>
-    </div>
+    </>
   );
-}
+};
+
+const styles = {
+  section: {
+    backgroundColor: '#ffffff',
+    padding: '20px',
+    borderRadius: '10px',
+    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+    marginBottom: '20px',
+  },
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    minHeight: "100vh",
+    backgroundColor: "#f4f4f9",
+    paddingTop: "100px",
+
+    width: "100%",
+  },
+  content: {
+    textAlign: "center",
+    padding: "20px",
+    width: "80%",
+    maxWidth: "1000px",
+  },
+  cardContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "20px",
+  },
+  card: {
+    backgroundColor: "white",
+    padding: "15px",
+    borderRadius: "10px",
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+    textAlign: "left",
+  },
+  noData: {
+    color: "grey",
+    fontSize: "16px",
+    textAlign: "center",
+  },
+  heading: {
+    marginTop: "30px",
+    marginBottom: "10px",
+    textAlign: "left",
+    color: "#444",
+  },
+};
