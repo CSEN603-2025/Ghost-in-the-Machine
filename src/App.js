@@ -78,7 +78,7 @@ function App() {
       <Route path="/dashboard" element={<CompanyDashboard />} />
        <Route path="/faculty/internship-reports" element={<ReportsListPage />} /> 
       <Route path="student/edit-profile" element={<EditProfilePage />} />
-        <Route path="/faculty/statistics" element={<StatsPage />} />
+      <Route path="/faculty/statistics" element={<StatsPage />} />
       <Route path="student/internships" element={<InternshipPage />} />
       <Route path="student/apply/:id" element={<ApplicationPage />} />
       <Route path="student/internship/:id" element={<InternshipDetailsPage />} />

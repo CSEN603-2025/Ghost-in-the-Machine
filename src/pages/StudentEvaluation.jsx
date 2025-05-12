@@ -1,7 +1,9 @@
+// src/pages/StudentEvaluation.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
-const StudentEvaluation = () => {
+export default function StudentEvaluation() {
   const [evaluation, setEvaluation] = useState(null);
   const [text, setText] = useState("");
   const [recommend, setRecommend] = useState("yes");
@@ -16,44 +18,36 @@ const StudentEvaluation = () => {
       setEvaluation(stored);
       setText(stored.text);
       setRecommend(stored.recommend);
-      setCompanyName(stored.companyName); // store the company name in state
+      setCompanyName(stored.companyName);
     }
   }, []);
 
   const handleSubmit = () => {
-    if (!companyName) {
+    if (!companyName.trim()) {
       alert("Please enter the company name.");
       return;
     }
-
-    const existingEvaluation = JSON.parse(localStorage.getItem("studentEvaluations"));
-    if (existingEvaluation && existingEvaluation[companyName]) {
+    const existing = JSON.parse(localStorage.getItem("studentEvaluations")) || {};
+    if (existing[companyName]) {
       alert("You have already submitted an evaluation for this company.");
       return;
     }
-
-    // Ask for confirmation before submitting
-    const confirmSubmit = window.confirm("Are you sure you want to submit this evaluation? You can only submit once per company.");
-    if (!confirmSubmit) {
-      return; // Do nothing if the user cancels
+    if (!window.confirm("Are you sure you want to submit this evaluation? You can only submit once per company.")) {
+      return;
     }
-
     const newEval = { text, recommend, companyName };
-    const storedEvaluations = existingEvaluation || {};
-    storedEvaluations[companyName] = newEval;
-    localStorage.setItem("studentEvaluations", JSON.stringify(storedEvaluations));
-
+    existing[companyName] = newEval;
+    localStorage.setItem("studentEvaluations", JSON.stringify(existing));
     setEvaluation(newEval);
     setIsEditing(false);
   };
 
   const handleSubmitAndNavigate = () => {
-    // Optional: You can send the data to a backend here before clearing it
-    localStorage.removeItem("studentEvaluation"); // Clear the evaluation
+    localStorage.removeItem("studentEvaluation");
     setEvaluation(null);
     setText("");
     setRecommend("yes");
-    setCompanyName(""); // Clear company name after submission
+    setCompanyName("");
     navigate("/student-dashboard");
   };
 
@@ -62,138 +56,126 @@ const StudentEvaluation = () => {
     setEvaluation(null);
     setText("");
     setRecommend("yes");
-    setCompanyName(""); // Clear company name after deletion
+    setCompanyName("");
   };
 
   return (
-    <div style={styles.container}><div className="fixed top-0 left-0 right-0 z-50 w-full bg-[#00106A] py-6 px-6 flex items-center justify-between">
-
-    {/* Empty div for spacing or future icons */}
-    <div className="w-1/3" />
-  
-    {/* Centered Title */}
-    <div className="w-1/3 text-center">
-      <h1 className="text-3xl font-bold text-white">Company Evaluation</h1>
-    </div>
-  
-    {/* Home & Logout Buttons */}
-    <div className="w-1/3 flex justify-end space-x-4">
-      <button
-        onClick={() => window.location.href = "/student"}
-        className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] hover:from-[#00D6A0] hover:to-[#00F0B5] text-black font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-300"
+    <div className="min-h-screen bg-gray-50 pb-16">
+      {/* Hero */}
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-gradient-to-r from-[#00D6A0] to-[#00106A] text-white py-16 mb-8"
       >
-        Home
-      </button>
-      <button
-        onClick={() => {
-          localStorage.clear();
-          window.location.href = "/";
-        }}
-        className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-600 hover:to-red-500 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-300"
-      >
-        Logout
-      </button>
-    </div>
-  </div>
-  
-      <input
-        type="text"
-        value={companyName}
-        onChange={(e) => setCompanyName(e.target.value)}
-        placeholder="Enter the company name"
-        style={styles.input}
-      />
-
-      {evaluation && !isEditing ? (
-        <div style={styles.card}>
-          <p><strong>Your Evaluation:</strong> {evaluation.text}</p>
-          <p><strong>Recommend to others?</strong> {evaluation.recommend === "yes" ? "✅ Yes" : "❌ No"}</p>
-          <button onClick={() => setIsEditing(true)} style={styles.button}>Edit</button>
-          <button onClick={handleDelete} style={{ ...styles.button, backgroundColor: "#e63946" }}>Delete</button>
-          <button onClick={handleSubmitAndNavigate} style={{ ...styles.button, backgroundColor: "#28a745" }}>
-            Submit 
-          </button>
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h1 className="text-5xl font-extrabold mb-4">🏢 Company Evaluation</h1>
+          <p className="text-lg opacity-90">
+            Share your experience and let future interns know whether you'd recommend this company.
+          </p>
         </div>
-      ) : (
-        <div style={styles.form}>
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Write your evaluation about the company..."
-            style={styles.textarea}
-          />
+      </motion.div>
+
+      {/* Content Card */}
+      <div className="max-w-2xl mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          className="bg-white rounded-xl shadow-md p-8 space-y-6"
+        >
+          {/* Company Input */}
           <div>
-            <label>
-              <input
-                type="radio"
-                name="recommend"
-                value="yes"
-                checked={recommend === "yes"}
-                onChange={() => setRecommend("yes")}
-              />
-              Recommend
-            </label>
-            <label style={{ marginLeft: "20px" }}>
-              <input
-                type="radio"
-                name="recommend"
-                value="no"
-                checked={recommend === "no"}
-                onChange={() => setRecommend("no")}
-              />
-              Don't Recommend
-            </label>
+            <label className="block text-sm font-medium text-gray-700">Company Name</label>
+            <input
+              type="text"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              placeholder="Enter the company name"
+              className="mt-1 block w-full rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent"
+            />
           </div>
-          <button onClick={handleSubmit} style={styles.button}>
-            {evaluation ? "Update Evaluation" : "Submit Evaluation"}
-          </button>
-        </div>
-      )}
+
+          {evaluation && !isEditing ? (
+            // Read-only view
+            <div className="space-y-4">
+              <p>
+                <strong>Your Evaluation:</strong> {evaluation.text}
+              </p>
+              <p>
+                <strong>Recommend to others?</strong>{" "}
+                {evaluation.recommend === "yes" ? "✅ Yes" : "❌ No"}
+              </p>
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={handleSubmitAndNavigate}
+                  className="px-4 py-2 bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black rounded-lg shadow-md hover:shadow-lg transition-all"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          ) : (
+            // Form view
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Your Evaluation</label>
+                <textarea
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="Write your evaluation about the company..."
+                  rows={4}
+                  className="mt-1 block w-full rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent"
+                />
+              </div>
+              <div className="flex items-center space-x-6">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="recommend"
+                    value="yes"
+                    checked={recommend === "yes"}
+                    onChange={() => setRecommend("yes")}
+                    className="form-radio text-[#00D6A0]"
+                  />
+                  <span>Recommend</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="recommend"
+                    value="no"
+                    checked={recommend === "no"}
+                    onChange={() => setRecommend("no")}
+                    className="form-radio text-[#00D6A0]"
+                  />
+                  <span>Don't Recommend</span>
+                </label>
+              </div>
+              <div className="flex justify-end">
+                <button
+                  onClick={handleSubmit}
+                  className="px-6 py-2 bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black rounded-lg shadow-md hover:shadow-lg transition-all"
+                >
+                  {evaluation ? "Update Evaluation" : "Submit Evaluation"}
+                </button>
+              </div>
+            </div>
+          )}
+        </motion.div>
+      </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    padding: "100px",
-    textAlign: "center",
-    maxWidth: "600px",
-    margin: "0 auto",
-  },
-  card: {
-    backgroundColor: "#f1f1f1",
-    padding: "20px",
-    borderRadius: "10px",
-    marginTop: "20px",
-  },
-  form: {
-    marginTop: "20px",
-  },
-  textarea: {
-    width: "100%",
-    height: "120px",
-    padding: "10px",
-    marginBottom: "10px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    marginBottom: "10px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
-  },
-  button: {
-    backgroundColor: "#2b7de9",
-    color: "#fff",
-    padding: "10px 15px",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    marginTop: "10px",
-    marginRight: "10px",
-  },
-};
-
-export default StudentEvaluation;
+}

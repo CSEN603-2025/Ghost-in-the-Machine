@@ -1,85 +1,99 @@
+// src/pages/ViewedCompaniesPage.jsx
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
-const ViewedCompaniesPage = () => {
+export default function ViewedCompaniesPage() {
   const [viewedCompanies, setViewedCompanies] = useState([]);
+  const navigate = useNavigate();
 
-  // Hardcoded Data for Testing
   useEffect(() => {
     // Simulating companies that viewed the student's profile
-    const companies = [
+    setViewedCompanies([
       "Tech Corp",
       "Innovate Solutions",
       "Global Enterprises",
       "Creative Labs"
-    ];
-    setViewedCompanies(companies);
+    ]);
   }, []);
 
   return (
-    <div style={styles.container}><div className="fixed top-0 left-0 right-0 z-50 w-full bg-[#00106A] py-6 px-6 flex items-center justify-between">
+    <div className="min-h-screen bg-gray-50 pb-16">
+      {/* Hero Section */}
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-gradient-to-r from-[#00D6A0] to-[#00106A] text-white py-16 mb-8"
+      >
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h1 className="text-5xl font-extrabold mb-4">
+            👀 Companies Viewed My Profile
+          </h1>
+          <p className="text-lg opacity-90">
+            See who’s been interested in your experience and reach out!
+          </p>
+        </div>
+      </motion.div>
 
-  {/* Empty div for spacing or future icons */}
-  <div className="w-1/3" />
+      {/* Top Nav Buttons */}
+      <div className="max-w-4xl mx-auto px-6 mb-8 flex justify-end space-x-4">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => navigate('/student')}
+          className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black font-semibold py-2 px-6 rounded-full shadow hover:shadow-lg transition-all"
+        >
+          Home
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => { localStorage.clear(); navigate('/'); }}
+          className="bg-gradient-to-r from-red-500 to-red-400 text-white py-2 px-6 rounded-full shadow hover:shadow-lg transition-all"
+        >
+          Logout
+        </motion.button>
+      </div>
 
-  {/* Centered Title */}
-  <div className="w-1/3 text-center">
-    <h1 className="text-3xl font-bold text-white">Companies that viewed my profile </h1>
-  </div>
-
-  {/* Home & Logout Buttons */}
-  <div className="w-1/3 flex justify-end space-x-4">
-    <button
-      onClick={() => window.location.href = "/student"}
-      className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] hover:from-[#00D6A0] hover:to-[#00F0B5] text-black font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-300"
-    >
-      Home
-    </button>
-    <button
-      onClick={() => {
-        localStorage.clear();
-        window.location.href = "/";
-      }}
-      className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-600 hover:to-red-500 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-300"
-    >
-      Logout
-    </button>
-  </div>
-</div>
-
-      <div style={styles.listContainer}>
-        {viewedCompanies.length > 0 ? (
-          viewedCompanies.map((company, index) => (
-            <div key={index} style={styles.companyCard}>
-              <h3>{company}</h3>
-            </div>
-          ))
+      {/* Company Cards */}
+      <div className="max-w-4xl mx-auto px-6">
+        {viewedCompanies.length === 0 ? (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center text-gray-500 py-12"
+          >
+            No companies have viewed your profile yet.
+          </motion.p>
         ) : (
-          <p>No companies have viewed your profile yet.</p>
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.1 } }
+            }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {viewedCompanies.map((company, idx) => (
+              <motion.div
+                key={idx}
+                variants={{
+                  hidden: { y: 20, opacity: 0 },
+                  visible: { y: 0, opacity: 1 }
+                }}
+                whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)" }}
+                className="bg-white rounded-xl shadow-md border border-gray-100 cursor-default p-6 transition-all duration-300"
+              >
+                <h2 className="text-xl font-semibold text-gray-800">
+                  {company}
+                </h2>
+              </motion.div>
+            ))}
+          </motion.div>
         )}
       </div>
     </div>
   );
-};
-
-// Styles
-const styles = {
-  container: {
-    padding: '100px',
-    backgroundColor: '#f5f5f5',
-    minHeight: '100vh',
-  },
-  listContainer: {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: '10px',
-    marginTop: '20px',
-  },
-  companyCard: {
-    backgroundColor: 'white',
-    padding: '15px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-  },
-};
-
-export default ViewedCompaniesPage;
+}

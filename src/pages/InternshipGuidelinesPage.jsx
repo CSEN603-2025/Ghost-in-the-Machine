@@ -1,79 +1,66 @@
+// src/pages/InternshipGuidelinesPage.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Define video URLs for different majors (all now point to the new video)
+// Define video URLs for different majors
 const videoByMajor = {
-  "Computer Engineering": "YnTEXW7RaYY", // Updated with the new video ID
-  "Business": "YnTEXW7RaYY", // Updated with the new video ID
-  "Pharmacy": "YnTEXW7RaYY", // Updated with the new video ID
-  "Management": "YnTEXW7RaYY", // Updated with the new video ID
+  "Computer Engineering": "YnTEXW7RaYY",
+  Business:               "YnTEXW7RaYY",
+  Pharmacy:               "YnTEXW7RaYY",
+  Management:             "YnTEXW7RaYY",
 };
 
-// Fallback video ID (if the specific video is unavailable)
-const fallbackVideoId = "YnTEXW7RaYY"; // This is the fallback to the new video ID
+const fallbackVideoId = "YnTEXW7RaYY";
 
-const InternshipGuidelinesPage = () => {
-  // State to track selected major
+export default function InternshipGuidelinesPage() {
+  const navigate = useNavigate();
   const [major, setMajor] = useState("Computer Engineering");
-
-  // Get the video for the specific major, or fallback to a general video if not available
   const videoId = videoByMajor[major] || fallbackVideoId;
 
-  const navigate = useNavigate();
-
-  const handleMajorChange = (event) => {
-    setMajor(event.target.value);
-  };
-
   return (
-    <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px" }}>
-      <h2 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "20px" }}>
-        📹 Internship Guidelines Video
-      </h2>
-
-      {/* Major selection dropdown */}
-      <select
-        value={major}
-        onChange={handleMajorChange}
-        style={{ padding: "10px", borderRadius: "8px", border: "1px solid #ccc", marginBottom: "20px" }}
-      >
-        <option value="Computer Engineering">Computer Engineering</option>
-        <option value="Business">Business</option>
-        <option value="Pharmacy">Pharmacy</option>
-        <option value="Management">Management</option>
-      </select>
-
-      {/* Video Section */}
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
-        <iframe
-          width="560"
-          height="315"
-          src={`https://www.youtube.com/embed/${videoId}`}
-          title="Internship Guidelines Video"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pb-12">
+      {/* Hero Navbar */}
+      <div className="w-full bg-[#00106A]/90 backdrop-blur-md border-b border-white/10 py-4 px-6 flex items-center justify-between sticky top-0 z-50">
+        <div className="w-1/3" />
+        <h1 className="w-1/3 text-center text-2xl font-bold text-white">Internship Guidelines</h1>
+        <div className="w-1/3 flex justify-end space-x-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black font-semibold px-4 py-2 rounded-full shadow hover:shadow-lg transition-all"
+          >
+            ← Back
+          </button>
+        </div>
       </div>
 
-      {/* Button to navigate back to the previous page */}
-      <button
-        onClick={() => navigate(-1)} // This will take you back to the previous page
-        style={{
-          padding: "10px 20px",
-          fontSize: "16px",
-          backgroundColor: "#4CAF50",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          textAlign: "center",
-        }}
-      >
-        Back
-      </button>
+      {/* Content */}
+      <div className="max-w-3xl mx-auto px-6 pt-10 space-y-8">
+        {/* Major selector */}
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">Select Your Major</label>
+          <select
+            value={major}
+            onChange={e => setMajor(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#00D6A0]/50"
+          >
+            {Object.keys(videoByMajor).map(mj => (
+              <option key={mj} value={mj}>{mj}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* 16:9 Responsive Video */}
+        <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
+          <iframe
+            className="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
+            src={`https://www.youtube.com/embed/${videoId}`}
+            title="Internship Guidelines Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+      </div>
     </div>
   );
-};
-
-export default InternshipGuidelinesPage;
+}

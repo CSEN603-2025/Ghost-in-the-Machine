@@ -4,43 +4,41 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const hardcodedInternships = [
-  { id: 1, title: "Frontend Developer Intern", company: "TechCorp", duration: "3 Months", status: "accepted" },
-  { id: 2, title: "Data Analyst Intern", company: "DataWorks", duration: "6 Months", status: "rejected" },
-  { id: 3, title: "Backend Intern", company: "Valeo", duration: "2 Months", status: "finalized" },
-  { id: 4, title: "UI/UX Design Intern", company: "Creative Design Studio", duration: "4 Months", status: "pending" },
+  { id: 1, title: "Frontend Developer Intern", company: "TechCorp", duration: "3 Months", status: "accepted", startDate: "2025-01-01", endDate: "2025-04-01" },
+  { id: 2, title: "Data Analyst Intern", company: "DataWorks", duration: "6 Months", status: "rejected", startDate: "2025-02-15", endDate: "2025-08-15" },
+  { id: 3, title: "Backend Intern", company: "Valeo", duration: "2 Months", status: "finalized", startDate: "2025-03-01", endDate: "2025-05-01" },
+  { id: 4, title: "UI/UX Design Intern", company: "Creative Design Studio", duration: "4 Months", status: "pending", startDate: "2025-04-01", endDate: "2025-08-01" },
 ];
 
 const statusStyles = {
-  accepted:    { bg: "bg-green-100", text: "text-green-800" },
-  rejected:    { bg: "bg-red-100",   text: "text-red-800"   },
-  finalized:   { bg: "bg-blue-100",  text: "text-blue-800"  },
-  pending:     { bg: "bg-yellow-100",text: "text-yellow-800"},
+  accepted:  { border: "border-green-200", accent: "bg-green-200", text: "text-green-800" },
+  rejected:  { border: "border-red-200",   accent: "bg-red-200",   text: "text-red-800"   },
+  finalized: { border: "border-blue-200",  accent: "bg-blue-200",  text: "text-blue-800"  },
+  pending:   { border: "border-yellow-200",accent: "bg-yellow-200",text: "text-yellow-800"},
 };
 
 export default function MyApplicationsPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Top Navbar */}
+    <div className="min-h-screen bg-gray-50 pb-16">
+      {/* Hero Section */}
       <motion.div
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="w-full bg-[#00106A]/90 backdrop-blur-md border-b border-white/10 py-4 px-6 flex items-center justify-between sticky top-0 z-50"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-gradient-to-r from-[#00D6A0] to-[#00106A] text-white py-16 mb-8"
       >
-        <button
-          onClick={() => navigate(-1)}
-          className="text-white font-semibold hover:text-gray-200"
-        >
-          ← Back
-        </button>
-        <h1 className="text-2xl font-bold text-white/90">My Applications</h1>
-        <div /> {/* spacer */}
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h1 className="text-5xl font-extrabold mb-4">📝 My Applications</h1>
+          <p className="text-lg opacity-90">
+            Here you can review the status of every internship you’ve applied to.
+          </p>
+        </div>
       </motion.div>
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-10">
-        {/* Grid of Application Cards */}
+      {/* Applications Grid */}
+      <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -50,54 +48,57 @@ export default function MyApplicationsPage() {
           }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {hardcodedInternships.map(app => (
-            <motion.div
-              key={app.id}
-              variants={{
-                hidden: { y: 20, opacity: 0 },
-                visible: { y: 0, opacity: 1 }
-              }}
-              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)" }}
-              className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden cursor-pointer transition-all duration-300"
-            >
-              {/* top accent bar */}
-              <div
-                className={`h-2 w-full ${
-                  statusStyles[app.status]?.bg || "bg-gray-200"
-                }`}
-              />
-              <div className="p-6 flex flex-col h-full">
-                <h2 className="text-xl font-bold text-gray-800 mb-2">{app.title}</h2>
-                <p className="text-gray-600 mb-1"><strong>Company:</strong> {app.company}</p>
-                <p className="text-gray-600 mb-4"><strong>Duration:</strong> {app.duration}</p>
-                <div className="mt-auto flex items-center justify-between">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      statusStyles[app.status]?.bg + " " + statusStyles[app.status]?.text
-                    }`}
-                  >
-                    {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
-                  </span>
-                  <motion.button
-                    whileHover={{ x: 5 }}
-                    className="text-[#00D6A0] font-medium flex items-center"
-                  >
-                    Details
-                    <svg
-                      className="w-4 h-4 ml-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+          {hardcodedInternships.map(app => {
+            const styles = statusStyles[app.status] || statusStyles.pending;
+            return (
+              <motion.div
+                key={app.id}
+                variants={{
+                  hidden: { y: 20, opacity: 0 },
+                  visible: { y: 0, opacity: 1 }
+                }}
+                whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)" }}
+                className={`
+                  bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-all duration-300
+                  ${styles.border}
+                `}
+              >
+                {/* Top accent bar */}
+                <div className={`h-2 w-full ${styles.accent}`} />
+
+                <div className="p-6 flex flex-col h-full">
+                  <h2 className="text-2xl font-semibold text-gray-800 mb-2">{app.title}</h2>
+                  <p className="text-gray-600 mb-1"><strong>Company:</strong> {app.company}</p>
+                  <p className="text-gray-600 mb-1"><strong>Duration:</strong> {app.duration}</p>
+                  <p className="text-gray-600 mb-4">
+                    <strong>Dates:</strong> {app.startDate} → {app.endDate}
+                  </p>
+                  <div className="mt-auto flex items-center justify-between">
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${styles.accent} ${styles.text}`}>
+                      {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                    </span>
+                    <motion.button
+                      whileHover={{ x: 5 }}
+                      className="text-[#00D6A0] font-medium flex items-center"
+                      onClick={() => {/* navigate to details if you have a route */}}
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </motion.button>
+                      Details
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </motion.button>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </motion.div>
 
         {/* Empty State */}
@@ -105,9 +106,9 @@ export default function MyApplicationsPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-12"
+            className="col-span-full text-center py-12 text-gray-500"
           >
-            <p className="text-gray-500">You have no applications yet.</p>
+            You have no applications yet.
           </motion.div>
         )}
       </div>

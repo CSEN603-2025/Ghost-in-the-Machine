@@ -1,13 +1,16 @@
+// src/pages/AssessmentsPage.jsx
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import jsPDF from 'jspdf';
 
-const AssessmentsPage = () => {
+export default function AssessmentsPage() {
   const [availableAssessments, setAvailableAssessments] = useState([]);
   const [selectedAssessmentIndex, setSelectedAssessmentIndex] = useState(null);
   const [completed, setCompleted] = useState(false);
   const [score, setScore] = useState(null);
   const [postToProfile, setPostToProfile] = useState(false);
   const [answers, setAnswers] = useState({});
-  const [storedScore, setStoredScore] = useState(null); // ✅ new
+  const [storedScore, setStoredScore] = useState(null);
 
   const mockAssessmentQuestions = [
     {
@@ -28,7 +31,7 @@ const AssessmentsPage = () => {
   ];
 
   useEffect(() => {
-    const assessments = [
+    setAvailableAssessments([
       {
         title: "Software Engineering Fundamentals",
         description: "Test your knowledge of software engineering concepts.",
@@ -44,202 +47,162 @@ const AssessmentsPage = () => {
         description: "Try this sample multiple-choice test.",
         isMock: true,
       },
-    ];
-    setAvailableAssessments(assessments);
+    ]);
 
-    const savedScore = localStorage.getItem('onlineAssessmentScore'); // ✅ new
-    if (savedScore !== null) {
-      setStoredScore(Number(savedScore)); // ✅ new
-    }
+    const saved = localStorage.getItem('onlineAssessmentScore');
+    if (saved !== null) setStoredScore(Number(saved));
   }, []);
 
-  const handleTakeAssessment = (index) => {
-    setSelectedAssessmentIndex(index);
-    setScore(null);
+  const handleTake = idx => {
+    setSelectedAssessmentIndex(idx);
     setCompleted(false);
+    setScore(null);
     setPostToProfile(false);
     setAnswers({});
   };
 
-  const handleAnswerChange = (questionIndex, optionIndex) => {
-    setAnswers({ ...answers, [questionIndex]: optionIndex });
+  const handleAnswerChange = (qIdx, optIdx) => {
+    setAnswers(a => ({ ...a, [qIdx]: optIdx }));
   };
 
-  const handleCompleteAssessment = () => {
-    let finalScore;
-
-    if (availableAssessments[selectedAssessmentIndex].isMock) {
-      let correctAnswers = 0;
-      mockAssessmentQuestions.forEach((q, index) => {
-        if (answers[index] === q.correct) correctAnswers++;
+  const handleComplete = () => {
+    let final;
+    const asmt = availableAssessments[selectedAssessmentIndex];
+    if (asmt.isMock) {
+      let correct = 0;
+      mockAssessmentQuestions.forEach((q, i) => {
+        if (answers[i] === q.correct) correct++;
       });
-      finalScore = Math.round((correctAnswers / mockAssessmentQuestions.length) * 100);
+      final = Math.round((correct / mockAssessmentQuestions.length) * 100);
     } else {
-      finalScore = Math.floor(Math.random() * 101);
+      final = Math.floor(Math.random() * 101);
     }
-
-    setScore(finalScore);
+    setScore(final);
     setCompleted(true);
-
     if (postToProfile) {
-      localStorage.setItem('onlineAssessmentScore', finalScore);
-      setStoredScore(finalScore); // ✅ update state too
+      localStorage.setItem('onlineAssessmentScore', final);
+      setStoredScore(final);
     }
   };
 
   return (
-    <div style={styles.container}><div className="fixed top-0 left-0 right-0 z-50 w-full bg-[#00106A] py-6 px-6 flex items-center justify-between">
-
-    {/* Empty div for spacing or future icons */}
-    <div className="w-1/3" />
-  
-    {/* Centered Title */}
-    <div className="w-1/3 text-center">
-      <h1 className="text-3xl font-bold text-white">Online assessment</h1>
-    </div>
-  
-    {/* Home & Logout Buttons */}
-    <div className="w-1/3 flex justify-end space-x-4">
-      <button
-        onClick={() => window.location.href = "/student"}
-        className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] hover:from-[#00D6A0] hover:to-[#00F0B5] text-black font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-300"
+    <div className="min-h-screen bg-gray-50 pb-16">
+      {/* Hero */}
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-[#00D6A0] to-[#00106A] text-white py-16 mb-8"
       >
-        Home
-      </button>
-      <button
-        onClick={() => {
-          localStorage.clear();
-          window.location.href = "/";
-        }}
-        className="bg-gradient-to-r from-red-500 to-red-400 hover:from-red-600 hover:to-red-500 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-300"
-      >
-        Logout
-      </button>
-    </div>
-  </div>
-  
-
-      {storedScore !== null && ( // ✅ display score
-        <h3 style={{ color: "#2b7de9" }}>
-          🎓 Your Last Assessment Score: {storedScore} / 100
-        </h3>
-      )}
-
-      <div style={styles.listContainer}>
-        {availableAssessments.map((assessment, index) => (
-          <div key={index} style={styles.assessmentCard}>
-            <h3>{assessment.title}</h3>
-            <p>{assessment.description}</p>
-            <button style={styles.button} onClick={() => handleTakeAssessment(index)}>
-              Take Assessment
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {selectedAssessmentIndex !== null && (
-        <div style={styles.selectedSection}>
-          <h2>{availableAssessments[selectedAssessmentIndex].title}</h2>
-
-          {!completed ? (
-            <>
-              {availableAssessments[selectedAssessmentIndex].isMock ? (
-                <div>
-                  {mockAssessmentQuestions.map((q, i) => (
-                    <div key={i} style={{ marginBottom: '10px' }}>
-                      <strong>{i + 1}. {q.question}</strong>
-                      {q.options.map((opt, j) => (
-                        <div key={j}>
-                          <label>
-                            <input
-                              type="radio"
-                              name={`question-${i}`}
-                              value={j}
-                              checked={answers[i] === j}
-                              onChange={() => handleAnswerChange(i, j)}
-                            />
-                            {' '}{opt}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p>Click below to complete your assessment.</p>
-              )}
-
-              <button style={styles.completeButton} onClick={handleCompleteAssessment}>
-                Complete Assessment
-              </button>
-
-              <div style={{ marginTop: '10px' }}>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={postToProfile}
-                    onChange={() => setPostToProfile(!postToProfile)}
-                  />
-                  {' '}Post score to my profile
-                </label>
-              </div>
-            </>
-          ) : (
-            <p style={{ fontWeight: 'bold', color: 'green' }}>
-              ✅ Assessment Completed! Your Score: {score}
-            </p>
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h1 className="text-5xl font-extrabold mb-4">📝 Online Assessments</h1>
+          <p className="text-lg opacity-90">
+            Choose an assessment, answer questions, and track your score.
+          </p>
+          {storedScore !== null && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.6, type: "spring", stiffness: 300 }}
+              className="mt-6 inline-block bg-yellow-300 text-gray-900 px-5 py-2 rounded-full font-semibold shadow-lg"
+            >
+              🎓 Last Score: {storedScore} / 100
+            </motion.div>
           )}
         </div>
-      )}
+      </motion.div>
+
+      <div className="max-w-3xl mx-auto px-6 space-y-8">
+        {/* Assessment List */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+          className="grid grid-cols-1 gap-6"
+        >
+          {availableAssessments.map((a, idx) => (
+            <motion.div
+              key={idx}
+              variants={{
+                hidden: { y: 20, opacity: 0 },
+                visible: { y: 0, opacity: 1 }
+              }}
+              whileHover={{ scale: 1.02, boxShadow: "0 8px 24px rgba(0,0,0,0.12)" }}
+              className="bg-white rounded-xl p-6 border border-gray-200 cursor-pointer"
+              onClick={() => handleTake(idx)}
+            >
+              <h2 className="text-xl font-semibold text-gray-800 mb-2">{a.title}</h2>
+              <p className="text-gray-600">{a.description}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Selected Assessment */}
+        {selectedAssessmentIndex !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-white rounded-xl p-6 border border-gray-200 shadow"
+          >
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              {availableAssessments[selectedAssessmentIndex].title}
+            </h3>
+
+            {!completed ? (
+              <div className="space-y-4">
+                {availableAssessments[selectedAssessmentIndex].isMock && (
+                  mockAssessmentQuestions.map((q, i) => (
+                    <div key={i} className="space-y-2">
+                      <strong className="block">{i + 1}. {q.question}</strong>
+                      {q.options.map((opt, j) => (
+                        <label key={j} className="inline-flex items-center">
+                          <input
+                            type="radio"
+                            name={`q-${i}`}
+                            checked={answers[i] === j}
+                            onChange={() => handleAnswerChange(i, j)}
+                            className="mr-2"
+                          />
+                          <span>{opt}</span>
+                        </label>
+                      ))}
+                    </div>
+                  ))
+                )}
+                {!availableAssessments[selectedAssessmentIndex].isMock && (
+                  <p className="text-gray-600">
+                    Click “Complete Assessment” for a randomized score.
+                  </p>
+                )}
+
+                <div className="flex items-center space-x-4 mt-4">
+                  <button
+                    onClick={handleComplete}
+                    className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black font-semibold py-2 px-6 rounded-full shadow hover:shadow-lg transition-all"
+                  >
+                    Complete Assessment
+                  </button>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={postToProfile}
+                      onChange={() => setPostToProfile(p => !p)}
+                      className="mr-2"
+                    />
+                    Post score to my profile
+                  </label>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center">
+                <p className="text-2xl font-bold text-green-600 mb-4">
+                  ✅ Assessment Completed!
+                </p>
+                <p className="text-xl">Your Score: {score} / 100</p>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </div>
     </div>
   );
-};
-
-// Styles
-const styles = {
-  container: {
-    padding: '20px',
-    backgroundColor: '#f5f5f5',
-    minHeight: '100vh',
-  },
-  listContainer: {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: '10px',
-    marginTop: '100px',
-  },
-  assessmentCard: {
-    backgroundColor: 'white',
-    padding: '15px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-  },
-  button: {
-    backgroundColor: '#2b7de9',
-    color: 'white',
-    padding: '8px 15px',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    fontSize: '14px',
-  },
-  completeButton: {
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    padding: '8px 15px',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    marginTop: '10px',
-  },
-  selectedSection: {
-    backgroundColor: '#fff',
-    marginTop: '30px',
-    padding: '20px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-  },
-};
-
-export default AssessmentsPage;
+}
