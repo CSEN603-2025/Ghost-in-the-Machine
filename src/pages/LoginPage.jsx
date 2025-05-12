@@ -29,6 +29,7 @@ function LoginPage() {
       'rep@corp.com': '1234',
       'officer@scad.com': '12345',
       'faculty@guc.com': '123',
+      'prostudent@guc.com': '123',
     };
   
     if (email in validUsers) {
@@ -48,7 +49,11 @@ function LoginPage() {
         else if (email === 'faculty@guc.com') {
           setSuccess('Fculty login successful!');
           navigate('/faculty-dashboard');
-        } 
+        }
+        else if (email === 'prostudent@guc.com') {  
+          setSuccess('ProStudent login successful!');
+          navigate('/pro-student-dashboard');
+        }
         
       } else {
         // password wrong

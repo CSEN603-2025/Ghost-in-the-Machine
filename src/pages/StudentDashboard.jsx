@@ -67,7 +67,7 @@ export default function StudentDashboard() {
     if (score) setAssessmentScore(Number(score));
   }, []);
 
-  const handleFilterChange = e => {
+  const handleCompanyFilterChange = e => {
     const { name, value } = e.target;
     setCompanyFilter(f => ({ ...f, [name]: value }));
   };
@@ -78,7 +78,7 @@ export default function StudentDashboard() {
     (!companyFilter.company || c.name === companyFilter.company) &&
     c.name.toLowerCase().includes(searchText.toLowerCase())
   );
-  const sorted = filtered.sort((a, b) => b.recommendations - a.recommendations);
+  const sortedCompanies = filtered.sort((a, b) => b.recommendations - a.recommendations);
 
   const dashboardLinks = [
     { label: "Internships", path: "/student/internships" },
@@ -129,12 +129,12 @@ export default function StudentDashboard() {
             </div>
             <CompanyFilter
               companyFilter={companyFilter}
-              onFilterChange={handleCompanyFilterChange}
+              onFilterChange={handleCompanyFilterChange} //handleCompanyFilterChange
               companies={allSuggestedCompanies}
             />
             <div style={styles.cardContainer}>
-              {sortedCompanies.length > 0 ? (
-                sortedCompanies.map((company) => (
+              {sortedCompanies.length > 0 ? ( //sortedCompanies
+                sortedCompanies.map((company) => ( //sortedCompanies
                   <CompanyCard key={company.name} company={company} />
                 ))
               ) : (
@@ -196,5 +196,3 @@ const styles = {
     color: "#444",
   },
 };
-
-export default StudentDashboard;
