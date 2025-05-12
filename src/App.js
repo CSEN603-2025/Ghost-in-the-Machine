@@ -1,5 +1,6 @@
 
 import { motion } from "framer-motion";
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
 import './App.css';
 import LoginPage from './pages/LoginPage';
@@ -34,7 +35,6 @@ import InternList from './components/InternList';
 import ViewAllInternships from './pages/ViewAllInternships';
 import ReportsPage from './pages/ReportsPage';
 import InternshipGuidelinesPage from './pages/InternshipGuidelinesPage';
-import ApplicationListPage from './components/ApplicationListPage'; 
 import ManageReportsAndEvaluations from './pages/ManageReportsAndEvaluations';
 import FacultyDashboardPage from './pages/FacultyDashboardPage';
 import EmailClientPage from "./pages/EmailClientPage";
@@ -43,6 +43,7 @@ import ViewedCompaniesPage from './pages/ViewedCompaniesPage';
 import ReportsListPage from './pages/ReportsListPage';
 import AssessmentsPage from './pages/AssessmentsPage';
 import StatsPage from './pages/StatsPage';
+import PostsList from './components/PostsList';
 
 
 
@@ -55,6 +56,7 @@ function App() {
     markAsRead,
     removeNotification
   } = useNotifications();
+  const [posts, setPosts] = useState([]);
 
   return (
     
@@ -98,6 +100,8 @@ function App() {
       <Route path="student/viewed-profile" element={<ViewedCompaniesPage />} />
       <Route path="student/assessment" element={<AssessmentsPage />} />
       <Route path="/evaluations-reports" element={<ManageReportsAndEvaluations />} />
+      <Route path="/posts" element={<PostsList posts={posts} setPosts={setPosts} />} />
+
         
 
     </Routes>
