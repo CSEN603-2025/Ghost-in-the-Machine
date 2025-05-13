@@ -44,6 +44,7 @@ import ReportsListPage from './pages/ReportsListPage';
 import AssessmentsPage from './pages/AssessmentsPage';
 import StatsPage from './pages/StatsPage';
 import PostsList from './components/PostsList';
+import ApplicationListPage from './components/ApplicationListPage';
 
 
 
@@ -65,7 +66,7 @@ function App() {
       <Route path="/welcome" element={<LoginPage />} />
       <Route path="/register-company" element={<RegisterCompanyPage />} />
       <Route path="/student-dashboard" element={<StudentDashboard />} />
-      <Route path="student/my-applications" element={<MyApplicationsPage />} /> {/* New route */}
+      <Route path="student/my-applications" element={<MyApplicationsPage />} /> 
       <Route path="/workshops" element={<WorkshopsPage />} />
       <Route path="/dashboard" element={<CompanyDashboard />} />
       <Route path="/scad-dashboard" element={<SCADDashboard />} />
@@ -101,9 +102,7 @@ function App() {
       <Route path="student/assessment" element={<AssessmentsPage />} />
       <Route path="/evaluations-reports" element={<ManageReportsAndEvaluations />} />
       <Route path="/posts" element={<PostsList posts={posts} setPosts={setPosts} />} />
-
-        
-
+      <Route path="/applications/:postId" element={<ApplicationListPage />} />
     </Routes>
    
   );

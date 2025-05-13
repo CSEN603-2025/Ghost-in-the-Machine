@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaSearch, FaCalendarAlt, FaDollarSign, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
 
 const dummyCompany = {
   name: "Google LLC",
@@ -11,7 +12,7 @@ const dummyCompany = {
   logoUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
 };
 
-const getCompanyLogo = () => dummyCompany.logoUrl;
+
 
 const dummyPosts = [
   {
@@ -48,7 +49,17 @@ const dummyPosts = [
 
 const PostsList = () => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState(dummyPosts);
+  
+const getCompanyLogo = () => dummyCompany.logoUrl;
+const [successMessage, setSuccessMessage] = useState('');
+  const [posts, setPosts] = useState(() => {
+  const stored = localStorage.getItem('posts');
+  return stored ? JSON.parse(stored) : dummyPosts;
+});
+useEffect(() => {
+  localStorage.setItem('posts', JSON.stringify(posts));
+}, [posts]);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [durationFilter, setDurationFilter] = useState('');
   const [paidFilter, setPaidFilter] = useState('');
@@ -59,6 +70,10 @@ const PostsList = () => {
   const [formData, setFormData] = useState(null);
   const [errors, setErrors] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
+  const [deleteMessage, setDeleteMessage] = useState('');
+const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+const [postToDelete, setPostToDelete] = useState(null);
+
   const postsPerPage = 6;
 
   const validateFields = (data) => {
@@ -126,9 +141,19 @@ const PostsList = () => {
     setCreating(true);
   };
 
-  const handleDelete = (id) => {
-    setPosts(prev => prev.filter(post => post.id !== id));
-  };
+  const confirmDeletePost = () => {
+  if (!postToDelete) return;
+  setPosts(prev => prev.filter(post => post.id !== postToDelete.id));
+  setDeleteMessage('Post deleted successfully!');
+  setTimeout(() => setDeleteMessage(''), 3000);
+  setPostToDelete(null);
+  setShowConfirmDelete(false);
+};
+
+const handleDelete = (post) => {
+  setPostToDelete(post);
+  setShowConfirmDelete(true);
+};
 
   const handleSkillAdd = () => {
     if (formData.skillInput.trim()) {
@@ -158,22 +183,91 @@ const PostsList = () => {
       updatedFormData.salary = updatedFormData.salary.trim() + '/month';
     }
 
-    if (editingPostId !== null) {
-      setPosts(prev => prev.map(p => p.id === editingPostId ? updatedFormData : p));
-    } else {
-      setPosts(prev => [updatedFormData, ...prev]);
-    }
+  if (editingPostId !== null) {
+  setPosts(prev => prev.map(p => p.id === editingPostId ? updatedFormData : p));
+ setSuccessMessage('Post updated successfully!');
+setTimeout(() => setSuccessMessage(''), 3000);
 
-    resetForm();
+
+} else {
+  setPosts(prev => [updatedFormData, ...prev]);
+setSuccessMessage('Post added successfully!');
+setTimeout(() => setSuccessMessage(''), 3000); 
+}
+
+resetForm();
+
+
+setTimeout(() => setSuccessMessage(''), 3000);
+
   };
 
   const handleViewApplications = (title) => {
-    const url = `/applications/${title.toLowerCase().replace(/\s+/g, '-')}`;
-    navigate(url);
-  };
+  const url = `/applications/${title.toLowerCase().replace(/\s+/g, '-')}`;
+  navigate(url);
+};
 
   return (
+   
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Red alert for deletion */}
+{deleteMessage && (
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: 30 }}
+    className="fixed bottom-6 right-6 bg-red-100 text-red-800 px-6 py-3 rounded-lg shadow-lg z-50"
+  >
+    {deleteMessage}
+  </motion.div>
+)}
+
+{/* Confirmation Modal */}
+<AnimatePresence>
+  {showConfirmDelete && (
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="bg-white rounded-lg p-6 shadow-lg max-w-md w-full text-center"
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.9 }}
+      >
+        <h3 className="text-xl font-semibold mb-4">Are you sure you want to delete this post?</h3>
+        <p className="text-gray-600 mb-6">This action cannot be undone.</p>
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={() => setShowConfirmDelete(false)}
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={confirmDeletePost}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Yes, Delete
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
+   {successMessage && (
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: 30 }}
+    className="fixed bottom-6 right-6 bg-green-100 text-green-800 px-6 py-3 rounded-lg shadow-lg z-50"
+  >
+    {successMessage}
+  </motion.div>
+)}
+
       <motion.div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center">
@@ -265,12 +359,6 @@ const PostsList = () => {
         Add
       </button>
     </div>
- 
-
-
-
-
-
               <div className="mt-2 flex flex-wrap gap-2">
                 {filterSkills.map((skill, i) => (
                   <span key={i} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center">
@@ -426,7 +514,7 @@ const PostsList = () => {
                   </div>
                 </div>
 
-                <p className="text-gray-600 mb-1">{post.duration}</p>
+                <p className="text-gray-600 mb-1"><strong>Duration:</strong> {post.duration}</p>
 
                 <span
   className={`w-fit px-3 py-1 rounded-full text-xs font-medium mb-3 ${
@@ -438,10 +526,10 @@ const PostsList = () => {
 
 
                 <p className="text-gray-600 text-sm mb-2">
-                  <strong>Skills:</strong> {post.skills.join(', ')}
+                  <strong>Skills:</strong> {post.skills.join('- ')}
                 </p>
 
-                <p className="text-gray-600 text-sm mb-4 flex-grow">{post.description}</p>
+                <p className="text-gray-600 text-sm mb-4 flex-grow"> <strong>Description:</strong> {post.description}</p>
 
                 <div className="mt-auto flex justify-center gap-2">
                   <button
@@ -451,7 +539,8 @@ const PostsList = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(post.id)}
+                   onClick={() => handleDelete(post)}
+
                     className="px-3 py-1 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition"
                   >
                     Delete
