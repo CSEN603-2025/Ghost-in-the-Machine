@@ -52,12 +52,20 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
 
   function sendMsg() {
     if (!msg.trim()) return;
+    // add your message
     setChat(c => [...c, { fromMe: true, text: msg }]);
     setMsg('');
+    // simulate incoming reply
     setTimeout(() => {
-      setChat(c => [...c, { fromMe: false, text: '👍 Got your message!' }]);
+      setChat(c => {
+        const next = [...c, { fromMe: false, text: '👍 Got your message!' }];
+        // fire toast notification on new incoming message
+        info(`New message from ${speaker}: "👍 Got your message!"`);
+        return next;
+      });
     }, 2000);
   }
+
 
   return (
     <motion.div
