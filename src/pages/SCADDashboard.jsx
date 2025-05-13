@@ -39,6 +39,12 @@ const SCADDashboard = () => {
   // Card data (including new Manage Workshops)
   const cards = [
     {
+      title: "Appointments",
+      desc: "Manage appointment requests and start calls.",
+      route: "/VideoCallPage",
+      color: "from-green-500 to-green-600"
+    },
+    {
       title: "Manage Companies",
       desc: "Review and approve company applications with advanced filters.",
       route: "/manage-companies",
@@ -75,6 +81,9 @@ const SCADDashboard = () => {
       color: "from-blue-800 to-blue-900"
     }
   ];
+
+  // Separate the Appointments card for full-width display
+  const [appointmentsCard, ...dashboardCards] = cards;
 
   // Call handlers (enhanced with toasts)
   const handleAcceptVideo = () => {
@@ -147,7 +156,7 @@ const SCADDashboard = () => {
           transition={{ staggerChildren: 0.1 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {cards.map((card, index) => (
+          {dashboardCards.map((card, index) => (
             <motion.div
               key={index}
               initial={{ y: 20, opacity: 0 }}
@@ -189,6 +198,35 @@ const SCADDashboard = () => {
               </div>
             </motion.div>
           ))}
+        </motion.div>
+        {/* Full-width Appointments card row */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6"
+        >
+          <motion.div
+            key="appointments"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            whileHover={{
+              y: -5,
+              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)"
+            }}
+            onClick={() => navigate(appointmentsCard.route)}
+            className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 flex flex-col border border-gray-100"
+          >
+            <div className={`h-2 w-full bg-gradient-to-r ${appointmentsCard.color}`} />
+            <div className="p-6 flex-1 flex flex-col">
+              <h3 className="text-xl font-bold text-gray-800 mb-3">{appointmentsCard.title}</h3>
+              <p className="text-gray-600 mb-4 flex-1">{appointmentsCard.desc}</p>
+              <div className="text-green-500 font-medium flex items-center">
+                Open feature
+                <FiArrowUpRight className="w-4 h-4 ml-1" />
+              </div>
+            </div>
+          </motion.div>
         </motion.div>
       </div>
 

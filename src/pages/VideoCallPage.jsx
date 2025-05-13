@@ -16,10 +16,12 @@ const VideoCallPage = () => {
       status: "pending" // 'pending', 'accepted', 'rejected'
     }
   ]);
+  const [remoteOnline, setRemoteOnline] = useState(true);
   // Available people to request appointments from
   const availablePeople = [ "John Doe", "Jane Smith","Mohamed Ahmed", "Sara Ali", "Ali Hassan" ];
   const [selectedPerson, setSelectedPerson] = useState(availablePeople[0]);
   const { success } = useToastNotifications();
+  const { error } = useToastNotifications();
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
@@ -33,12 +35,26 @@ const VideoCallPage = () => {
       return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        const msg = "Yassin Sayed just rejected your appointment request! Call removed from the list.";
+        // show toast
+        error(msg);
+        // add to bell notification center
+        setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
+      }, 800);
+      return () => clearTimeout(timer);
+    }, []);
+
   // Mock function to start a call
   const startCall = (appointmentId) => {
     setCallStatus('ringing');
     // Simulate call acceptance after 3 seconds
     setTimeout(() => {
       setCallStatus('in-progress');
+      // after going in-progress, mark remote offline after 5s
+      setRemoteOnline(true);
+      setTimeout(() => setRemoteOnline(false), 5000);
     }, 3000);
   };
 
@@ -152,26 +168,30 @@ const VideoCallPage = () => {
             {callStatus === 'ringing' ? 'Calling...' : 'Call in Progress'}
           </h3>
           
-          <div className="video-container relative">
+          <div className="video-container relative flex justify-center items-center space-x-4">
             {callStatus === 'in-progress' && (
               <>
-                <div className="remote-video">
-                  <div className="video-placeholder">
+                <div className="remote-video flex flex-col items-center">
+                  <div className="video-placeholder flex flex-col items-center">
                     <div className="user-avatar">
                       {appointments[0].studentName.charAt(0)}
                     </div>
-                    <p>{appointments[0].studentName}</p>
+                    <p className="font-semibold">{appointments[0].studentName}</p>
+                    <div className={`flex items-center text-sm mt-1 ${remoteOnline ? 'text-green-500' : 'text-red-500'}`}>
+                      <span className={`w-2 h-2 rounded-full mr-1 ${remoteOnline ? 'bg-green-500' : 'bg-red-500'}`} />
+                      <span>{remoteOnline ? 'Online' : 'Offline'}</span>
+                    </div>
                   </div>
                 </div>
                 
-                <div className={`local-video ${!videoEnabled ? 'disabled' : ''}`}>
+                <div className={`local-video ${!videoEnabled ? 'disabled' : ''} flex flex-col items-center`}>
                   {videoEnabled ? (
-                    <div className="video-placeholder">
+                    <div className="video-placeholder flex flex-col items-center">
                       <div className="user-avatar">Y</div>
                       <p>You</p>
                     </div>
                   ) : (
-                    <div className="video-off">
+                    <div className="video-off flex flex-col items-center">
                       <FiVideoOff size={48} />
                       <p>Camera is off</p>
                     </div>
