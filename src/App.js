@@ -1,8 +1,10 @@
-
 import { motion } from "framer-motion";
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
 import './App.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+// Removed react-toastify CSS import here; managed in index.js
 import LoginPage from './pages/LoginPage';
 import RegisterCompanyPage from './pages/RegisterCompany';
 import CompanyDashboard from './pages/CompanyDashboard';
@@ -18,7 +20,6 @@ import ManageStudents from './pages/ManageStudents';
 import StudentUpcomingWorkshopsPage from './pages/StudentUpcomingWorkshopsPage';
 import StudentProfile from './pages/StudentProfile';
 import VideoCallPage from './pages/VideoCallPage';
-import { ToastContainer } from 'react-toastify';
 import RegisteredStudents from './pages/RegisteredStudents';
 import EditProfilePage from './pages/EditProfilePage';
 import InternshipPage from './pages/InternshipPage';
@@ -106,6 +107,18 @@ function App() {
       </Routes>
       {/* Global notification bell visible on all pages */}
       <NotificationBell />
+      {/* Global Toast Container for toast notifications */}
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </>
    
   );

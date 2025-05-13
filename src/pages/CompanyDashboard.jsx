@@ -10,16 +10,33 @@ const CompanyDashboard = () => {
   const [activeSection, setActiveSection] = useState('home');
   const { success } = useToastNotifications();
 
+  const [notifications, setNotifications] = useState([]);
+
   useEffect(() => {
     console.log("Welcome to the Company Dashboard");
     const timer = setTimeout(() => {
-      success("Congrats, your application is now accepted and profile is activated! Check your email");
+      const msg = "Congrats, your application is now accepted and profile is activated! Check your email";
+      // show toast
+      success(msg);
+      // add to bell notification center
+      setNotifications(prev => [
+        ...prev,
+        { id: Date.now(), message: msg, date: new Date() }
+      ]);
     }, 3000);
     return () => clearTimeout(timer);
   }, []);
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      success("Ahmed Mohamed just applied for the DevOps Intern position");
+      const msg = "Ahmed Mohamed just applied for the DevOps Intern position";
+      // show toast
+      success(msg);
+      // add to bell notification center
+      setNotifications(prev => [
+        ...prev,
+        { id: Date.now(), message: msg, date: new Date() }
+      ]);
     }, 5000);
     return () => clearTimeout(timer);
   }, []);
