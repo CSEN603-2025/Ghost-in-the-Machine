@@ -37,29 +37,33 @@ const dummyPosts = [
   },
   {
     id: 3,
-    title: 'Mobile Developer Intern',
+    title: 'Devops Intern',
     duration: '1 Month',
     paid: true,
     salary: '$2000/month',
-    skills: ['Flutter', 'Dart'],
-    description: 'Help build internal Android/iOS apps.',
+    skills: ['Flutter', 'Dart','container'],
+    description: 'Work with our Devops team to automate our deployment process.',
     applications: 3,
   }
 ];
 
 const PostsList = () => {
   const navigate = useNavigate();
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
+
   
 const getCompanyLogo = () => dummyCompany.logoUrl;
-const [successMessage, setSuccessMessage] = useState('');
-  const [posts, setPosts] = useState(() => {
-  const stored = localStorage.getItem('posts');
+const [posts, setPosts] = useState(() => {
+  const stored = sessionStorage.getItem('posts');
   return stored ? JSON.parse(stored) : dummyPosts;
 });
-useEffect(() => {
-  localStorage.setItem('posts', JSON.stringify(posts));
-}, [posts]);
 
+useEffect(() => {
+  sessionStorage.setItem('posts', JSON.stringify(posts));
+}, [posts]);
+const [successMessage, setSuccessMessage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [durationFilter, setDurationFilter] = useState('');
   const [paidFilter, setPaidFilter] = useState('');

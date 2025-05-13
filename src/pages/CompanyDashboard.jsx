@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import CompanyProfileCard from '../components/CompanyProfileCard';
 import { motion } from 'framer-motion';
 import { useToastNotifications } from '../hooks/useToastNotifications';
-import { TbHomeStats } from 'react-icons/tb';
+
 
 const CompanyDashboard = () => {
   const navigate = useNavigate();
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
   const [activeSection, setActiveSection] = useState('home');
   const { success } = useToastNotifications();
 
@@ -61,13 +64,13 @@ const CompanyDashboard = () => {
     },
     {
       title: 'Interns',
-      desc: 'Monitor intern assignments and performance.',
+      desc: 'Manage Interns and their progress.',
       route: '/interns',
       color: 'from-blue-700 to-blue-800',
     },
     {
       title: 'Evaluation',
-      desc: 'Access submitted reports and evaluations.',
+      desc: 'Send and manage evaluations for interns.',
       route: '/evaluations',
       color: 'from-blue-800 to-blue-900',
     },

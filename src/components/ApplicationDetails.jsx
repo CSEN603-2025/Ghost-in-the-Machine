@@ -8,11 +8,15 @@ const statusColor = {
   Pending: 'bg-yellow-100 text-yellow-800',
   Accepted: 'bg-green-100 text-green-800',
   Rejected: 'bg-red-100 text-red-800',
-  'Current Intern': 'bg-blue-100 text-blue-800',
+  Finalized: 'bg-blue-100 text-blue-800',
+  'Current Intern': 'bg-indigo-100 text-indigo-800',
   'Internship Complete': 'bg-gray-100 text-gray-700',
 };
 
 const ApplicationDetails = () => {
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
   const { id } = useParams();
   const navigate = useNavigate();
   const { applications, setApplications } = useContext(ApplicationsContext);
@@ -27,20 +31,19 @@ const ApplicationDetails = () => {
   }, [id, applications]);
 
   const handleStatusChange = (newStatus) => {
-  setApplications((prev) =>
-    prev.map((app) =>
-      app.id === parseInt(id) ? { ...app, status: newStatus } : app
-    )
-  );
+    setApplications((prev) =>
+      prev.map((app) =>
+        app.id === parseInt(id) ? { ...app, status: newStatus } : app
+      )
+    );
 
-  setAlertMessage(`Status changed to: ${newStatus}`);
-  setAlertType(newStatus === 'Rejected' ? 'error' : 'success');
+    setAlertMessage(`Status changed to: ${newStatus}`);
+    setAlertType(newStatus === 'Rejected' ? 'error' : 'success');
 
-  // Just hide the alert after 2 seconds without navigation
-  setTimeout(() => {
-    setAlertMessage(null);
-  }, 2000);
-};
+    setTimeout(() => {
+      setAlertMessage(null);
+    }, 2000);
+  };
 
   if (!application) return <div className="p-6 text-red-600">Application not found</div>;
 
@@ -52,7 +55,6 @@ const ApplicationDetails = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
         >
-          {/* Popup Alert */}
           {alertMessage && (
             <div
               className={`fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-md z-50 text-white text-sm font-medium transition-all duration-300
@@ -67,22 +69,24 @@ const ApplicationDetails = () => {
             onClick={() => navigate(-1)}
             className="flex items-center text-[#00106A] hover:underline mb-4"
           >
-            <ArrowLeft className="mr-1 w-4 h-4" /> Back to Applications
+            <ArrowLeft className="mr-1 w-4 h-4" /> Back
           </motion.button>
 
           <motion.div
-            className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 text-center"
+           className="max-w-xl mx-auto bg-white rounded-xl shadow-lg p-8 text-center"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
           >
-            <motion.img
-              src={application.image}
-              alt={application.studentName}
-              className="w-28 h-28 rounded-full mx-auto mb-4 object-cover"
-              layoutId={`student-image-${id}`}
-              transition={{ duration: 0.3 }}
-            />
+            {application.image && (
+              <motion.img
+                src={application.image}
+                alt={application.studentName}
+                className="w-28 h-28 rounded-full mx-auto mb-4 object-cover border-2 border-blue-600"
+                layoutId={`student-image-${id}`}
+                transition={{ duration: 0.3 }}
+              />
+            )}
 
             <h2 className="text-xl font-bold text-[#00106A]">{application.studentName}</h2>
             <p className="text-gray-600">{application.major}</p>
@@ -104,33 +108,43 @@ const ApplicationDetails = () => {
               </p>
             </div>
 
-            {application.status === 'Pending' && (
-              <div className="flex justify-center gap-4 mt-6">
-                <button
-                  onClick={() => handleStatusChange('Accepted')}
-                  className="px-4 py-2 bg-green-800 text-white rounded-lg hover:bg-green-900"
-                >
-                  Accept
-                </button>
-                <button
-                  onClick={() => handleStatusChange('Rejected')}
-                  className="px-4 py-2 bg-red-800 text-white rounded-lg hover:bg-red-900"
-                >
-                  Reject
-                </button>
-              </div>
-            )}
+            {/* Buttons for Status Transition */}
+            <div className="flex justify-center gap-4 mt-6 flex-wrap">
+              {application.status === 'Pending' && (
+                <>
+                  <button
+                    onClick={() => handleStatusChange('Accepted')}
+                    className="px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-800"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() => handleStatusChange('Rejected')}
+                    className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800"
+                  >
+                    Reject
+                  </button>
+                </>
+              )}
 
-            {application.status === 'Accepted' && (
-              <div className="flex justify-center mt-6">
+              {application.status === 'Accepted' && (
                 <button
-                  onClick={() => handleStatusChange('Current Intern')}
-                  className="px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-900"
+                  onClick={() => handleStatusChange('Finalized')}
+                  className="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800"
                 >
                   Finalize
                 </button>
-              </div>
-            )}
+              )}
+
+              {application.status === 'Finalized' && (
+                <button
+                  onClick={() => handleStatusChange('Current Intern')}
+                  className="px-4 py-2 bg-indigo-700 text-white rounded-lg hover:bg-indigo-800"
+                >
+                  Start Internship
+                </button>
+              )}
+            </div>
           </motion.div>
         </motion.div>
       </AnimatePresence>

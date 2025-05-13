@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ApplicationsContext } from '../contexts/ApplicationsContext';
 import { motion } from 'framer-motion';
@@ -14,6 +14,9 @@ const statusColors = {
 const ApplicationListPage = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
+    useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const { applications } = useContext(ApplicationsContext);
 
   const readableTitle = postId.replace(/-/g, ' ');
