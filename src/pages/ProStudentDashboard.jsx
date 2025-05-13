@@ -53,6 +53,8 @@ const ProStudentDashboard = () => {
     { label: 'Assessments', path: '/student/assessment' },
     { label: 'Viewed Profile', path: '/student/viewed-profile' },
     { label: 'Appointments', path: '/videocallpage' },
+    { label: 'Workshops', path: '/pro-student-workshops' },
+
   ];
 
   // Handle filter changes

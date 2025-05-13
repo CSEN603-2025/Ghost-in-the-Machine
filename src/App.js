@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
@@ -7,6 +8,7 @@ import RegisterCompanyPage from './pages/RegisterCompany';
 import CompanyDashboard from './pages/CompanyDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 import ProStudentDashboard from './pages/ProStudentDashboard';
+
 import MyApplicationsPage from './pages/MyApplicationsPage';
 import WorkshopsPage from './pages/WorkshopsPage';
 import LandingPage from './pages/LandingPage';
@@ -43,6 +45,7 @@ import ReportsListPage from './pages/ReportsListPage';
 import AssessmentsPage from './pages/AssessmentsPage';
 import StatsPage from './pages/StatsPage';
 import PostsList from './components/PostsList';
+import StudentWorkshopsPage from './pages/StudentWorkshopsPage';
 import ManageCycle from './pages/ManageCycle';
 import NotificationBell from './components/NotificationBell';
 
@@ -60,7 +63,8 @@ function App() {
         <Route path="/register-company" element={<RegisterCompanyPage />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />
         <Route path="/pro-student-dashboard" element={<ProStudentDashboard />} />
-        <Route path="student/my-applications" element={<MyApplicationsPage />} /> {/* New route */}
+  
+      <Route path="student/my-applications" element={<MyApplicationsPage />} /> {/* New route */}
         <Route path="/workshops" element={<WorkshopsPage />} />
         <Route path="/dashboard" element={<CompanyDashboard />} />
         <Route path="/scad-dashboard" element={<SCADDashboard />} />
@@ -73,7 +77,7 @@ function App() {
         <Route path="/student-upcoming-workshops" element={<StudentUpcomingWorkshopsPage />} />
         <Route path="/registered-students" element={<RegisteredStudents/>} />
         <Route path="/dashboard" element={<CompanyDashboard />} />
-        <Route path="/faculty/internship-reports" element={<ReportsListPage />} /> 
+         <Route path="/faculty/internship-reports" element={<ReportsListPage />} /> 
         <Route path="student/edit-profile" element={<EditProfilePage />} />
         <Route path="/faculty/statistics" element={<StatsPage />} />
         <Route path="student/internships" element={<InternshipPage />} />
@@ -95,7 +99,8 @@ function App() {
         <Route path="student/viewed-profile" element={<ViewedCompaniesPage />} />
         <Route path="student/assessment" element={<AssessmentsPage />} />
         <Route path="/evaluations-reports" element={<ManageReportsAndEvaluations />} />
-        <Route path="/posts" element={<PostsList posts={posts} setPosts={setPosts} />} />
+         <Route path="/pro-student-workshops" element={<StudentWorkshopsPage />} />
+      <Route path="/posts" element={<PostsList posts={posts} setPosts={setPosts} />} />
         <Route path="/manage-internship-cycle" element={<ManageCycle />} />
 
       </Routes>
