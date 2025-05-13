@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FiMic, FiMicOff, FiVideo, FiVideoOff, FiMonitor, FiX, FiCast, FiTv, FiPhoneOff, FiPhoneMissed } from 'react-icons/fi';
+import { useToastNotifications } from '../hooks/useToastNotifications';
 
 const VideoCallPage = () => {
   const [callStatus, setCallStatus] = useState('idle'); // 'idle', 'ringing', 'in-progress'
@@ -15,6 +16,22 @@ const VideoCallPage = () => {
       status: "pending" // 'pending', 'accepted', 'rejected'
     }
   ]);
+  // Available people to request appointments from
+  const availablePeople = [ "John Doe", "Jane Smith","Mohamed Ahmed", "Sara Ali", "Ali Hassan" ];
+  const [selectedPerson, setSelectedPerson] = useState(availablePeople[0]);
+  const { success } = useToastNotifications();
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+      const timer = setTimeout(() => {
+        const msg = "Ahmed Mohamed just accepted your appointment request! Click accept to start the call.";
+        // show toast
+        success(msg);
+        // add to bell notification center
+        setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
+      }, 100);
+      return () => clearTimeout(timer);
+    }, []);
 
   // Mock function to start a call
   const startCall = (appointmentId) => {
@@ -40,10 +57,41 @@ const VideoCallPage = () => {
     ));
   };
 
+  // Request a new dummy appointment
+  const requestAppointment = () => {
+    const newAppointment = {
+      id: Date.now(),
+      studentName: selectedPerson,
+      date: new Date().toLocaleDateString(),
+      time: new Date().toLocaleTimeString().slice(0,5),
+      status: 'pending',
+      requested: true
+    };
+    setAppointments(prev => [...prev, newAppointment]);
+  };
+
   return (
     <div className="video-call-container">
       <h2>Career Guidance Appointments</h2>
-      
+      {/* Request Appointment Section */}
+      <div className="request-appointment my-4 flex items-center space-x-2">
+        <select
+          value={selectedPerson}
+          onChange={(e) => setSelectedPerson(e.target.value)}
+          className="border px-2 py-1 rounded"
+        >
+          {availablePeople.map(person => (
+            <option key={person} value={person}>{person}</option>
+          ))}
+        </select>
+        <button
+          onClick={requestAppointment}
+          className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+        >
+          Request Appointment
+        </button>
+      </div>
+
       {/* Appointments List */}
       <div className="appointments-section">
         <h3>Upcoming Appointments</h3>
@@ -62,7 +110,7 @@ const VideoCallPage = () => {
                 </div>
                 
                 <div className="appointment-actions">
-                  {appointment.status === 'pending' && (
+                  {appointment.status === 'pending' && !appointment.requested && (
                     <>
                       <button 
                         onClick={() => updateAppointmentStatus(appointment.id, 'accepted')}
@@ -78,7 +126,10 @@ const VideoCallPage = () => {
                       </button>
                     </>
                   )}
-                  
+                  {appointment.status === 'pending' && appointment.requested && (
+                    <span className="text-gray-500 italic">Requested</span>
+                  )}
+
                   {appointment.status === 'accepted' && (
                     <button 
                       onClick={() => startCall(appointment.id)}
