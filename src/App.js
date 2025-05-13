@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, BrowserRouter, useLocation } from 'react-router-dom';
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
@@ -53,7 +53,9 @@ import NotificationBell from './components/NotificationBell';
 
 
 function App() {
+  const location = useLocation();
   const [posts, setPosts] = useState([]);
+  const hideOn = ['/', '/welcome', '/register-company'];
 
   return (
     
@@ -105,20 +107,22 @@ function App() {
         <Route path="/manage-internship-cycle" element={<ManageCycle />} />
 
       </Routes>
-      {/* Global notification bell visible on all pages */}
-      <NotificationBell />
+      {/* Global notification bell visible only on select pages */}
+      {!hideOn.includes(location.pathname) && <NotificationBell />}
       {/* Global Toast Container for toast notifications */}
-      <ToastContainer
-        position="bottom-left"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      {!hideOn.includes(location.pathname) && (
+        <ToastContainer
+         position="bottom-left"
+         autoClose={3000}
+         hideProgressBar={false}
+         newestOnTop={false}
+         closeOnClick
+         rtl={false}
+         pauseOnFocusLoss
+         draggable
+         pauseOnHover
+        />
+      )}
     </>
    
   );
