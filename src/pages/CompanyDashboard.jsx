@@ -1,16 +1,41 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CompanyProfileCard from '../components/CompanyProfileCard';
 import { motion } from 'framer-motion';
+import { useToastNotifications } from '../hooks/useToastNotifications';
+import { TbHomeStats } from 'react-icons/tb';
 
 const CompanyDashboard = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('home');
+  const { success } = useToastNotifications();
 
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     console.log("Welcome to the Company Dashboard");
+    const timer = setTimeout(() => {
+      const msg = "Congrats, your application is now accepted and profile is activated! Check your email";
+      // show toast
+      success(msg);
+      // add to bell notification center
+      setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const msg = "Ahmed Mohamed just applied for the DevOps Intern position";
+      // show toast
+      success(msg);
+      // add to bell notification center
+      setNotifications(prev => [
+        ...prev,
+        { id: Date.now(), message: msg, date: new Date() }
+      ]);
+    }, 5000);
+    return () => clearTimeout(timer);
   }, []);
 
   const myCompany = {

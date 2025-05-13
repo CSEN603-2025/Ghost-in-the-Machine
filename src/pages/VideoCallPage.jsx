@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { FiMic, FiMicOff, FiVideo, FiVideoOff, FiMonitor, FiX } from 'react-icons/fi';
+import { FiMic, FiMicOff, FiVideo, FiVideoOff, FiMonitor, FiX, FiCast, FiTv, FiPhoneOff, FiPhoneMissed } from 'react-icons/fi';
+import { useToastNotifications } from '../hooks/useToastNotifications';
 
 const VideoCallPage = () => {
   const [callStatus, setCallStatus] = useState('idle'); // 'idle', 'ringing', 'in-progress'
@@ -15,6 +16,35 @@ const VideoCallPage = () => {
       status: "pending" // 'pending', 'accepted', 'rejected'
     }
   ]);
+  const [remoteOnline, setRemoteOnline] = useState(true);
+  // Available people to request appointments from
+  const availablePeople = [ "John Doe", "Jane Smith","Mohamed Ahmed", "Sara Ali", "Ali Hassan" ];
+  const [selectedPerson, setSelectedPerson] = useState(availablePeople[0]);
+  const { success } = useToastNotifications();
+  const { error } = useToastNotifications();
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+      const timer = setTimeout(() => {
+        const msg = "Ahmed Mohamed just accepted your appointment request! Click accept to start the call.";
+        // show toast
+        success(msg);
+        // add to bell notification center
+        setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
+      }, 100);
+      return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        const msg = "Yassin Sayed just rejected your appointment request! Call removed from the list.";
+        // show toast
+        error(msg);
+        // add to bell notification center
+        setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
+      }, 800);
+      return () => clearTimeout(timer);
+    }, []);
 
   // Mock function to start a call
   const startCall = (appointmentId) => {
@@ -22,6 +52,9 @@ const VideoCallPage = () => {
     // Simulate call acceptance after 3 seconds
     setTimeout(() => {
       setCallStatus('in-progress');
+      // after going in-progress, mark remote offline after 5s
+      setRemoteOnline(true);
+      setTimeout(() => setRemoteOnline(false), 5000);
     }, 3000);
   };
 
@@ -40,10 +73,41 @@ const VideoCallPage = () => {
     ));
   };
 
+  // Request a new dummy appointment
+  const requestAppointment = () => {
+    const newAppointment = {
+      id: Date.now(),
+      studentName: selectedPerson,
+      date: new Date().toLocaleDateString(),
+      time: new Date().toLocaleTimeString().slice(0,5),
+      status: 'pending',
+      requested: true
+    };
+    setAppointments(prev => [...prev, newAppointment]);
+  };
+
   return (
     <div className="video-call-container">
       <h2>Career Guidance Appointments</h2>
-      
+      {/* Request Appointment Section */}
+      <div className="request-appointment my-4 flex items-center space-x-2">
+        <select
+          value={selectedPerson}
+          onChange={(e) => setSelectedPerson(e.target.value)}
+          className="border px-2 py-1 rounded"
+        >
+          {availablePeople.map(person => (
+            <option key={person} value={person}>{person}</option>
+          ))}
+        </select>
+        <button
+          onClick={requestAppointment}
+          className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
+        >
+          Request Appointment
+        </button>
+      </div>
+
       {/* Appointments List */}
       <div className="appointments-section">
         <h3>Upcoming Appointments</h3>
@@ -62,7 +126,7 @@ const VideoCallPage = () => {
                 </div>
                 
                 <div className="appointment-actions">
-                  {appointment.status === 'pending' && (
+                  {appointment.status === 'pending' && !appointment.requested && (
                     <>
                       <button 
                         onClick={() => updateAppointmentStatus(appointment.id, 'accepted')}
@@ -78,7 +142,10 @@ const VideoCallPage = () => {
                       </button>
                     </>
                   )}
-                  
+                  {appointment.status === 'pending' && appointment.requested && (
+                    <span className="text-gray-500 italic">Requested</span>
+                  )}
+
                   {appointment.status === 'accepted' && (
                     <button 
                       onClick={() => startCall(appointment.id)}
@@ -101,32 +168,47 @@ const VideoCallPage = () => {
             {callStatus === 'ringing' ? 'Calling...' : 'Call in Progress'}
           </h3>
           
-          <div className="video-container">
+          <div className="video-container relative flex justify-center items-center space-x-4">
             {callStatus === 'in-progress' && (
               <>
-                <div className="remote-video">
-                  <div className="video-placeholder">
+                <div className="remote-video flex flex-col items-center">
+                  <div className="video-placeholder flex flex-col items-center">
                     <div className="user-avatar">
                       {appointments[0].studentName.charAt(0)}
                     </div>
-                    <p>{appointments[0].studentName}</p>
+                    <p className="font-semibold">{appointments[0].studentName}</p>
+                    <div className={`flex items-center text-sm mt-1 ${remoteOnline ? 'text-green-500' : 'text-red-500'}`}>
+                      <span className={`w-2 h-2 rounded-full mr-1 ${remoteOnline ? 'bg-green-500' : 'bg-red-500'}`} />
+                      <span>{remoteOnline ? 'Online' : 'Offline'}</span>
+                    </div>
                   </div>
                 </div>
                 
-                <div className={`local-video ${!videoEnabled ? 'disabled' : ''}`}>
+                <div className={`local-video ${!videoEnabled ? 'disabled' : ''} flex flex-col items-center`}>
                   {videoEnabled ? (
-                    <div className="video-placeholder">
+                    <div className="video-placeholder flex flex-col items-center">
                       <div className="user-avatar">Y</div>
                       <p>You</p>
                     </div>
                   ) : (
-                    <div className="video-off">
+                    <div className="video-off flex flex-col items-center">
                       <FiVideoOff size={48} />
                       <p>Camera is off</p>
                     </div>
                   )}
                 </div>
               </>
+            )}
+            
+            {/* Dummy shared screen preview */}
+            {screenSharing && callStatus === 'in-progress' && (
+              <video 
+                autoPlay
+                loop
+                src="/dumdumvideo.mp4"
+                alt="Shared Screen"
+                className="absolute top-4 right-4 w-32 h-20 object-cover border rounded-lg shadow-lg"
+              />
             )}
             
             {callStatus === 'ringing' && (
@@ -137,35 +219,42 @@ const VideoCallPage = () => {
             )}
           </div>
           
-          <div className="call-controls">
-            <button 
+          <div className="call-controls flex justify-center space-x-4 mt-4">
+            {/* Mic toggle */}
+            <button
               onClick={() => setMicEnabled(!micEnabled)}
-              className={micEnabled ? 'active' : ''}
+              className={`p-3 rounded-full hover:bg-gray-200 ${
+                micEnabled ? 'bg-gray-100 text-black' : 'bg-red-800 text-white'
+              }`}
             >
-              {micEnabled ? <FiMic /> : <FiMicOff />}
+              {micEnabled ? <FiMic size={20} /> : <FiMicOff size={20} />}
             </button>
-            
-            <button 
+            {/* Video toggle */}
+            <button
               onClick={() => setVideoEnabled(!videoEnabled)}
-              className={videoEnabled ? 'active' : ''}
+              className={`p-3 rounded-full hover:bg-gray-200 ${
+                videoEnabled ? 'bg-gray-100 text-black' : 'bg-red-800 text-white'
+              }`}
             >
-              {videoEnabled ? <FiVideo /> : <FiVideoOff />}
+              {videoEnabled ? <FiVideo size={20} /> : <FiVideoOff size={20} />}
             </button>
-            
+            {/* Screen share toggle */}
             {callStatus === 'in-progress' && (
-              <button 
+              <button
                 onClick={() => setScreenSharing(!screenSharing)}
-                className={screenSharing ? 'active' : ''}
+                className={`p-3 rounded-full hover:bg-gray-200 ${
+                  screenSharing ? 'bg-green-600 text-white' : 'bg-red-800 text-white'
+                }`}
               >
-                <FiMonitor />
+                <FiCast size={20} />
               </button>
             )}
-            
-            <button 
+            {/* End call */}
+            <button
               onClick={endCall}
-              className="end-call-btn"
+              className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full"
             >
-              <FiX /> End Call
+              <FiPhoneMissed size={20} />
             </button>
           </div>
         </div>

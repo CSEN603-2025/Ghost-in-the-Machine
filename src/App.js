@@ -1,23 +1,25 @@
-
 import { motion } from "framer-motion";
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, BrowserRouter, useLocation } from 'react-router-dom';
 import './App.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
+// Removed react-toastify CSS import here; managed in index.js
 import LoginPage from './pages/LoginPage';
 import RegisterCompanyPage from './pages/RegisterCompany';
 import CompanyDashboard from './pages/CompanyDashboard';
 import StudentDashboard from './pages/StudentDashboard';
+import ProStudentDashboard from './pages/ProStudentDashboard';
+
 import MyApplicationsPage from './pages/MyApplicationsPage';
 import WorkshopsPage from './pages/WorkshopsPage';
 import LandingPage from './pages/LandingPage';
-import { useNotifications } from './hooks/useNotifications';
 import SCADDashboard from './pages/SCADDashboard'; 
 import ManageCompanies from './pages/ManageCompanies';
 import ManageStudents from './pages/ManageStudents'; 
 import StudentUpcomingWorkshopsPage from './pages/StudentUpcomingWorkshopsPage';
 import StudentProfile from './pages/StudentProfile';
 import VideoCallPage from './pages/VideoCallPage';
-import { ToastContainer } from 'react-toastify';
 import RegisteredStudents from './pages/RegisteredStudents';
 import EditProfilePage from './pages/EditProfilePage';
 import InternshipPage from './pages/InternshipPage';
@@ -44,66 +46,86 @@ import ReportsListPage from './pages/ReportsListPage';
 import AssessmentsPage from './pages/AssessmentsPage';
 import StatsPage from './pages/StatsPage';
 import PostsList from './components/PostsList';
-import ApplicationListPage from './components/ApplicationListPage';
+import StudentWorkshopsPage from './pages/StudentWorkshopsPage';
+import ManageCycle from './pages/ManageCycle';
+import NotificationBell from './components/NotificationBell';import ApplicationListPage from './components/ApplicationListPage';
 
 
 
 
 function App() {
-  const {
-    notifications,
-    unreadCount,
-    addNotification,
-    markAsRead,
-    removeNotification
-  } = useNotifications();
+  const location = useLocation();
   const [posts, setPosts] = useState([]);
+  const hideOn = ['/', '/welcome', '/register-company'];
 
   return (
     
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/welcome" element={<LoginPage />} />
-      <Route path="/register-company" element={<RegisterCompanyPage />} />
-      <Route path="/student-dashboard" element={<StudentDashboard />} />
-      <Route path="student/my-applications" element={<MyApplicationsPage />} /> 
-      <Route path="/workshops" element={<WorkshopsPage />} />
-      <Route path="/dashboard" element={<CompanyDashboard />} />
-      <Route path="/scad-dashboard" element={<SCADDashboard />} />
-      <Route path="/VideoCallPage" element={<VideoCallPage />} />
-      <Route path="/manage-companies" element={<ManageCompanies />} />
-      <Route path="/faculty/evaluation-reports" element={<EvaluationReportsPage />}/>
-      <Route path="/students" element={<ManageStudents />} />
-      <Route path="/workshop-details" element={<ViewWorkshopDetailsPage />} />
-      <Route path="/students/:id" element={<StudentProfile />} />
-      <Route path="/student-upcoming-workshops" element={<StudentUpcomingWorkshopsPage />} />
-      <Route path="/registered-students" element={<RegisteredStudents/>} />
-      <Route path="/dashboard" element={<CompanyDashboard />} />
-       <Route path="/faculty/internship-reports" element={<ReportsListPage />} /> 
-      <Route path="student/edit-profile" element={<EditProfilePage />} />
-      <Route path="/faculty/statistics" element={<StatsPage />} />
-      <Route path="student/internships" element={<InternshipPage />} />
-      <Route path="student/apply/:id" element={<ApplicationPage />} />
-      <Route path="student/internship/:id" element={<InternshipDetailsPage />} />
-      <Route path="/student/company/:companyName" element={<CompanyDetailsPage />} />
-      <Route path="/faculty-dashboard" element={<FacultyDashboardPage />} />
-      <Route path="student/report" element={<StudentReportEditor />} />
-      <Route path="/student/view-report" element={<FinalizedReport />} />
-      <Route path="/student/evaluation" element={<StudentEvaluation />} />
-      <Route path="student/scad-internships" element={<SCADInternshipsPage />} />
-      <Route path="/interns" element={<InternList />} />
-      <Route path="/interns/:id" element={<InternDetails />} />
-      <Route path="/applications/details/:id" element={<ApplicationDetails />} />
-      <Route path="/view-all-internships" element={<ViewAllInternships />} />
-      <Route path="student/reports" element={<ReportsPage />} />
-      <Route path="student/internship-guidelines" element={<InternshipGuidelinesPage />} />
-      <Route path="/email" element={<EmailClientPage />} />  
-      <Route path="student/viewed-profile" element={<ViewedCompaniesPage />} />
-      <Route path="student/assessment" element={<AssessmentsPage />} />
-      <Route path="/evaluations-reports" element={<ManageReportsAndEvaluations />} />
+    <>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/welcome" element={<LoginPage />} />
+        <Route path="/register-company" element={<RegisterCompanyPage />} />
+        <Route path="/student-dashboard" element={<StudentDashboard />} />
+        <Route path="/pro-student-dashboard" element={<ProStudentDashboard />} />
+  
+      <Route path="student/my-applications" element={<MyApplicationsPage />} /> {/* New route */}
+        <Route path="/workshops" element={<WorkshopsPage />} />
+        <Route path="/dashboard" element={<CompanyDashboard />} />
+        <Route path="/scad-dashboard" element={<SCADDashboard />} />
+        <Route path="/VideoCallPage" element={<VideoCallPage />} />
+        <Route path="/manage-companies" element={<ManageCompanies />} />
+        <Route path="/faculty/evaluation-reports" element={<EvaluationReportsPage />}/>
+        <Route path="/students" element={<ManageStudents />} />
+        <Route path="/workshop-details" element={<ViewWorkshopDetailsPage />} />
+        <Route path="/students/:id" element={<StudentProfile />} />
+        <Route path="/student-upcoming-workshops" element={<StudentUpcomingWorkshopsPage />} />
+        <Route path="/registered-students" element={<RegisteredStudents/>} />
+        <Route path="/dashboard" element={<CompanyDashboard />} />
+         <Route path="/faculty/internship-reports" element={<ReportsListPage />} /> 
+        <Route path="student/edit-profile" element={<EditProfilePage />} />
+        <Route path="/faculty/statistics" element={<StatsPage />} />
+        <Route path="student/internships" element={<InternshipPage />} />
+        <Route path="student/apply/:id" element={<ApplicationPage />} />
+        <Route path="student/internship/:id" element={<InternshipDetailsPage />} />
+        <Route path="/student/company/:companyName" element={<CompanyDetailsPage />} />
+        <Route path="/faculty-dashboard" element={<FacultyDashboardPage />} />
+        <Route path="student/report" element={<StudentReportEditor />} />
+        <Route path="/student/view-report" element={<FinalizedReport />} />
+        <Route path="/student/evaluation" element={<StudentEvaluation />} />
+        <Route path="student/scad-internships" element={<SCADInternshipsPage />} />
+        <Route path="/interns" element={<InternList />} />
+        <Route path="/interns/:id" element={<InternDetails />} />
+        <Route path="/applications/details/:id" element={<ApplicationDetails />} />
+        <Route path="/view-all-internships" element={<ViewAllInternships />} />
+        <Route path="student/reports" element={<ReportsPage />} />
+        <Route path="student/internship-guidelines" element={<InternshipGuidelinesPage />} />
+        <Route path="/email" element={<EmailClientPage />} />  
+        <Route path="student/viewed-profile" element={<ViewedCompaniesPage />} />
+        <Route path="student/assessment" element={<AssessmentsPage />} />
+        <Route path="/evaluations-reports" element={<ManageReportsAndEvaluations />} />
+         <Route path="/pro-student-workshops" element={<StudentWorkshopsPage />} />
       <Route path="/posts" element={<PostsList posts={posts} setPosts={setPosts} />} />
-      <Route path="/applications/:postId" element={<ApplicationListPage />} />
-    </Routes>
+        <Route path="/manage-internship-cycle" element={<ManageCycle />} />
+        <Route path="/applications/:postId" element={<ApplicationListPage />} />
+
+      </Routes>
+      {/* Global notification bell visible only on select pages */}
+      {!hideOn.includes(location.pathname) && <NotificationBell />}
+      {/* Global Toast Container for toast notifications */}
+      {!hideOn.includes(location.pathname) && (
+        <ToastContainer
+         position="bottom-left"
+         autoClose={3000}
+         hideProgressBar={false}
+         newestOnTop={false}
+         closeOnClick
+         rtl={false}
+         pauseOnFocusLoss
+         draggable
+         pauseOnHover
+        />
+      )}
+    </>
    
   );
 }

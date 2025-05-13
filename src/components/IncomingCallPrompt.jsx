@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { FiCamera, FiPhone, FiX, FiArrowRight } from 'react-icons/fi';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const IncomingCallPrompt = ({
   participantName,
@@ -12,7 +15,14 @@ const IncomingCallPrompt = ({
   const audioRef = useRef(null);
 
   useEffect(() => {
-    if (audioRef.current) audioRef.current.play();
+    if (audioRef.current) {
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => {
+          toast.error('Audio autoplay prevented by browser due to no interaction:', err);
+        });
+      }
+    }
     const timer = setTimeout(() => {
       if (audioRef.current) {
         audioRef.current.pause();

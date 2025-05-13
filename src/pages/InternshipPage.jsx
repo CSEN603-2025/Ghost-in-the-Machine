@@ -14,17 +14,38 @@ const InternshipPage = () => {
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("studentProfile"));
-    if (stored?.internships) {
-      const valid = stored.internships;
-      setInternships(valid);
-      setFilteredInternships(valid);
+    const storedInternships = stored?.internships || [];
 
-      const totalMonths = valid
-        .filter(i => i.status === "completed")
-        .reduce((acc, i) => acc + i.duration, 0);
+    const hardcoded = [
+      {
+        id: 101,
+        company: "Meta",
+        role: "AI Intern",
+        duration: 2,
+        status: "completed",
+        startDate: "2024-01-01",
+        endDate: "2024-03-01"
+      },
+      {
+        id: 102,
+        company: "Amazon",
+        role: "Cloud Intern",
+        duration: 1,
+        status: "current",
+        startDate: "2025-05-01",
+        endDate: "2025-06-01"
+      }
+    ];
 
-      setIsProStudent(totalMonths >= 3);
-    }
+    const combined = [...storedInternships, ...hardcoded];
+    setInternships(combined);
+    setFilteredInternships(combined);
+
+    const totalMonths = combined
+      .filter(i => i.status === "completed")
+      .reduce((acc, i) => acc + i.duration, 0);
+
+    setIsProStudent(totalMonths >= 3);
   }, []);
 
   const filterInternships = (term, status, start, end) => {
@@ -51,16 +72,19 @@ const InternshipPage = () => {
     setSearch(t);
     filterInternships(t, statusFilter, startDateFilter, endDateFilter);
   };
+
   const handleStatusChange = e => {
     const v = e.target.value;
     setStatusFilter(v);
     filterInternships(search, v, startDateFilter, endDateFilter);
   };
+
   const handleStartDateChange = e => {
     const v = e.target.value;
     setStartDateFilter(v);
     filterInternships(search, statusFilter, v, endDateFilter);
   };
+
   const handleEndDateChange = e => {
     const v = e.target.value;
     setEndDateFilter(v);
@@ -69,7 +93,6 @@ const InternshipPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-16">
-      {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -95,45 +118,59 @@ const InternshipPage = () => {
         </div>
       </motion.div>
 
-      {/* Filters & Search */}
       <div className="max-w-4xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-xl shadow-md p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+          className="bg-white rounded-xl shadow-md p-6"
         >
-          <input
-            type="text"
-            placeholder="🔍 Search by company or role"
-            value={search}
-            onChange={handleSearch}
-            className="col-span-1 sm:col-span-2 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent"
-          />
-          <select
-            value={statusFilter}
-            onChange={handleStatusChange}
-            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent"
-          >
-            <option value="all">All Statuses</option>
-            <option value="current">Current</option>
-            <option value="completed">Completed</option>
-          </select>
-          <input
-            type="date"
-            value={startDateFilter}
-            onChange={handleStartDateChange}
-            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent"
-          />
-          <input
-            type="date"
-            value={endDateFilter}
-            onChange={handleEndDateChange}
-            className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent"
-          />
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="col-span-1 sm:col-span-2">
+              <input
+                type="text"
+                placeholder="🔍 Search by company or role"
+                value={search}
+                onChange={handleSearch}
+                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent w-full"
+              />
+            </div>
+
+            {/* Filters Below the Search */}
+            <div className="col-span-1 sm:col-span-2">
+              <select
+                value={statusFilter}
+                onChange={handleStatusChange}
+                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent w-full"
+              >
+                <option value="all">All Statuses</option>
+                <option value="current">Current</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+
+            <div className="col-span-1 sm:col-span-2">
+              <label className="block text-sm text-gray-600">Start Date</label>
+              <input
+                type="date"
+                value={startDateFilter}
+                onChange={handleStartDateChange}
+                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent w-full"
+              />
+            </div>
+
+            <div className="col-span-1 sm:col-span-2">
+              <label className="block text-sm text-gray-600">End Date</label>
+              <input
+                type="date"
+                value={endDateFilter}
+                onChange={handleEndDateChange}
+                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0]/50 focus:border-transparent w-full"
+              />
+            </div>
+          </div>
         </motion.div>
 
-        {/* Internship Cards */}
         <motion.div
           initial="hidden"
           animate="visible"
@@ -162,7 +199,7 @@ const InternshipPage = () => {
                 }}
                 whileHover="hover"
                 className={`bg-white rounded-xl p-6 border transition-colors ${
-                  i.status === "completed" ? "border-green-200" : "border-gray-200"
+                  i.status === "completed" ? "border-green-400" : "border-gray-200"
                 }`}
               >
                 <Link to={`/student/internship/${i.id}`}>
@@ -175,7 +212,9 @@ const InternshipPage = () => {
                   <p className="text-gray-600 mb-1">
                     ⏱️ <strong>Duration:</strong> {i.duration} mo.
                   </p>
-                  <p className="text-gray-600 mb-1">
+                  <p className={`text-gray-600 mb-1 font-semibold ${
+                    i.status === "completed" ? "text-green-700" : ""
+                  }`}>
                     📌 <strong>Status:</strong> {i.status}
                   </p>
                   <p className="text-gray-600">

@@ -13,18 +13,19 @@ export default function ReportsPage() {
   const [appealMessages, setAppealMessages] = useState({});
   const [notification, setNotification] = useState(null);
 
-  // show one‐time notification if any were updated
   useEffect(() => {
     const rpt = reports.find(r => r.status === "Rejected");
     if (rpt) {
-      setNotification(`Report "${rpt.title}" has been marked as ${rpt.status}`);
-      setTimeout(() => setNotification(null), 5000);
+     setNotification(`🔔 Your report "${rpt.title}" status has been set to "${rpt.status}".`);
+
+      setTimeout(() => setNotification(null), 10000);
     }
   }, []);
 
   const handleAppealChange = (id, msg) => {
     setAppealMessages(m => ({ ...m, [id]: msg }));
   };
+
   const handleAppealSubmit = id => {
     const msg = appealMessages[id];
     if (msg) {
@@ -32,6 +33,7 @@ export default function ReportsPage() {
       setAppealMessages(m => ({ ...m, [id]: "" }));
     }
   };
+
   const handleDownload = rpt => {
     const doc = new jsPDF();
     doc.setFontSize(16);
@@ -59,20 +61,16 @@ export default function ReportsPage() {
         </div>
       </motion.div>
 
+      {/* Notification */}
+      {notification && (
+        <div className="max-w-3xl mx-auto mb-6 px-6">
+          <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-3 rounded shadow text-center text-sm">
+            {notification}
+          </div>
+        </div>
+      )}
+
       <div className="max-w-3xl mx-auto px-6 space-y-6">
-
-        {/* Notification */}
-        {notification && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded shadow flex items-center space-x-2"
-          >
-            <span>🔔</span>
-            <span>{notification}</span>
-          </motion.div>
-        )}
-
         {/* Report Cards */}
         <motion.div
           initial="hidden"
@@ -93,7 +91,7 @@ export default function ReportsPage() {
               whileHover={{ scale: 1.02, boxShadow: "0 8px 24px rgba(0,0,0,0.12)" }}
               className={`bg-white rounded-xl p-6 border ${
                 report.status === "Accepted"
-                  ? "border-green-200"
+                  ? "border-green-300 bg-green-50"
                   : "border-gray-200"
               }`}
             >

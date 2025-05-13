@@ -1,8 +1,7 @@
-// src/pages/InternshipDetailsPage.jsx
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
-// Internship data should match what you have in StudentDashboard
 const internships = [
   {
     id: 1,
@@ -43,44 +42,56 @@ const InternshipDetailsPage = () => {
 
   if (!internship) {
     return (
-      <div className="p-6">
-        <h2 className="text-2xl font-semibold">Internship not found</h2>
+      <div className="p-6 text-center">
+        <h2 className="text-2xl font-semibold text-gray-800">Internship not found</h2>
         <button
           onClick={() => navigate(-1)}
-          className="mt-4 text-blue-600 underline"
+          className="mt-4 text-[#00D6A0] underline font-medium"
         >
-          Go back
+          ← Go back
         </button>
       </div>
     );
   }
 
   const handleApplyClick = () => {
-    navigate(`/student/apply/${id}`); // Navigate to the ApplicationPage
+    navigate(`/student/apply/${id}`);
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-2xl shadow">
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-4 text-blue-600 underline"
+    <div className="min-h-screen bg-gray-50 pb-16">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-5xl mx-auto mt-10 px-6"
       >
-        ← Back to List
-      </button>
-      <h2 className="text-2xl font-bold mb-2">{internship.title}</h2>
-      <p className="text-gray-600 mb-1"><strong>Company:</strong> {internship.company}</p>
-      <p className="text-gray-600 mb-1"><strong>Industry:</strong> {internship.industry}</p>
-      <p className="text-gray-600 mb-1"><strong>Location:</strong> {internship.location}</p>
-      <p className="text-gray-600 mb-3"><strong>Duration:</strong> {internship.duration}</p>
-      <p className="text-gray-600 mb-3"><strong>Paid:</strong> {internship.paid ? "Yes" : "No"}</p>
-      <p className="text-gray-800 mb-4">{internship.description}</p>
-
-      <button 
-        onClick={handleApplyClick} 
-        className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-      >
-        Apply for this Internship
-      </button>
+        <div className="bg-white rounded-2xl shadow-md p-10">
+          <button
+            onClick={() => navigate(-1)}
+            className="mb-6 text-[#00D6A0] underline font-medium"
+          >
+            ← Back to List
+          </button>
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">{internship.title}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-lg text-gray-700">
+            <p><strong>🏢 Company:</strong> {internship.company}</p>
+            <p><strong>💼 Industry:</strong> {internship.industry}</p>
+            <p><strong>📍 Location:</strong> {internship.location}</p>
+            <p><strong>⏱️ Duration:</strong> {internship.duration}</p>
+            <p><strong>💰 Paid:</strong> {internship.paid ? "Yes" : "No"}</p>
+          </div>
+          <div className="mt-6">
+            <h3 className="text-xl font-semibold mb-2">📄 Description</h3>
+            <p className="text-gray-600">{internship.description}</p>
+          </div>
+          <button
+            onClick={handleApplyClick}
+            className="mt-10 w-full py-3 bg-gradient-to-r from-[#00D6A0] to-[#2b7de9] text-white rounded-full font-semibold shadow hover:shadow-lg transition-all"
+          >
+            Apply for this Internship
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 };

@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {FaEye} from 'react-icons/fa';
+import { useNotifications } from '../contexts/NotificationContext';
 
 function LoginPage() {
     const navigate = useNavigate();
+    const { clearNotifications } = useNotifications();
+
+    useEffect(() => {
+        clearNotifications();
+    }, [clearNotifications]);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false); // ✅ ADD THIS
@@ -29,6 +36,7 @@ function LoginPage() {
       'rep@corp.com': '1234',
       'officer@scad.com': '12345',
       'faculty@guc.com': '123',
+      'prostudent@guc.com': '123',
     };
   
     if (email in validUsers) {
@@ -48,7 +56,11 @@ function LoginPage() {
         else if (email === 'faculty@guc.com') {
           setSuccess('Fculty login successful!');
           navigate('/faculty-dashboard');
-        } 
+        }
+        else if (email === 'prostudent@guc.com') {  
+          setSuccess('ProStudent login successful!');
+          navigate('/pro-student-dashboard');
+        }
         
       } else {
         // password wrong

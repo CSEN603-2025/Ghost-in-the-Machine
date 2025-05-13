@@ -77,23 +77,6 @@ export default function MyApplicationsPage() {
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${styles.accent} ${styles.text}`}>
                       {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                     </span>
-                    <motion.button
-                      whileHover={{ x: 5 }}
-                      className="text-[#00D6A0] font-medium flex items-center"
-                      onClick={() => {/* navigate to details if you have a route */}}
-                    >
-                      Details
-                      <svg
-                        className="w-4 h-4 ml-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </motion.button>
                   </div>
                 </div>
               </motion.div>
