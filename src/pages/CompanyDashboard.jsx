@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import CompanyProfileCard from '../components/CompanyProfileCard';
 import { motion } from 'framer-motion';
 import { useToastNotifications } from '../hooks/useToastNotifications';
+import { TbHomeStats } from 'react-icons/tb';
 
 const CompanyDashboard = () => {
   const navigate = useNavigate();

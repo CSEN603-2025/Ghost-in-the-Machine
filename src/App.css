@@ -141,8 +141,8 @@ h1, h2, h3, h4 {
 /* ================== */
 .notification-bell {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  bottom: 20px;
+  left: 20px;
   z-index: 1000;
 }
 
@@ -192,8 +192,8 @@ h1, h2, h3, h4 {
 
 .dropdown {
   position: absolute;
-  top: 50px;
-  right: 0;
+  bottom: 50px;
+  left: 0;
   width: 350px;
   max-height: 500px;
   overflow-y: auto;
