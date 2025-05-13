@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useToastNotifications } from '../hooks/useToastNotifications';
 
 const ManageCycle = () => {
   // Dummy current cycle dates
   const [startDate, setStartDate] = useState('2025-01-01');
   const [endDate, setEndDate] = useState('2025-06-30');
+  const { success, error } = useToastNotifications();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!startDate || !endDate) {
-      toast.error('Please select both start and end dates');
+      error('Please select both start and end dates');
       return;
     }
     if (new Date(startDate) > new Date(endDate)) {
-      toast.error('Start date cannot be after end date');
+      error('Start date cannot be after end date');
       return;
     }
     localStorage.setItem('internshipCycle', JSON.stringify({ start: startDate, end: endDate }));
-    toast.success('Internship cycle dates updated');
+    success('Internship cycle dates updated');
   };
 
   return (
@@ -89,7 +89,7 @@ const ManageCycle = () => {
         </form>
       </div>
 
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+      {/* ToastContainer is placed globally in App.js */}
     </div>
   );
 };

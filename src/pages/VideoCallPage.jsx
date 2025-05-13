@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FiMic, FiMicOff, FiVideo, FiVideoOff, FiMonitor, FiX } from 'react-icons/fi';
+import { FiMic, FiMicOff, FiVideo, FiVideoOff, FiMonitor, FiX, FiCast, FiTv, FiPhoneOff, FiPhoneMissed } from 'react-icons/fi';
 
 const VideoCallPage = () => {
   const [callStatus, setCallStatus] = useState('idle'); // 'idle', 'ringing', 'in-progress'
@@ -101,7 +101,7 @@ const VideoCallPage = () => {
             {callStatus === 'ringing' ? 'Calling...' : 'Call in Progress'}
           </h3>
           
-          <div className="video-container">
+          <div className="video-container relative">
             {callStatus === 'in-progress' && (
               <>
                 <div className="remote-video">
@@ -129,6 +129,17 @@ const VideoCallPage = () => {
               </>
             )}
             
+            {/* Dummy shared screen preview */}
+            {screenSharing && callStatus === 'in-progress' && (
+              <video 
+                autoPlay
+                loop
+                src="/dumdumvideo.mp4"
+                alt="Shared Screen"
+                className="absolute top-4 right-4 w-32 h-20 object-cover border rounded-lg shadow-lg"
+              />
+            )}
+            
             {callStatus === 'ringing' && (
               <div className="ringing-animation">
                 <div className="spinner"></div>
@@ -137,35 +148,42 @@ const VideoCallPage = () => {
             )}
           </div>
           
-          <div className="call-controls">
-            <button 
+          <div className="call-controls flex justify-center space-x-4 mt-4">
+            {/* Mic toggle */}
+            <button
               onClick={() => setMicEnabled(!micEnabled)}
-              className={micEnabled ? 'active' : ''}
+              className={`p-3 rounded-full hover:bg-gray-200 ${
+                micEnabled ? 'bg-gray-100 text-black' : 'bg-red-800 text-white'
+              }`}
             >
-              {micEnabled ? <FiMic /> : <FiMicOff />}
+              {micEnabled ? <FiMic size={20} /> : <FiMicOff size={20} />}
             </button>
-            
-            <button 
+            {/* Video toggle */}
+            <button
               onClick={() => setVideoEnabled(!videoEnabled)}
-              className={videoEnabled ? 'active' : ''}
+              className={`p-3 rounded-full hover:bg-gray-200 ${
+                videoEnabled ? 'bg-gray-100 text-black' : 'bg-red-800 text-white'
+              }`}
             >
-              {videoEnabled ? <FiVideo /> : <FiVideoOff />}
+              {videoEnabled ? <FiVideo size={20} /> : <FiVideoOff size={20} />}
             </button>
-            
+            {/* Screen share toggle */}
             {callStatus === 'in-progress' && (
-              <button 
+              <button
                 onClick={() => setScreenSharing(!screenSharing)}
-                className={screenSharing ? 'active' : ''}
+                className={`p-3 rounded-full hover:bg-gray-200 ${
+                  screenSharing ? 'bg-green-600 text-white' : 'bg-red-800 text-white'
+                }`}
               >
-                <FiMonitor />
+                <FiCast size={20} />
               </button>
             )}
-            
-            <button 
+            {/* End call */}
+            <button
               onClick={endCall}
-              className="end-call-btn"
+              className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full"
             >
-              <FiX /> End Call
+              <FiPhoneMissed size={20} />
             </button>
           </div>
         </div>

@@ -210,7 +210,7 @@ if (showSuccess) {
 
         {/* Message */}
         <p style={{ color: '#595b5f', fontSize: '15px', lineHeight: '1.5' }}>
-          The GUCI Internship System received your registration and will soon respond to you.
+          The GUC Internship System received your registration and will soon respond to you.
         </p>
       </div>
 
