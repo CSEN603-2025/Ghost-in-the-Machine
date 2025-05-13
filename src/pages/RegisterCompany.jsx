@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useNotifications } from '../contexts/NotificationContext';
 import InputField from '../components/InputField';
 
 export default function RegisterCompanyPage() {
   const navigate = useNavigate();
+  const { clearNotifications } = useNotifications();
+
+  useEffect(() => {
+    clearNotifications();
+  }, [clearNotifications]);
 
   // Form state
   const [companyName, setCompanyName]   = useState('');

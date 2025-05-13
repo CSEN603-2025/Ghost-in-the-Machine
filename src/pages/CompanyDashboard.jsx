@@ -19,10 +19,7 @@ const CompanyDashboard = () => {
       // show toast
       success(msg);
       // add to bell notification center
-      setNotifications(prev => [
-        ...prev,
-        { id: Date.now(), message: msg, date: new Date() }
-      ]);
+      setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
     }, 3000);
     return () => clearTimeout(timer);
   }, []);

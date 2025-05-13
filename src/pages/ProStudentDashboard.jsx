@@ -7,6 +7,8 @@ import SearchBar from '../components/SearchBar';
 import CompanyFilter from '../components/dashboard/CompanyFilter';
 import CompanyCard from '../components/dashboard/CompanyCard';
 import EnrolledWorkshopCard from '../components/dashboard/EnrolledWorkshopCard';
+import { useToastNotifications } from '../hooks/useToastNotifications';
+import { useEffect } from 'react';
 
 // Add suggested companies list
 const allSuggestedCompanies = [
@@ -26,6 +28,19 @@ const ProStudentDashboard = () => {
   // Hardcoded dummy student info
   const major = 'CSEN';
   const semester = '8th';
+  const {success} = useToastNotifications();
+    const [notifications, setNotifications] = useState([]);
+  
+      useEffect(() => {
+      const timer = setTimeout(() => {
+        const msg = "Next internship cycle starts on 1/Jun/2025. Don't miss out!";
+        // show toast
+        success(msg);
+        // add to bell notification center
+        setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }, []);
 
   const [registered, setRegistered] = useState([]);
 

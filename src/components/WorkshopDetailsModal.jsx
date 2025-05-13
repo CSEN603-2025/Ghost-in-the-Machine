@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FaTimes, FaRegCalendarCheck, FaCertificate, FaStar } from 'react-icons/fa';
+import { useToastNotifications } from '../hooks/useToastNotifications';
 
 export default function WorkshopDetailsModal({ workshop, onClose }) {
   const { id, name, speaker, description, start, end, videoUrl, isLive } = workshop;
@@ -26,6 +27,8 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
   // Which view: 'live' or 'recorded'
   const [viewMode, setViewMode] = useState(isLive ? 'live' : 'recorded');
 
+  const { info } = useToastNotifications();
+
   useEffect(() => { localStorage.setItem(notesKey, notes); }, [notes]);
   useEffect(() => { localStorage.setItem(rateKey, rating); }, [rating]);
   useEffect(() => {
@@ -42,7 +45,7 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
       setRegistered(true);
       const msUntil = new Date(start) - Date.now() - 3600000;
       if (msUntil > 0) {
-        setTimeout(() => alert(`🔔 "${name}" starts in 1 hour!`), msUntil);
+        setTimeout(() => info(`🔔 "${name}" starts in 1 hour!`), msUntil);
       }
     }
   }

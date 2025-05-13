@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {FaEye} from 'react-icons/fa';
+import { useNotifications } from '../contexts/NotificationContext';
 
 function LoginPage() {
     const navigate = useNavigate();
+    const { clearNotifications } = useNotifications();
+
+    useEffect(() => {
+        clearNotifications();
+    }, [clearNotifications]);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false); // ✅ ADD THIS

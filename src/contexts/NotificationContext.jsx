@@ -6,10 +6,16 @@ const NotificationContext = createContext({
   addNotification: () => {},
   markAsRead: () => {},
   removeNotification: () => {},
+  clearNotifications: () => {},
 });
 
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
+
+  // Clear all notifications
+  const clearNotifications = () => {
+    setNotifications([]);
+  };
 
   const addNotification = (message, type = 'info') => {
     const id = Date.now();
@@ -29,7 +35,7 @@ export const NotificationProvider = ({ children }) => {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <NotificationContext.Provider value={{ notifications, unreadCount, addNotification, markAsRead, removeNotification }}>
+    <NotificationContext.Provider value={{ notifications, unreadCount, addNotification, markAsRead, removeNotification, clearNotifications }}>
       {children}
     </NotificationContext.Provider>
   );

@@ -7,6 +7,7 @@ import SearchBar from "../components/SearchBar";
 import CompanyFilter from "../components/dashboard/CompanyFilter";
 import CompanyCard from "../components/dashboard/CompanyCard";
 import { motion } from "framer-motion";
+import { useToastNotifications } from '../hooks/useToastNotifications';
 
 const allSuggestedCompanies = [
   { name: "Instabug", industry: "Technology", recommendations: 5 },
@@ -35,7 +36,19 @@ export default function StudentDashboard() {
   const [companyFilter, setCompanyFilter] = useState({ industry: "", company: "" });
   const [searchText, setSearchText] = useState("");
   const [assessmentScore, setAssessmentScore] = useState(null);
+  const {success} = useToastNotifications();
+  const [notifications, setNotifications] = useState([]);
 
+    useEffect(() => {
+    const timer = setTimeout(() => {
+      const msg = "Next internship cycle starts on 1/Jun/2025. Don't miss out!";
+      // show toast
+      success(msg);
+      // add to bell notification center
+      setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
   useEffect(() => {
     const savedScore = localStorage.getItem("onlineAssessmentScore");
     if (savedScore) {
