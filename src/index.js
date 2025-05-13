@@ -5,13 +5,16 @@ import App from './App';
 import './input.css';
 import './index.css';
 import { ApplicationsProvider } from './contexts/ApplicationsContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <BrowserRouter>
     <ApplicationsProvider>
-      <App />
+      <NotificationProvider>
+        <App />
+      </NotificationProvider>
     </ApplicationsProvider>
   </BrowserRouter>
 );

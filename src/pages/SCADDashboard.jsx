@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useToastNotifications } from '../hooks/useToastNotifications';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import IncomingCallPrompt from '../components/IncomingCallPrompt';
@@ -23,17 +22,19 @@ const SCADDashboard = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Toast helpers
+  const { success, info } = useToastNotifications();
   // Auto-end call 5s after starting
   useEffect(() => {
     let endTimer;
     if (showOngoing && callStatus === 'in-progress') {
       endTimer = setTimeout(() => {
         setShowOngoing(false);
-        toast.info('John Doe left the call');
+        info('John Doe left the call');
       }, 5000);
     }
     return () => clearTimeout(endTimer);
-  }, [showOngoing, callStatus]);
+  }, [showOngoing, callStatus, info]);
 
   // Card data (including new Manage Workshops)
   const cards = [
@@ -80,24 +81,24 @@ const SCADDashboard = () => {
     setCallStatus('in-progress');
     setShowIncoming(false);
     setShowOngoing(true);
-    toast.success('Video call accepted');
+    success('Video call accepted');
   };
   const handleReject = () => {
     setShowIncoming(false);
     setShowOngoing(false);
-    toast.info('Call rejected');
+    info('Call rejected');
   };
   const handleAcceptAudio = () => {
     setCallStatus('in-progress');
     setVideoEnabled(false);
     setShowIncoming(false);
     setShowOngoing(true);
-    toast.success('Audio call accepted');
+    success('Audio call accepted');
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+      {/* ToastContainer rendered globally in App.js */}
       {/* --- Premium Glass Navbar --- */}
       <motion.div 
         initial={{ y: -20, opacity: 0 }}

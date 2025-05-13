@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 import { FiBell } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNotifications } from '../contexts/NotificationContext';
 
-export default function NotificationBell({
-  notifications,
-  unreadCount,
-  markAsRead,
-  removeNotification
-}) {
+export default function NotificationBell() {
+  // get notifications from context
+  const { notifications, unreadCount, markAsRead, removeNotification } = useNotifications();
   const [open, setOpen] = useState(false);
 
   // Close notifications when clicking outside

@@ -26,6 +26,21 @@ export default function RegisterCompanyPage() {
   const [loading,       setLoading]       = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
+  // Email validation helper
+  const validateEmail = (email) => {
+    if (!email.trim()) return "Please fill the empty field";
+    if (email.includes(" ")) return "Email cannot contain spaces";
+    if (!email.includes("@")) return "Email must contain @ symbol";
+    const [local, domain] = email.split("@");
+    if (!local) return "Email must have characters before @";
+    if (!domain) return "Email must have a domain after @";
+    if (!domain.includes(".")) return "Domain must contain a .";
+    const parts = domain.split(".");
+    const ext = parts[parts.length - 1];
+    if (!ext) return "Email must have an extension after .";
+    if (ext.length < 2) return "Email extension must be at least 2 characters";
+    return null;
+  };
 
   // Inject loader + pulse keyframes once
   useEffect(() => {
@@ -111,7 +126,8 @@ const handleSubmit = e => {
   const newErrors = {};
   if (!companyName.trim())         newErrors.companyName     = true;
   if (!industry.trim())            newErrors.industry        = true;
-  if (!email.trim())               newErrors.email           = true;
+  const emailError = validateEmail(email);
+  if (emailError)                  newErrors.email           = emailError;
   if (!phone.trim())               newErrors.phone           = true;
   if (!address.trim())             newErrors.address         = true;
   if (!companySize)                newErrors.companySize     = true;
@@ -210,7 +226,7 @@ if (showSuccess) {
 
         {/* Message */}
         <p style={{ color: '#595b5f', fontSize: '15px', lineHeight: '1.5' }}>
-          The GUCI Internship System received your registration and will soon respond to you.
+          The GUC Internship System received your registration and will soon respond to you.
         </p>
       </div>
 
@@ -276,7 +292,7 @@ if (showSuccess) {
           onChange={e => setEmail(e.target.value)}
         />
         {errors.email && (
-          <p style={styles.inlineError}>Please fill the empty field</p>
+          <p style={styles.inlineError}>{errors.email}</p>
         )}
 
         {/* Phone */}
