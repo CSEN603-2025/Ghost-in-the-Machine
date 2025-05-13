@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import IncomingCallPrompt from '../components/IncomingCallPrompt';
 import OnGoingCallPrompt from '../components/OnGoingCallPrompt';
+import { FiArrowUpRight } from 'react-icons/fi';
 
 const SCADDashboard = () => {
   const navigate = useNavigate();
@@ -19,6 +22,18 @@ const SCADDashboard = () => {
     const timer = setTimeout(() => setShowIncoming(true), 5000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Auto-end call 5s after starting
+  useEffect(() => {
+    let endTimer;
+    if (showOngoing && callStatus === 'in-progress') {
+      endTimer = setTimeout(() => {
+        setShowOngoing(false);
+        toast.info('John Doe left the call');
+      }, 5000);
+    }
+    return () => clearTimeout(endTimer);
+  }, [showOngoing, callStatus]);
 
   // Card data (including new Manage Workshops)
   const cards = [
@@ -60,19 +75,29 @@ const SCADDashboard = () => {
     }
   ];
 
-  // Call handlers (unchanged)
+  // Call handlers (enhanced with toasts)
   const handleAcceptVideo = () => {
     setCallStatus('in-progress');
     setShowIncoming(false);
     setShowOngoing(true);
+    toast.success('Video call accepted');
   };
   const handleReject = () => {
     setShowIncoming(false);
     setShowOngoing(false);
+    toast.info('Call rejected');
+  };
+  const handleAcceptAudio = () => {
+    setCallStatus('in-progress');
+    setVideoEnabled(false);
+    setShowIncoming(false);
+    setShowOngoing(true);
+    toast.success('Audio call accepted');
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       {/* --- Premium Glass Navbar --- */}
       <motion.div 
         initial={{ y: -20, opacity: 0 }}
@@ -178,10 +203,7 @@ const SCADDashboard = () => {
             <IncomingCallPrompt
               participantName="John Doe"
               onAcceptVideo={handleAcceptVideo}
-              onAcceptAudio={() => {
-                setVideoEnabled(false);
-                handleAcceptVideo();
-              }}
+              onAcceptAudio={handleAcceptAudio}
               onReject={handleReject}
             />
           </motion.div>
@@ -196,6 +218,13 @@ const SCADDashboard = () => {
             exit={{ opacity: 0 }}
             className="fixed inset-0 flex items-center justify-center z-50"
           >
+            {/* Pop-out button */}
+            <button
+              onClick={() => navigate('/VideoCallPage')}
+              className="absolute top-4 right-4 bg-white/80 p-2 rounded-full shadow hover:bg-white"
+            >
+              <FiArrowUpRight size={20} />
+            </button>
             <OnGoingCallPrompt
               callStatus={callStatus}
               participantName="John Doe"

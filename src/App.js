@@ -44,6 +44,7 @@ import ReportsListPage from './pages/ReportsListPage';
 import AssessmentsPage from './pages/AssessmentsPage';
 import StatsPage from './pages/StatsPage';
 import PostsList from './components/PostsList';
+import ManageCycle from './pages/ManageCycle';
 
 
 
@@ -79,7 +80,7 @@ function App() {
       <Route path="/student-upcoming-workshops" element={<StudentUpcomingWorkshopsPage />} />
       <Route path="/registered-students" element={<RegisteredStudents/>} />
       <Route path="/dashboard" element={<CompanyDashboard />} />
-       <Route path="/faculty/internship-reports" element={<ReportsListPage />} /> 
+      <Route path="/faculty/internship-reports" element={<ReportsListPage />} /> 
       <Route path="student/edit-profile" element={<EditProfilePage />} />
       <Route path="/faculty/statistics" element={<StatsPage />} />
       <Route path="student/internships" element={<InternshipPage />} />
@@ -102,6 +103,7 @@ function App() {
       <Route path="student/assessment" element={<AssessmentsPage />} />
       <Route path="/evaluations-reports" element={<ManageReportsAndEvaluations />} />
       <Route path="/posts" element={<PostsList posts={posts} setPosts={setPosts} />} />
+      <Route path="/manage-internship-cycle" element={<ManageCycle />} />
 
         
 
