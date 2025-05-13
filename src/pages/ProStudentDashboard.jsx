@@ -50,7 +50,7 @@ const ProStudentDashboard = () => {
     { label: 'Evaluation', path: '/student/evaluation' },
     { label: 'SCAD Internships', path: '/student/scad-internships' },
     { label: 'View Reports', path: '/student/reports' },
-    { label: 'Online Assessments', path: '/student/assessment' },
+    { label: 'Assessments', path: '/student/assessment' },
     { label: 'Viewed Profile', path: '/student/viewed-profile' },
     { label: 'Appointments', path: '/videocallpage' },
   ];

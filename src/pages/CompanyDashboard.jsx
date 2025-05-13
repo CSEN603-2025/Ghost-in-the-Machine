@@ -1,16 +1,26 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CompanyProfileCard from '../components/CompanyProfileCard';
 import { motion } from 'framer-motion';
+import { useToastNotifications } from '../hooks/useToastNotifications';
 
 const CompanyDashboard = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('home');
-
+  const { success } = useToastNotifications();
 
   useEffect(() => {
     console.log("Welcome to the Company Dashboard");
+    const timer = setTimeout(() => {
+      success("Congrats, your application is now accepted and profile is activated! Check your email");
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      success("Ahmed Mohamed just applied for the DevOps Intern position");
+    }, 5000);
+    return () => clearTimeout(timer);
   }, []);
 
   const myCompany = {
