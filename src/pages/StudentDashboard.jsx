@@ -1,6 +1,7 @@
 // src/pages/StudentDashboard.jsx
 import React, { useEffect, useState } from "react";
-import DashboardNavbar from "../components/dashboard/DashboardNavbar";
+import { useNavigate } from "react-router-dom"; // Added useNavigate
+import DashboardTopNav from "../components/dashboard/DashboardTopNav"; // Added
 import StatusHeader from "../components/dashboard/StatusHeader";
 import DashboardLinkCard from "../components/dashboard/DashboardLinkCard";
 import SearchBar from "../components/SearchBar";
@@ -38,6 +39,7 @@ export default function StudentDashboard() {
   const [assessmentScore, setAssessmentScore] = useState(null);
   const {success} = useToastNotifications();
   const [notifications, setNotifications] = useState([]);
+  const navigate = useNavigate(); // Added
 
     useEffect(() => {
     const timer = setTimeout(() => {
@@ -107,7 +109,7 @@ export default function StudentDashboard() {
 
   return (
     <>
-      <DashboardNavbar />
+      <DashboardTopNav portalTitle="Student Portal" logoText="ST" />
       <div style={styles.container}>
         <div style={styles.content}>
 
@@ -172,7 +174,7 @@ const styles = {
     justifyContent: "center",
     minHeight: "100vh",
     backgroundColor: "#f4f4f9",
-    paddingTop: "100px",
+    paddingTop: "20px", // Adjusted paddingTop
 
     width: "100%",
   },

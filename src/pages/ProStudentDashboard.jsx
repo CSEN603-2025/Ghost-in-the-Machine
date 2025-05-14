@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import DashboardNavbar from '../components/dashboard/DashboardNavbar';
+import React, { useState, useEffect } from 'react'; // Added useEffect
+import { useNavigate } from 'react-router-dom'; // Added useNavigate
+// import DashboardNavbar from '../components/dashboard/DashboardNavbar'; // Removed
+import DashboardTopNav from '../components/dashboard/DashboardTopNav'; // Added
 import StatusHeader from '../components/dashboard/StatusHeader';
 import ProWorkshopCard from '../components/dashboard/ProWorkshopCard';
 import DashboardLinkCard from '../components/dashboard/DashboardLinkCard';
@@ -8,7 +10,6 @@ import CompanyFilter from '../components/dashboard/CompanyFilter';
 import CompanyCard from '../components/dashboard/CompanyCard';
 import EnrolledWorkshopCard from '../components/dashboard/EnrolledWorkshopCard';
 import { useToastNotifications } from '../hooks/useToastNotifications';
-import { useEffect } from 'react';
 
 // Add suggested companies list
 const allSuggestedCompanies = [
@@ -29,7 +30,8 @@ const ProStudentDashboard = () => {
   const major = 'CSEN';
   const semester = '8th';
   const {success} = useToastNotifications();
-    const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const navigate = useNavigate(); // Added
   
       useEffect(() => {
       const timer = setTimeout(() => {
@@ -95,8 +97,8 @@ const ProStudentDashboard = () => {
 
   return (
     <>
-      <DashboardNavbar />
-      <div style={{ padding: '20px', maxWidth: '1000px', margin: '100px auto' }}>
+      <DashboardTopNav portalTitle="Pro Student Portal" logoText="PR" />
+      <div style={{ padding: '20px', maxWidth: '1000px', margin: '20px auto' }}> {/* Adjusted top margin */}
         {/* Student Dashboard Section */}
         <div style={styles.section}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>

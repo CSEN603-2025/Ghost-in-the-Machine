@@ -1,13 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import DashboardTopNav from '../components/dashboard/DashboardTopNav';
+import { motion } from 'framer-motion';
 
 const FacultyDashboardPage = () => {
   const navigate = useNavigate();
 
   const handleCardClick = (route) => navigate(route);
-  const handleHome = () => navigate('/');
-  const handleLogout = () => navigate('/welcome');
 
   const cards = [
     {
@@ -35,42 +34,7 @@ const FacultyDashboardPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Premium Navbar */}
-      <motion.div 
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="w-full bg-[#00106A]/90 backdrop-blur-md border-b border-white/10 py-4 px-8 flex items-center justify-between sticky top-0 z-50 shadow-lg"
-      >
-        {/* Logo Placeholder */}
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] flex items-center justify-center text-white font-bold">
-            F
-          </div>
-          <span className="text-xl font-bold text-white">Faculty Portal</span>
-        </div>
-
-        {/* Title */}
-        <h1 className="text-2xl font-bold text-white/90 text-center">Faculty Dashboard</h1>
-
-        {/* Buttons */}
-        <div className="flex space-x-3">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleHome}
-            className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black font-semibold py-2 px-6 rounded-full shadow-lg hover:shadow-xl transition-all"
-          >
-            Home
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleLogout}
-            className="bg-gradient-to-r from-red-500 to-red-400 text-white py-2 px-6 rounded-full shadow-lg hover:shadow-xl transition-all"
-          >
-            Logout
-          </motion.button>
-        </div>
-      </motion.div>
+      <DashboardTopNav portalTitle="Faculty Portal" logoText="FA" />
 
       {/* Dashboard Cards */}
       <div className="max-w-7xl mx-auto px-6 py-10">

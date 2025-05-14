@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FaFileAlt, FaSearch } from 'react-icons/fa'; // Added FaFileAlt for reports
 import Filter from '../components/Filter';
 import Pagination from '../components/Pagination';
 import ReportDetailsModal from '../components/ReportDetailsModal';
@@ -14,6 +16,10 @@ export default function ReportsListPage() {
   // Search & filter state
   const [searchTerm, setSearchTerm] = useState('');
   const [filterData, setFilterData] = useState({ major: '', status: '' });
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1); // 1-indexed for UI
+  const [itemsPerPage] = useState(10); // Or any other number you prefer
 
   // Modal
   const [selectedReport, setSelectedReport] = useState(null);
@@ -73,7 +79,10 @@ export default function ReportsListPage() {
     setFiltered(temp);
   }, [searchTerm, filterData, reports]);
 
-  const handleFilter = (data) => setFilterData(data);
+  const handleFilter = (data) => {
+    setFilterData(data);
+    setCurrentPage(1); // Reset to first page on filter change
+  };
 
   // Download PDF helper
   const downloadPdf = (id) => {
@@ -83,82 +92,124 @@ export default function ReportsListPage() {
     link.click();
   };
 
+  // Calculate total pages and items for current page
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filtered.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber + 1); // Convert 0-indexed from Pagination to 1-indexed for state
+  };
+
   return (
-    <div className="min-h-screen bg-[#EAEAEA]">
-      {/* Top Navbar */}
-      <div className="w-full bg-[#00106A] py-6 px-6 flex items-center justify-between">
-        <button onClick={() => navigate('/')} className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-300">
-          Home
-        </button>
-        <h1 className="text-3xl font-bold text-white">Internship Reports</h1>
-        <button onClick={() => navigate('/welcome')} className="bg-gradient-to-r from-red-500 to-red-400 text-white py-2 px-4 rounded-lg shadow-md transition-all duration-300">
-          Logout
-        </button>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Hero Section */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
+        <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center text-white">
+          <FaFileAlt size={48} className="mx-auto mb-4" />
+          <h1 className="text-4xl md:text-5xl font-bold mb-2">Internship Reports</h1>
+          <p className="text-xl text-blue-100 max-w-2xl mx-auto mb-8">
+            Browse and manage student internship reports.
+          </p>
+          <div className="w-full max-w-md mx-auto relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FaSearch className="text-blue-300" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search by student name or report title"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-blue-300/30 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent" />
+      </motion.div>
 
-      {/* Search & Filter */}
-      <div className="px-6 py-4 bg-white border-b border-gray-200 flex flex-wrap items-center gap-4">
-        <input
-          type="text"
-          placeholder="Search by student name or report title"
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          className="w-full md:w-1/2 rounded-md border-gray-300 py-2 px-3 shadow-sm focus:border-[#00106A] focus:ring focus:ring-[#00106A]/50"
-        />
+      {/* Toolbar Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="max-w-7xl mx-auto px-6 py-6 -mt-12 bg-white rounded-xl shadow-lg border border-gray-100 flex flex-wrap items-center gap-4"
+      >
         <Filter onFilter={handleFilter} />
-      </div>
+      </motion.div>
 
-      {/* Reports Table */}
-      <div className="overflow-x-auto px-6 py-8">
-        <table className="min-w-full bg-white rounded-lg overflow-hidden">
-          <thead className="bg-[#00106A]/90 text-white">
-            <tr>
-              <th className="p-3 text-left">Student Name</th>
-              <th className="p-3 text-left">Major</th>
-              <th className="p-3 text-left">Semester</th>
-              <th className="p-3 text-left">Submission Date</th>
-              <th className="p-3 text-left">Status</th>
-              <th className="p-3 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map(report => (
-              <tr key={report.id} className="border-b last:border-none">
-                <td className="p-3">{report.studentName}</td>
-                <td className="p-3">{report.major}</td>
-                <td className="p-3">{report.semester}</td>
-                <td className="p-3">{report.submissionDate}</td>
-                <td className="p-3">{report.status}</td>
-                <td className="p-3 flex items-center space-x-4">
-                  <button
-                    onClick={() => setSelectedReport(report)}
-                    className="px-3 py-1 bg-[#274472] text-white rounded hover:bg-[#41729F] transition"
-                  >
-                    View Details
-                  </button>
-                  <button
-                    onClick={() => downloadPdf(report.id)}
-                    className="text-gray-500 hover:text-gray-700 transition"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none"
-                      viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round"
-                        d="M12 4v16m8-8H4"/>
-                    </svg>
-                  </button>
-                </td>
+      {/* Reports Table Area */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-x-auto">
+          <table className="min-w-full">
+            <thead className="bg-[#00106A]/90 text-white">
+              <tr>
+                <th className="p-3 text-left">Student Name</th>
+                <th className="p-3 text-left">Major</th>
+                <th className="p-3 text-left">Semester</th>
+                <th className="p-3 text-left">Submission Date</th>
+                <th className="p-3 text-left">Status</th>
+                <th className="p-3 text-left">Actions</th>
               </tr>
-            ))}
-            {filtered.length === 0 && (
-              <tr><td colSpan="6" className="p-3 text-center text-gray-500">No reports found.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination */}
-      <div className="px-6 pb-12">
-        <Pagination />
+            </thead>
+            <tbody>
+              {currentItems.map(report => (
+                <tr key={report.id} className="border-b last:border-none hover:bg-gray-50 transition-colors">
+                  <td className="p-3">{report.studentName}</td>
+                  <td className="p-3">{report.major}</td>
+                  <td className="p-3">{report.semester}</td>
+                  <td className="p-3">{report.submissionDate}</td>
+                  <td className="p-3">
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                      report.status === 'Accepted' ? 'bg-green-100 text-green-800' :
+                      report.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800' // Assuming other statuses like 'Rejected'
+                    }`}>
+                      {report.status}
+                    </span>
+                  </td>
+                  <td className="p-3 flex items-center space-x-2"> {/* Reduced space for potentially more buttons */}
+                    <button
+                      onClick={() => setSelectedReport(report)}
+                      className="px-3 py-1 bg-[#274472] text-white rounded hover:bg-[#41729F] transition text-sm"
+                    >
+                      View Details
+                    </button>
+                    <button
+                      onClick={() => downloadPdf(report.id)}
+                      className="text-gray-500 hover:text-[#00106A] transition p-1 rounded hover:bg-gray-200"
+                      title="Download Report"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" // Adjusted icon size
+                        viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        {/* Using a more common download icon path */}
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {currentItems.length === 0 && (
+                <tr><td colSpan="6" className="p-3 text-center text-gray-500">No reports found.</td></tr>
+              )}
+            </tbody>
+          </table>
+          {/* Pagination - moved inside the white card for better grouping */}
+          {totalPages > 0 && (
+            <div className="px-3 py-4 border-t border-gray-200">
+              <Pagination 
+                currentPage={currentPage} 
+                totalPages={totalPages} 
+                onPageChange={handlePageChange} 
+              />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Details Modal */}
