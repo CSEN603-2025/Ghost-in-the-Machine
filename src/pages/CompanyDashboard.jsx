@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import CompanyProfileCard from '../components/CompanyProfileCard';
 import { useToastNotifications } from '../hooks/useToastNotifications';
 import DashboardTopNav from '../components/dashboard/DashboardTopNav';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const CompanyDashboard = () => {
   const navigate = useNavigate();
