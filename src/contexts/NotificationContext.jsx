@@ -19,7 +19,14 @@ export const NotificationProvider = ({ children }) => {
 
   const addNotification = (message, type = 'info') => {
     const id = Date.now();
-    setNotifications(prev => [...prev, { id, message, type, read: false }]);
+    // Check if a notification with the same message already exists
+    setNotifications(prev => {
+      const existingNotification = prev.find(n => n.message === message);
+      if (existingNotification) {
+        return prev; // Don't add if already exists
+      }
+      return [...prev, { id, message, type, read: false }];
+    });
   };
 
   const markAsRead = (id) => {

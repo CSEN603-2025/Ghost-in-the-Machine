@@ -134,7 +134,7 @@ const CompanyDashboard = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ staggerChildren: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6" // Changed lg:grid-cols-3 to lg:grid-cols-6
         >
           {cards.map((card, index) => (
             <motion.div
@@ -146,7 +146,8 @@ const CompanyDashboard = () => {
                 boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)"
               }}
               onClick={() => navigate(card.route)}
-              className={`bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 h-full flex flex-col border border-gray-100`}
+              // Added conditional col-span for lg screens
+              className={`bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-all duration-300 h-full flex flex-col border border-gray-100 ${index < 3 ? 'lg:col-span-2' : 'lg:col-span-3'}`}
             >
               <div className={`h-2 w-full bg-gradient-to-r ${card.color}`}></div>
               <div className="p-6 flex-1 flex flex-col">

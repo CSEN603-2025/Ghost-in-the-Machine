@@ -1,7 +1,8 @@
 // src/pages/ReportsPage.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { motion } from "framer-motion";
 import jsPDF from "jspdf";
+import { useToastNotifications } from "../hooks/useToastNotifications";
 
 export default function ReportsPage() {
   const [reports, setReports] = useState([
@@ -12,14 +13,17 @@ export default function ReportsPage() {
   ]);
   const [appealMessages, setAppealMessages] = useState({});
   const [notification, setNotification] = useState(null);
+  const {info} = useToastNotifications();
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    const rpt = reports.find(r => r.status === "Rejected");
-    if (rpt) {
-     setNotification(`🔔 Your report "${rpt.title}" status has been set to "${rpt.status}".`);
-
-      setTimeout(() => setNotification(null), 10000);
-    }
+        const rpt = reports.find(r => r.status === "Rejected");
+        const timer = setTimeout(() => {
+        const msg = `Your report "${rpt.title}" status has been set to "${rpt.status}".`;
+          info(msg);
+          setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
+        }, 100);
+        return () => clearTimeout(timer);
   }, []);
 
   const handleAppealChange = (id, msg) => {
