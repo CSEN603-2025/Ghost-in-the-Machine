@@ -122,11 +122,12 @@ const CompanyDashboard = () => {
         </div>
       </motion.div>
       <div className="max-w-7xl mx-auto px-6 py-10">
-        <div className="text-center mb-8">
+        {/* <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-800">Hi {myCompany.name}, welcome to the dashboard.</h2>
-        </div>
+        </div> */}
 
-        <div className="mb-8 flex justify-center">
+        {/* Ensure this container has a lower z-index or the card itself is not trying to overlap with a higher z-index */}
+        <div className="mb-8 flex justify-center relative z-10">
           <CompanyProfileCard companyInfo={myCompany} />
         </div>
 

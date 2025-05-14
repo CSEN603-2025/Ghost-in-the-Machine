@@ -13,7 +13,7 @@ const EmailClientPage = () => {
     { id: 3, folder: 'Sent', sender: 'You', subject: 'Re: Meeting Reminder', snippet: 'Thanks for the heads up...', time: '9:05 AM', body: 'Thanks for the heads up, John. I will be there.\nCheers,' },
     { id: 4, folder: 'Drafts', sender: 'You', subject: 'Draft: Weekly Report', snippet: 'Summary of this week...', time: 'Yesterday', body: 'Draft content goes here...' },
     { id: 5, folder: 'Spam', sender: 'Spam Bot', subject: 'You won a prize!', snippet: 'Click this link...', time: 'Today', body: 'Congratulations! Click here to claim your prize.' },
-    { id: 6, folder: 'Inbox', sender: 'Internship Notification System', subject: 'New Applicant Notification!', snippet: 'A new applicant has applied for the internship position.', time: '10:00 AM', body: 'Dear Team,\nA new applicant "Ahmed Mohamed" has applied for the internship position. Please review their application.\nBest, Internship Notification System' },
+    { id: 6, folder: 'Inbox', sender: 'Internship Notification System', subject: 'New Applicant Notification!', snippet: 'A new applicant has applied for the DevOps internship position.', time: '10:00 AM', body: 'Dear Team,\nA new applicant "Ahmed Mohamed" has applied for the internship position. Please review their application.\nBest, Internship Notification System' },
   ];
 
   const [selectedFolder, setSelectedFolder] = useState('Inbox');
