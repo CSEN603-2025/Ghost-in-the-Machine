@@ -1,100 +1,24 @@
 // src/pages/StudentDashboard.jsx
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Added useNavigate
-import DashboardTopNav from "../components/dashboard/DashboardTopNav"; // Added
+import { useNavigate } from "react-router-dom";
+import DashboardTopNav from "../components/dashboard/DashboardTopNav";
 import StatusHeader from "../components/dashboard/StatusHeader";
-import DashboardLinkCard from "../components/dashboard/DashboardLinkCard";
 import SearchBar from "../components/SearchBar";
 import CompanyFilter from "../components/dashboard/CompanyFilter";
 import CompanyCard from "../components/dashboard/CompanyCard";
 import { motion } from "framer-motion";
-import { useToastNotifications } from '../hooks/useToastNotifications';
-
-const allSuggestedCompanies = [
-  { name: "Instabug", industry: "Technology", recommendations: 5 },
-  { name: "Valeo", industry: "Technology", recommendations: 4 },
-  { name: "IBM", industry: "Technology", recommendations: 5 },
-  { name: "BizPros", industry: "Business", recommendations: 3 },
-];
-
-const cardContainerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
-};
-
-const cardVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: { y: 0, opacity: 1 },
-  hover: { scale: 1.05, boxShadow: "0 8px 20px rgba(0,0,0,0.15)" }
-};
+import { useToastNotifications } from "../hooks/useToastNotifications";
 
 export default function StudentDashboard() {
+  const navigate = useNavigate();
+  const { success } = useToastNotifications();
+
   const [selectedMajor, setSelectedMajor] = useState("");
   const [selectedSemester, setSelectedSemester] = useState("");
   const [companyFilter, setCompanyFilter] = useState({ industry: "", company: "" });
   const [searchText, setSearchText] = useState("");
-  const [assessmentScore, setAssessmentScore] = useState(null);
-  const {success} = useToastNotifications();
-  const [notifications, setNotifications] = useState([]);
-  const navigate = useNavigate(); // Added
 
-    useEffect(() => {
-    const timer = setTimeout(() => {
-      const msg = "Next internship cycle starts on 1/Jun/2025. Don't miss out!";
-      // show toast
-      success(msg);
-      // add to bell notification center
-      setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
-  useEffect(() => {
-    const savedScore = localStorage.getItem("onlineAssessmentScore");
-    if (savedScore) {
-      setAssessmentScore(Number(savedScore));
-    }
-  }, []);
-
-  useEffect(() => {
-    const profile = JSON.parse(localStorage.getItem("studentProfile")) || {};
-    setSelectedMajor(profile.major || "");
-    setSelectedSemester(profile.semester || "");
-  }, []);
-
-  useEffect(() => {
-    const lastSeenStatus = localStorage.getItem("lastSeenReportStatus");
-    const currentStatus = localStorage.getItem("reportStatus");
-
-    if (currentStatus && lastSeenStatus && currentStatus !== lastSeenStatus) {
-      alert(`🔔 Your internship report status has changed to: ${currentStatus.toUpperCase()}`);
-    }
-
-    if (currentStatus) {
-      localStorage.setItem("lastSeenReportStatus", currentStatus);
-    }
-  }, []);
-
-  useEffect(() => {
-    const score = localStorage.getItem("onlineAssessmentScore");
-    if (score) setAssessmentScore(Number(score));
-  }, []);
-
-  const handleCompanyFilterChange = e => {
-    const { name, value } = e.target;
-    setCompanyFilter(f => ({ ...f, [name]: value }));
-  };
-
-  // filter & sort
-  const filtered = allSuggestedCompanies.filter(c =>
-    (!companyFilter.industry || c.industry === companyFilter.industry) &&
-    (!companyFilter.company || c.name === companyFilter.company) &&
-    c.name.toLowerCase().includes(searchText.toLowerCase())
-  );
-  const sortedCompanies = filtered.sort((a, b) => b.recommendations - a.recommendations);
-
+  // Dashboard link definitions
   const dashboardLinks = [
     { label: "Internships", path: "/student/internships" },
     { label: "My Applications", path: "/student/my-applications" },
@@ -103,108 +27,135 @@ export default function StudentDashboard() {
     { label: "Evaluation", path: "/student/evaluation" },
     { label: "SCAD Internships", path: "/student/scad-internships" },
     { label: "View Reports", path: "/student/reports" },
-    
-   
   ];
+
+  // Suggested companies data
+  const allSuggestedCompanies = [
+    { name: "Instabug", industry: "Technology", recommendations: 5 },
+    { name: "Valeo", industry: "Technology", recommendations: 4 },
+    { name: "IBM", industry: "Technology", recommendations: 5 },
+    { name: "BizPros", industry: "Business", recommendations: 3 },
+  ];
+
+  // Load profile & show toast
+  useEffect(() => {
+    const profile = JSON.parse(localStorage.getItem("studentProfile")) || {};
+    setSelectedMajor(profile.major || "");
+    setSelectedSemester(profile.semester || "");
+    const timer = setTimeout(() => {
+      const msg = "Next internship cycle starts on 1/Jun/2025. Don't miss out!";
+      success(msg);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [success]);
+
+  // Company filtering
+  const handleCompanyFilterChange = e => {
+    const { name, value } = e.target;
+    setCompanyFilter(f => ({ ...f, [name]: value }));
+  };
+
+  const filteredCompanies = allSuggestedCompanies
+    .filter(c =>
+      (!companyFilter.industry || c.industry === companyFilter.industry) &&
+      (!companyFilter.company || c.name === companyFilter.company) &&
+      c.name.toLowerCase().includes(searchText.toLowerCase())
+    )
+    .sort((a, b) => b.recommendations - a.recommendations);
+
+  // Card animation variants
+  const variants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   return (
     <>
       <DashboardTopNav portalTitle="Student Portal" logoText="ST" />
-      <div style={styles.container}>
-        <div style={styles.content}>
 
-          {/* Profile Section */}
-          <div style={styles.section}>
-            <StatusHeader major={'DMET'} semester={'6th'} />
-            
-            
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+        <div className="max-w-6xl mx-auto px-4 space-y-8">
+
+          {/* Profile */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <StatusHeader major={selectedMajor} semester={selectedSemester} />
           </div>
 
-          {/* Links Section */}
-          <div style={styles.section}>
-            <div style={{ ...styles.cardContainer, marginBottom: '0' }}>
-              {dashboardLinks.map((link) => (
-                <DashboardLinkCard key={link.label} {...link} />
+          {/* Dashboard Links as SCAD‑style cards */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold mb-4">Dashboard</h2>
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            >
+              {dashboardLinks.map((link, idx) => (
+                <motion.div
+                  key={idx}
+                  variants={variants}
+                  whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)" }}
+                  onClick={() => navigate(link.path)}
+                  className="bg-white rounded-xl border border-gray-100 flex flex-col cursor-pointer overflow-hidden transition"
+                >
+                  {/* gradient accent bar */}
+                  <div className="h-2 w-full bg-gradient-to-r from-[#00106A] to-[#0038A0]" />
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="text-lg font-bold text-gray-800">{link.label}</h3>
+                    {/* spacer */}
+                    <div className="flex-1" />
+                    <div className="mt-4 text-[#00D6A0] font-medium">Open →</div>
+                  </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
 
-          {/* Suggested Companies Section */}
-          <div style={styles.section}>
-            <h2 style={styles.heading}>Suggested Companies Based on Your Job Interests</h2>
-            <div style={{ marginBottom: '15px' }}>
-              <SearchBar
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                placeHolder="Search company by name..."
-              />
+          {/* Suggested Companies */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold mb-4">Suggested Companies</h2>
+            <div className="flex flex-wrap gap-4 mb-4">
+              <div className="flex-1 min-w-[200px]">
+                <SearchBar
+                  value={searchText}
+                  onChange={e => setSearchText(e.target.value)}
+                  placeHolder="Search company by name..."
+                />
+              </div>
+              <div className="min-w-[200px]">
+                <CompanyFilter
+                  companyFilter={companyFilter}
+                  onFilterChange={handleCompanyFilterChange}
+                  companies={allSuggestedCompanies}
+                />
+              </div>
             </div>
-            <CompanyFilter
-              companyFilter={companyFilter}
-              onFilterChange={handleCompanyFilterChange} //handleCompanyFilterChange
-              companies={allSuggestedCompanies}
-            />
-            <div style={styles.cardContainer}>
-              {sortedCompanies.length > 0 ? ( //sortedCompanies
-                sortedCompanies.map((company) => ( //sortedCompanies
-                  <CompanyCard key={company.name} company={company} />
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            >
+              {filteredCompanies.length > 0 ? (
+                filteredCompanies.map((company, idx) => (
+                  <motion.div
+                    key={idx}
+                    variants={variants}
+                    whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)" }}
+                  >
+                    <CompanyCard company={company} />
+                  </motion.div>
                 ))
               ) : (
-                <p style={styles.noData}>No companies match your current interests and filters.</p>
+                <p className="col-span-full text-center text-gray-500 py-12">
+                  No companies match your filters.
+                </p>
               )}
-            </div>
+            </motion.div>
           </div>
 
         </div>
       </div>
     </>
   );
-};
-
-const styles = {
-  section: {
-    backgroundColor: '#ffffff',
-    padding: '20px',
-    borderRadius: '10px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-    marginBottom: '20px',
-  },
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    minHeight: "100vh",
-    backgroundColor: "#f4f4f9",
-    paddingTop: "20px", // Adjusted paddingTop
-
-    width: "100%",
-  },
-  content: {
-    textAlign: "center",
-    padding: "20px",
-    width: "80%",
-    maxWidth: "1000px",
-  },
-  cardContainer: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "20px",
-  },
-  card: {
-    backgroundColor: "white",
-    padding: "15px",
-    borderRadius: "10px",
-    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-    textAlign: "left",
-  },
-  noData: {
-    color: "grey",
-    fontSize: "16px",
-    textAlign: "center",
-  },
-  heading: {
-    marginTop: "30px",
-    marginBottom: "10px",
-    textAlign: "left",
-    color: "#444",
-  },
-};
+}

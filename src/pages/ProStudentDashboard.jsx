@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react'; // Added useEffect
-import { useNavigate } from 'react-router-dom'; // Added useNavigate
-// import DashboardNavbar from '../components/dashboard/DashboardNavbar'; // Removed
-import DashboardTopNav from '../components/dashboard/DashboardTopNav'; // Added
+// src/pages/ProStudentDashboard.jsx
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import DashboardTopNav from '../components/dashboard/DashboardTopNav';
 import StatusHeader from '../components/dashboard/StatusHeader';
-import ProWorkshopCard from '../components/dashboard/ProWorkshopCard';
-import DashboardLinkCard from '../components/dashboard/DashboardLinkCard';
 import SearchBar from '../components/SearchBar';
 import CompanyFilter from '../components/dashboard/CompanyFilter';
 import CompanyCard from '../components/dashboard/CompanyCard';
+import ProWorkshopCard from '../components/dashboard/ProWorkshopCard';
 import EnrolledWorkshopCard from '../components/dashboard/EnrolledWorkshopCard';
+import { motion } from 'framer-motion';
 import { useToastNotifications } from '../hooks/useToastNotifications';
 
-// Add suggested companies list
 const allSuggestedCompanies = [
   { name: 'Instabug', industry: 'Technology', recommendations: 5 },
   { name: 'Valeo', industry: 'Technology', recommendations: 4 },
@@ -19,48 +18,33 @@ const allSuggestedCompanies = [
   { name: 'BizPros', industry: 'Business', recommendations: 3 },
 ];
 
-// Hardcoded dummy workshops
 const workshops = [
   { id: 1, name: 'CV Masterclass', speaker: 'Dr. Smith', date: '2025-05-20', description: 'Learn how to make your CV stand out.' },
-  { id: 2, name: 'Interview Skills', speaker: 'Ms. Johnson', date: '2025-05-23', description: 'Ace your internship interviews.' }
+  { id: 2, name: 'Interview Skills', speaker: 'Ms. Johnson', date: '2025-05-23', description: 'Ace your internship interviews.' },
 ];
 
-const ProStudentDashboard = () => {
-  // Hardcoded dummy student info
-  const major = 'CSEN';
-  const semester = '8th';
-  const {success} = useToastNotifications();
-  const [notifications, setNotifications] = useState([]);
-  const navigate = useNavigate(); // Added
-  
-      useEffect(() => {
-      const timer = setTimeout(() => {
-        const msg = "Next internship cycle starts on 1/Jun/2025. Don't miss out!";
-        // show toast
-        success(msg);
-        // add to bell notification center
-        setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }, []);
+const enrolledWorkshops = [
+  { id: 3, name: 'React Basics (Recorded)', time: 'On Demand', method: 'Online', venueOrLink: 'https://example.com/recorded/react' },
+  { id: 4, name: 'AI Ethics Seminar', time: '2025-06-05 10:00 AM', method: 'Venue', venueOrLink: 'Building A, Room 101' },
+];
 
+export default function ProStudentDashboard() {
+  const navigate = useNavigate();
+  const { success } = useToastNotifications();
   const [registered, setRegistered] = useState([]);
-
-  // Hardcoded dummy enrolled workshops
-  const enrolledWorkshops = [
-    { id: 3, name: 'React Basics (Recorded)', time: 'On Demand', method: 'Online', venueOrLink: 'https://example.com/recorded/react' },
-    { id: 4, name: 'AI Ethics Seminar', time: '2025-06-05 10:00 AM', method: 'Venue', venueOrLink: 'Building A, Room 101' },
-  ];
-
-  
-
-  // Student dashboard state for company search/filter
   const [searchText, setSearchText] = useState('');
   const [companyFilter, setCompanyFilter] = useState({ industry: '', company: '' });
-  // Hardcoded dummy assessment score
-  const assessmentScore = 85;
 
-  // Dummy dashboard links
+  // Profile load + toast
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const msg = "Next internship cycle starts on 1/Jun/2025. Don't miss out!";
+      success(msg);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [success]);
+
+  // Dashboard links
   const dashboardLinks = [
     { label: 'Internships', path: '/student/internships' },
     { label: 'My Applications', path: '/student/my-applications' },
@@ -73,102 +57,149 @@ const ProStudentDashboard = () => {
     { label: 'Viewed Profile', path: '/student/viewed-profile' },
     { label: 'Appointments', path: '/videocallpage' },
     { label: 'Workshops', path: '/pro-student-workshops' },
-
   ];
 
-  // Handle filter changes
-  const handleCompanyFilterChange = (e) => {
+  // Company filtering
+  const handleCompanyFilterChange = e => {
     const { name, value } = e.target;
-    setCompanyFilter({ ...companyFilter, [name]: value });
+    setCompanyFilter(f => ({ ...f, [name]: value }));
+  };
+  const filteredCompanies = allSuggestedCompanies
+    .filter(c =>
+      (!companyFilter.industry || c.industry === companyFilter.industry) &&
+      (!companyFilter.company  || c.name === companyFilter.company) &&
+      c.name.toLowerCase().includes(searchText.toLowerCase())
+    )
+    .sort((a, b) => b.recommendations - a.recommendations);
+
+  // Workshop registration
+  const handleRegister = w => {
+    if (!registered.some(r => r.id === w.id)) {
+      setRegistered(r => [...r, w]);
+    }
   };
 
-  // Filter and sort companies
-  const filteredCompanies = allSuggestedCompanies.filter(c =>
-    (companyFilter.industry === '' || c.industry === companyFilter.industry) &&
-    (companyFilter.company === '' || c.name === companyFilter.company) &&
-    c.name.toLowerCase().includes(searchText.toLowerCase())
-  );
-  const sortedCompanies = filteredCompanies.sort((a, b) => b.recommendations - a.recommendations);
-
-  const handleRegister = (workshop) => {
-    if (!registered.find((w) => w.id === workshop.id)) {
-      setRegistered((prev) => [...prev, workshop]);
-      // TODO: send notification to user
-    }
+  // Card animation variants
+  const variants = {
+    hidden: { opacity: 0, y: 10 },
+    visible:{ opacity: 1, y: 0 },
   };
 
   return (
     <>
       <DashboardTopNav portalTitle="Pro Student Portal" logoText="PR" />
-      <div style={{ padding: '20px', maxWidth: '1000px', margin: '20px auto' }}> {/* Adjusted top margin */}
-        {/* Student Dashboard Section */}
-        <div style={styles.section}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
-            <StatusHeader major={major} semester={semester} />
-            <span style={{ fontSize: '1.2em', fontWeight: 'bold' }}>⭐ PRO Student</span>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4">
+        <div className="max-w-6xl mx-auto space-y-8">
+
+          {/* Profile */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <StatusHeader major="CSEN" semester="8th" />
+            <div className="mt-3 text-blue-600 font-medium">⭐ PRO Student</div>
           </div>
-          {assessmentScore !== null && (
-            <div style={{ color: '#2b7de9', marginBottom: '10px' }}>
-              🧠 Latest Assessment Score: <strong>{assessmentScore} / 100</strong>
+
+          {/* Dashboard Links (SCAD‑style cards) */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold mb-4">Dashboard</h2>
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6"
+            >
+              {dashboardLinks.map((link, i) => (
+                <motion.div
+                  key={i}
+                  variants={variants}
+                  whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)" }}
+                  onClick={() => navigate(link.path)}
+                  className="bg-white rounded-xl border border-gray-100 flex flex-col cursor-pointer overflow-hidden transition"
+                >
+                  <div className="h-2 w-full bg-gradient-to-r from-[#00106A] to-[#0038A0]" />
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="text-lg font-bold text-gray-800">{link.label}</h3>
+                    <div className="flex-1" />
+                    <div className="mt-4 text-[#00D6A0] font-medium">Open →</div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Suggested Companies */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold mb-4">Suggested Companies</h2>
+            <div className="flex flex-wrap gap-4 mb-4">
+              <div className="flex-1 min-w-[200px]">
+                <SearchBar
+                  value={searchText}
+                  onChange={e => setSearchText(e.target.value)}
+                  placeHolder="Search companies..."
+                />
+              </div>
+              <div className="min-w-[200px]">
+                <CompanyFilter
+                  companyFilter={companyFilter}
+                  onFilterChange={handleCompanyFilterChange}
+                  companies={allSuggestedCompanies}
+                />
+              </div>
             </div>
-          )}
-        </div>
-
-        {/* Quick Links Section */}
-        <div style={styles.section}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: '12px' }}>
-            {dashboardLinks.map(link => <DashboardLinkCard key={link.label} {...link} />)}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+            >
+              {filteredCompanies.map((c, i) => (
+                <motion.div
+                  key={i}
+                  variants={variants}
+                  whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)" }}
+                >
+                  <CompanyCard company={c} />
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
-        </div>
 
-        {/* Suggested Companies Section */}
-        <div style={styles.section}>
-          <h2 style={styles.heading}>Suggested Companies Based on Your Interests</h2>
-          <div style={{ marginBottom: '10px' }}>
-            <SearchBar value={searchText} onChange={e => setSearchText(e.target.value)} placeHolder="Search companies..." />
+          {/* Career Workshops */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold mb-4">Online Career Workshops</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {workshops.map(w => (
+                <ProWorkshopCard
+                  key={w.id}
+                  workshop={w}
+                  isRegistered={registered.some(r => r.id === w.id)}
+                  onRegister={() => handleRegister(w)}
+                />
+              ))}
+            </div>
           </div>
-          <CompanyFilter companyFilter={companyFilter} onFilterChange={handleCompanyFilterChange} companies={allSuggestedCompanies} />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: '16px', marginTop: '12px' }}>
-            {sortedCompanies.length > 0 ? sortedCompanies.map(c => <CompanyCard key={c.name} company={c} />) : <p style={{ textAlign: 'center', color: 'grey' }}>No matching companies.</p>}
-          </div>
-        </div>
 
-        {/* Career Workshops Section */}
-        <div style={styles.section}>
-          <h2 style={styles.heading}>Online Career Workshops</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginTop: '12px' }}>
-            {workshops.map(w => (
-              <ProWorkshopCard
-                key={w.id}
-                workshop={w}
-                isRegistered={registered.some(r => r.id === w.id)}
-                onRegister={handleRegister}
-              />
-            ))}
+          {/* Enrolled Workshops */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold mb-4">Enrolled Workshops</h2>
+            <div className="space-y-4">
+              {[
+                ...enrolledWorkshops,
+                ...workshops.filter(w => registered.some(r => r.id === w.id))
+              ].map(w => (
+                <EnrolledWorkshopCard
+                  key={w.id}
+                  workshop={{
+                    ...w,
+                    time: w.date || w.time,
+                    method: w.method || 'Online',
+                    venueOrLink: w.link || w.venueOrLink
+                  }}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-
-        {/* Enrolled Workshops Section */}
-        <div style={styles.section}>
-          <h2 style={styles.heading}>Enrolled Workshops</h2>
-          {[
-            ...enrolledWorkshops,
-            ...workshops.filter(w => registered.some(r => r.id === w.id))
-          ].map(w => (
-            <EnrolledWorkshopCard key={w.id} workshop={{ ...w, time: w.date || w.time, method: w.method || 'Online', venueOrLink: w.link || w.venueOrLink }} />
-          ))}
+          
         </div>
       </div>
     </>
   );
-};
-
-// Insert styles for sections and headings
-const styles = {
-  section: {
-    backgroundColor: '#fff', padding: '18px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginBottom: '16px'
-  },
-  heading: { margin: 0, fontSize: '1.25em', color: '#333', marginBottom: '12px' },
-};
-
-export default ProStudentDashboard;
+}
