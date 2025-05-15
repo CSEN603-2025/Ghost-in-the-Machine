@@ -1,3 +1,4 @@
+// src/pages/CompanyDetailsPage.jsx
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 
@@ -39,15 +40,15 @@ const allSuggestedCompanies = [
 
 const CompanyDetailsPage = () => {
   const { companyName } = useParams();
-  const company = allSuggestedCompanies.find((c) => c.name === companyName);
+  const company = allSuggestedCompanies.find(c => c.name === companyName);
 
   if (!company) {
     return (
       <div className="min-h-screen bg-gray-50 p-8 flex items-center justify-center">
         <div className="text-center bg-white rounded-xl shadow-md p-6">
           <h2 className="text-xl font-bold mb-4">Company not found.</h2>
-          <Link to="/student-dashboard">
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+          <Link to="/student">
+            <button className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white px-4 py-2 rounded-lg hover:opacity-90 transition">
               Back to Dashboard
             </button>
           </Link>
@@ -59,7 +60,7 @@ const CompanyDetailsPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-16">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#00D6A0] to-[#00106A] text-white py-14 mb-8">
+      <div className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white py-14 mb-8">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h1 className="text-4xl font-extrabold">{company.name}</h1>
           <p className="text-lg mt-2 opacity-90">Company Overview</p>
@@ -67,14 +68,15 @@ const CompanyDetailsPage = () => {
       </div>
 
       {/* Company Card */}
-      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-8 space-y-6">
         {company.imageUrl && (
           <img
             src={company.imageUrl}
             alt={`${company.name} logo`}
-            className="w-24 h-24 object-cover rounded mb-6"
+            className="w-24 h-24 object-cover rounded mb-4 mx-auto"
           />
         )}
+
         <div className="space-y-2 text-gray-700">
           <p><strong>Industry:</strong> {company.industry}</p>
           <p><strong>Company Size:</strong> {company.size}</p>
@@ -85,11 +87,26 @@ const CompanyDetailsPage = () => {
           <p><strong>Document:</strong> {company.documentName}</p>
         </div>
 
-        <Link to="/student-dashboard">
-          <button className="mt-6 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            Back to Dashboard
-          </button>
-        </Link>
+        <div className="flex justify-center space-x-4 pt-6">
+          <Link to="/student/report">
+            <button className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white px-5 py-2 rounded-lg hover:opacity-90 transition">
+              Create Report
+            </button>
+          </Link>
+          <Link to="/student/evaluation">
+            <button className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white px-5 py-2 rounded-lg hover:opacity-90 transition">
+              Create Evaluation
+            </button>
+          </Link>
+        </div>
+
+        <div className="text-center pt-6">
+          <Link to="/student">
+            <button className="text-gray-600 underline hover:text-gray-800">
+              ← Back to Dashboard
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );

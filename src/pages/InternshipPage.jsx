@@ -2,6 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import {
+  FaIndustry,
+  FaLaptopCode,
+  FaHourglassHalf,
+  FaCalendarCheck,
+  FaCalendarAlt,
+  FaSearch
+} from "react-icons/fa";
 
 const InternshipPage = () => {
   const [internships, setInternships] = useState([]);
@@ -13,14 +21,14 @@ const InternshipPage = () => {
   const [isProStudent, setIsProStudent] = useState(false);
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("studentProfile"));
-    const storedInternships = stored?.internships || [];
+    const stored = JSON.parse(localStorage.getItem("studentProfile")) || {};
+    const storedInternships = stored.internships || [];
 
     const hardcoded = [
       {
         id: 101,
-        company: "Meta",
-        role: "AI Intern",
+        company: "Instabug",
+        role: "Mobile Dev Intern",
         duration: 2,
         status: "completed",
         startDate: "2024-01-01",
@@ -28,8 +36,8 @@ const InternshipPage = () => {
       },
       {
         id: 102,
-        company: "Amazon",
-        role: "Cloud Intern",
+        company: "IBM",
+        role: "Cloud Engineering Intern",
         duration: 1,
         status: "current",
         startDate: "2025-05-01",
@@ -44,7 +52,6 @@ const InternshipPage = () => {
     const totalMonths = combined
       .filter(i => i.status === "completed")
       .reduce((acc, i) => acc + i.duration, 0);
-
     setIsProStudent(totalMonths >= 3);
   }, []);
 
@@ -99,7 +106,7 @@ const InternshipPage = () => {
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-4xl mx-auto px-6 py-20 relative z-10 text-center text-white">
-          <h1 className="text-5xl font-extrabold mb-4">📚 My Internships</h1>
+          <h1 className="text-5xl font-extrabold mb-4">My Internships</h1>
           <p className="text-xl opacity-90">
             Track your history, filter by status or date, and earn your “PRO Student” badge at 3 months!
           </p>
@@ -110,7 +117,7 @@ const InternshipPage = () => {
               transition={{ delay: 0.6, type: "spring", stiffness: 300 }}
               className="inline-block mt-6 bg-yellow-300 text-gray-900 px-5 py-2 rounded-full font-semibold shadow-lg"
             >
-              ⭐ PRO Student
+              <FaHourglassHalf className="inline mr-2" /> PRO Student
             </motion.span>
           )}
         </div>
@@ -126,23 +133,16 @@ const InternshipPage = () => {
           className="bg-white rounded-xl shadow-lg border border-gray-100 p-6"
         >
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <div className="col-span-1 sm:col-span-2">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="🔍 Search by company or role"
-                  value={search}
-                  onChange={handleSearch}
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-              </div>
+            <div className="col-span-1 sm:col-span-2 relative">
+              <input
+                type="text"
+                placeholder="Search by company or role"
+                value={search}
+                onChange={handleSearch}
+                className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
-
             <div className="col-span-1 sm:col-span-2">
               <select
                 value={statusFilter}
@@ -154,7 +154,6 @@ const InternshipPage = () => {
                 <option value="completed">Completed</option>
               </select>
             </div>
-
             <div className="col-span-1 sm:col-span-2">
               <label className="block text-sm text-gray-600 mb-1">Start Date</label>
               <input
@@ -164,7 +163,6 @@ const InternshipPage = () => {
                 className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-
             <div className="col-span-1 sm:col-span-2">
               <label className="block text-sm text-gray-600 mb-1">End Date</label>
               <input
@@ -185,23 +183,45 @@ const InternshipPage = () => {
             No internships found.
           </motion.p>
         ) : (
-          filteredInternships.map((i) => (
+          filteredInternships.map(i => (
             <motion.div
               key={i.id}
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               whileHover={{ scale: 1.03, boxShadow: "0 8px 20px rgba(0,0,0,0.1)" }}
-              className={`bg-white rounded-xl p-6 border border-gray-100 transition-colors`}
+              className="bg-white rounded-xl p-6 border border-gray-100 flex flex-col justify-between"
             >
-              <Link to={`/student/internship/${i.id}`}>
-                <h3 className="text-2xl font-semibold text-gray-800 mb-2">🏢 {i.company}</h3>
-                <p className="text-gray-600 mb-1">👨‍💻 <strong>Role:</strong> {i.role}</p>
-                <p className="text-gray-600 mb-1">⏱️ <strong>Duration:</strong> {i.duration} mo.</p>
-                <p className={`text-gray-600 mb-1 font-semibold ${i.status === "completed" ? "text-green-700" : ""}`}>
-                  📌 <strong>Status:</strong> {i.status}
+              <div>
+                <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+                  <FaIndustry className="inline mr-2 text-gray-600" />
+                  {i.company}
+                </h3>
+                <p className="text-gray-600 mb-1">
+                  <FaLaptopCode className="inline mr-2 text-gray-600" />
+                  <strong>Role:</strong> {i.role}
                 </p>
-                <p className="text-gray-600">📆 {i.startDate} → {i.endDate}</p>
-              </Link>
+                <p className="text-gray-600 mb-1">
+                  <FaHourglassHalf className="inline mr-2 text-gray-600" />
+                  <strong>Duration:</strong> {i.duration} mo.
+                </p>
+                <p className={`text-gray-600 mb-1 font-semibold ${i.status === "completed" ? "text-green-700" : ""}`}>
+                  <FaCalendarCheck className="inline mr-2 text-gray-600" />
+                  <strong>Status:</strong> {i.status}
+                </p>
+                <p className="text-gray-600">
+                  <FaCalendarAlt className="inline mr-2 text-gray-600" />
+                  {i.startDate} → {i.endDate}
+                </p>
+              </div>
+
+              {i.status === "completed" && (
+                <Link
+                  to={`/student/company/${encodeURIComponent(i.company)}`}
+                  className="mt-4 inline-block text-blue-600 hover:underline font-medium"
+                >
+                  Details →
+                </Link>
+              )}
             </motion.div>
           ))
         )}
