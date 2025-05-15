@@ -33,7 +33,7 @@ const dummyPosts = [
     salary: '',
     skills: ['Excel', 'SQL'],
     description: 'Assist with reporting and data cleansing tasks.',
-    applications: 2,
+    applications: 4,
   },
   {
     id: 3,
@@ -43,7 +43,7 @@ const dummyPosts = [
     salary: '$2000/month',
     skills: ['Flutter', 'Dart','container'],
     description: 'Work with our Devops team to automate our deployment process.',
-    applications: 3,
+    applications: 4,
   }
 ];
 
@@ -52,7 +52,7 @@ const PostsList = () => {
   useEffect(() => {
   window.scrollTo(0, 0);
 }, []);
-
+const [viewingPost, setViewingPost] = useState(null);
   
 const getCompanyLogo = () => dummyCompany.logoUrl;
 const [posts, setPosts] = useState(() => {
@@ -376,6 +376,7 @@ setTimeout(() => setSuccessMessage(''), 3000);
         </motion.div>
         <AnimatePresence>
           {creating && (
+            
             <motion.div
               className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
               initial={{ opacity: 0 }}
@@ -495,15 +496,82 @@ setTimeout(() => setSuccessMessage(''), 3000);
                   </button>
                 </div>
               </motion.div>
+
             </motion.div>
           )}
         </AnimatePresence>
+                      <AnimatePresence>
+  {viewingPost && (
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={() => setViewingPost(null)}
+    >
+      <motion.div
+        className="bg-white rounded-xl p-6 w-full max-w-lg relative shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+      >
+        <button onClick={() => setViewingPost(null)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+          <FaTimes />
+        </button>
+        <h2 className="text-2xl font-bold mb-2">{viewingPost.title}</h2>
+        <p className="text-sm text-gray-500 mb-4">{viewingPost.company || dummyCompany.name}</p>
+
+        <p className="mb-2"><strong>Duration:</strong> {viewingPost.duration}</p>
+        <p className="mb-2">
+          <strong>Compensation:</strong>{' '}
+          {viewingPost.paid ? `${viewingPost.salary}` : 'Unpaid'}
+        </p>
+        <p className="mb-2"><strong>Skills:</strong> {viewingPost.skills.join(', ')}</p>
+        <p className="mb-2"><strong>Description:</strong> {viewingPost.description}</p>
+        <p className="mb-4"><strong>Applications:</strong> {viewingPost.applications}</p>
+
+        <div className="mt-4 flex justify-center gap-3">
+          <button
+            onClick={() => {
+              handleEditClick(viewingPost);
+              setViewingPost(null);
+            }}
+            className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => {
+              handleDelete(viewingPost);
+              setViewingPost(null);
+            }}
+            className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+          >
+            Delete
+          </button>
+          <button
+            onClick={() => {
+              handleViewApplications(viewingPost.title);
+              setViewingPost(null);
+            }}
+            className="px-3 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800"
+          >
+            View Applications
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentPosts.map(post => (
-            <div
-              key={post.id}
-              className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:ring-2 hover:ring-opacity-30 hover:ring-[#0038A0] transition-all h-full flex flex-col"
-            >
+           <div
+  key={post.id}
+  onClick={() => setViewingPost(post)}
+  className="cursor-pointer bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:ring-2 hover:ring-opacity-30 hover:ring-[#0038A0] transition-all h-full flex flex-col"
+>
+
               <div className="h-2 w-full bg-gradient-to-r from-blue-600 to-blue-800"></div>
               <div className="p-6 flex flex-col h-full">
                 <div className="flex items-center mb-4">
@@ -534,8 +602,9 @@ setTimeout(() => setSuccessMessage(''), 3000);
                 </p>
 
                 <p className="text-gray-600 text-sm mb-4 flex-grow"> <strong>Description:</strong> {post.description}</p>
+                <p className="text-gray-600 text-sm mb-4"><strong>Applications:</strong> {post.applications}</p>
 
-                <div className="mt-auto flex justify-center gap-2">
+               <div className="mt-auto flex justify-center gap-2" onClick={(e) => e.stopPropagation()}>
                   <button
                     onClick={() => handleEditClick(post)}
                     className="px-3 py-1 bg-blue-700 text-white text-sm rounded-lg hover:bg-blue-800 transition"

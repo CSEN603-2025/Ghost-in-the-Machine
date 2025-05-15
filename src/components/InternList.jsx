@@ -13,7 +13,7 @@ function InternList() {
   window.scrollTo(0, 0);
 }, []);
 
-  const { applications } = useContext(ApplicationsContext);
+  const { applications, setApplications } = useContext(ApplicationsContext);
   const [nameSearch, setNameSearch] = useState('');
   const [jobSearch, setJobSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
@@ -21,6 +21,11 @@ function InternList() {
 
   const navigate = useNavigate();
   const internsPerPage = 6;
+const markAsComplete = (id) => {
+  setApplications((prev) =>
+    prev.map((app) => (app.id === id ? { ...app, status: 'Internship Complete' } : app))
+  );
+};
 
   const filteredInterns = applications.filter((intern) => {
     const matchesStatus =
@@ -113,8 +118,25 @@ function InternList() {
                   <span className={`inline-block mt-3 text-xs font-medium px-3 py-1 rounded-full ${statusColors[intern.status]}`}>
                     {intern.status}
                   </span>
+             <div className="text-center">
+  {intern.status === 'Current Intern' && (
+    <div className="mt-3">
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          markAsComplete(intern.id);
+        }}
+        className="px-3 py-1 bg-green-700 text-white text-sm rounded hover:bg-green-800"
+      >
+        Mark as Complete
+      </button>
+    </div>
+  )}
+</div>
+
+          
                 </div>
-              </motion.div>
+         </motion.div>
             ))}
           </div>
         )}
