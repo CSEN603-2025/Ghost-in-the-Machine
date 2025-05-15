@@ -1,3 +1,4 @@
+// src/components/VideoCallPage.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -51,21 +52,44 @@ export default function VideoCallPage() {
 
   const startCall = (id) => {
     setCallStatus('ringing');
-    setTimeout(() => {
+
+    // after ringing, go to in-progress and show remote
+    const ringTimer = setTimeout(() => {
       setCallStatus('in-progress');
       setRemoteOnline(true);
-      setTimeout(() => setRemoteOnline(false), 5000);
+
+      // after 5s remote goes offline
+      const offlineTimer = setTimeout(() => {
+        setRemoteOnline(false);
+      }, 5000);
+
+      // after 7s, notify that caller left
+      const leaveTimer = setTimeout(() => {
+        error('📞 The caller has left the call.');
+      }, 7000);
+
+      // cleanup nested timers if call ends early
+      return () => {
+        clearTimeout(offlineTimer);
+        clearTimeout(leaveTimer);
+      };
     }, 3000);
+
+    // cleanup ringing timer if component unmounts or call ends
+    return () => clearTimeout(ringTimer);
   };
+
   const endCall = () => {
     setCallStatus('idle');
     setVideoEnabled(true);
     setMicEnabled(true);
     setScreenSharing(false);
   };
+
   const updateStatus = (id, st) => {
     setAppointments(a => a.map(x => x.id === id ? { ...x, status: st } : x));
   };
+
   const requestAppointment = () => {
     const newApp = {
       id: Date.now(),
@@ -158,8 +182,10 @@ export default function VideoCallPage() {
                   </>
                 )}
                 {app.status === 'accepted' && !app.requested && (
-                  <button onClick={() => startCall(app.id)}
-                          className="px-4 py-1 bg-gradient-to-r from-[#00D6A0] to-[#2b7de9] text-white rounded-full">
+                  <button
+                    onClick={() => startCall(app.id)}
+                    className="px-4 py-1 bg-gradient-to-r from-[#00D6A0] to-[#2b7de9] text-white rounded-full"
+                  >
                     Start Call
                   </button>
                 )}
@@ -171,73 +197,73 @@ export default function VideoCallPage() {
 
         {/* Live Video */}
         <AnimatePresence>
-        {callStatus !== 'idle' && (
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            variants={variants}
-            className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 space-y-6"
-          >
-            <h3 className="text-xl font-bold text-gray-800">
-              {callStatus === 'ringing' ? 'Calling...' : 'Call in Progress'}
-            </h3>
+          {callStatus !== 'idle' && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={variants}
+              className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 space-y-6"
+            >
+              <h3 className="text-xl font-bold text-gray-800">
+                {callStatus === 'ringing' ? 'Calling...' : 'Call in Progress'}
+              </h3>
 
-            {callStatus === 'in-progress' && (
-              <div className="grid grid-cols-2 gap-6">
-                {/* Remote */}
-                <div className="space-y-2">
-                  <div className="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <span className="text-6xl font-bold text-gray-400">
-                      {appointments[0].studentName.charAt(0)}
-                    </span>
-                  </div>
-                  <p className="text-center">{appointments[0].studentName}</p>
-                  <p className={`text-center text-sm ${remoteOnline ? 'text-green-600' : 'text-red-600'}`}>
-                    {remoteOnline ? 'Online' : 'Offline'}
-                  </p>
-                </div>
-                {/* Local */}
-                <div className="space-y-2">
-                  <div className={`w-full h-40 rounded-lg flex items-center justify-center ${videoEnabled ? 'bg-gray-100' : 'bg-red-100'}`}>
-                    {videoEnabled ? <FiVideo size={48}/> : <FiVideoOff size={48}/>}
-                  </div>
-                  <p className="text-center">You</p>
-                </div>
-              </div>
-            )}
-
-            {/* Controls */}
-            <div className="flex justify-center items-center space-x-4">
-              <button
-                onClick={() => setMicEnabled(m => !m)}
-                className={`p-3 rounded-full ${micEnabled ? 'bg-gray-100' : 'bg-red-600'} transition`}
-              >
-                {micEnabled ? <FiMic/> : <FiMicOff/>}
-              </button>
-              <button
-                onClick={() => setVideoEnabled(v => !v)}
-                className={`p-3 rounded-full ${videoEnabled ? 'bg-gray-100' : 'bg-red-600'} transition`}
-              >
-                {videoEnabled ? <FiVideo/> : <FiVideoOff/>}
-              </button>
               {callStatus === 'in-progress' && (
-                <button
-                  onClick={() => setScreenSharing(s => !s)}
-                  className={`p-3 rounded-full ${screenSharing ? 'bg-green-600 text-white' : 'bg-gray-100'} transition`}
-                >
-                  <FiCast/>
-                </button>
+                <div className="grid grid-cols-2 gap-6">
+                  {/* Remote */}
+                  <div className="space-y-2">
+                    <div className="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <span className="text-6xl font-bold text-gray-400">
+                        {appointments[0].studentName.charAt(0)}
+                      </span>
+                    </div>
+                    <p className="text-center">{appointments[0].studentName}</p>
+                    <p className={`text-center text-sm ${remoteOnline ? 'text-green-600' : 'text-red-600'}`}>
+                      {remoteOnline ? 'Online' : 'Offline'}
+                    </p>
+                  </div>
+                  {/* Local */}
+                  <div className="space-y-2">
+                    <div className={`w-full h-40 rounded-lg flex items-center justify-center ${videoEnabled ? 'bg-gray-100' : 'bg-red-100'}`}>
+                      {videoEnabled ? <FiVideo size={48}/> : <FiVideoOff size={48}/>}
+                    </div>
+                    <p className="text-center">You</p>
+                  </div>
+                </div>
               )}
-              <button
-                onClick={endCall}
-                className="p-3 rounded-full bg-red-600 text-white transition"
-              >
-                <FiPhoneMissed/>
-              </button>
-            </div>
-          </motion.div>
-        )}
+
+              {/* Controls */}
+              <div className="flex justify-center items-center space-x-4">
+                <button
+                  onClick={() => setMicEnabled(m => !m)}
+                  className={`p-3 rounded-full ${micEnabled ? 'bg-gray-100' : 'bg-red-600'} transition`}
+                >
+                  {micEnabled ? <FiMic/> : <FiMicOff/>}
+                </button>
+                <button
+                  onClick={() => setVideoEnabled(v => !v)}
+                  className={`p-3 rounded-full ${videoEnabled ? 'bg-gray-100' : 'bg-red-600'} transition`}
+                >
+                  {videoEnabled ? <FiVideo/> : <FiVideoOff/>}
+                </button>
+                {callStatus === 'in-progress' && (
+                  <button
+                    onClick={() => setScreenSharing(s => !s)}
+                    className={`p-3 rounded-full ${screenSharing ? 'bg-green-600 text-white' : 'bg-gray-100'} transition`}
+                  >
+                    <FiCast/>
+                  </button>
+                )}
+                <button
+                  onClick={endCall}
+                  className="p-3 rounded-full bg-red-600 text-white transition"
+                >
+                  <FiPhoneMissed/>
+                </button>
+              </div>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
     </div>

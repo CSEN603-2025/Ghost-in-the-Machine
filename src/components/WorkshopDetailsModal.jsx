@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FaTimes, FaRegCalendarCheck, FaCertificate, FaStar, FaComments } from 'react-icons/fa';
 import { useToastNotifications } from '../hooks/useToastNotifications';
+import { jsPDF } from 'jspdf';
 
 export default function WorkshopDetailsModal({ workshop, onClose }) {
   const { id, name, speaker, description, start, end, videoUrl, isLive } = workshop;
@@ -55,6 +56,39 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
       setChat(c => [...c, { fromMe: false, text: reply }]);
       info(`New message from ${speaker}: "${reply}"`);
     }, 2000);
+  }
+
+  // generate and download PDF certificate
+  function handleDownloadCertificate() {
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'pt',
+      format: 'letter',
+    });
+
+    // Certificate title
+    doc.setFontSize(30);
+    doc.text('Certificate of Completion', doc.internal.pageSize.getWidth() / 2, 100, { align: 'center' });
+
+    // Subtitle
+    doc.setFontSize(20);
+    doc.text('This certifies that', doc.internal.pageSize.getWidth() / 2, 180, { align: 'center' });
+
+    // Recipient name
+    doc.setFontSize(24);
+    doc.text(name, doc.internal.pageSize.getWidth() / 2, 240, { align: 'center' });
+
+    // Workshop details
+    doc.setFontSize(16);
+    doc.text(`has successfully completed the workshop "${name}" by ${speaker}.`, doc.internal.pageSize.getWidth() / 2, 300, { align: 'center' });
+
+    // Date
+    doc.setFontSize(12);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, doc.internal.pageSize.getWidth() / 2, 360, { align: 'center' });
+
+    // Trigger download
+    doc.save(`${name.replace(/\s+/g, '_')}_Certificate.pdf`);
+    info('📜 Certificate downloaded!');
   }
 
   return (
@@ -154,7 +188,7 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
           {registered && (
             <div className="space-y-6">
               <button
-                onClick={() => alert('📜 Certificate downloaded!')}
+                onClick={handleDownloadCertificate}
                 className="w-full py-2 bg-green-500 text-white rounded-full font-medium"
               >
                 <FaCertificate className="inline mr-2" />
@@ -191,7 +225,7 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
                 <FaComments className="mr-1" /> Live Chat
               </h3>
               <div className="border rounded-lg h-40 overflow-y-auto p-2 bg-gray-50 space-y-2">
-                {chat.map((m,i) => (
+                {chat.map((m, i) => (
                   <div key={i} className={m.fromMe ? 'text-right' : ''}>
                     <span className={`${m.fromMe ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'} inline-block px-3 py-1 rounded-lg`}>
                       {m.text}

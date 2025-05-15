@@ -1,3 +1,4 @@
+// src/pages/EvaluationReportsPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,9 +8,9 @@ import Pagination from '../components/Pagination';
 import EvaluationDetailsModal from '../components/EvaluationDetailsModal';
 
 const detailsVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0 },
-  exit:    { opacity: 0, y: 30 },
+  hidden:  { opacity: 0, y: 30 },
+  visible:{ opacity: 1, y: 0 },
+  exit:   { opacity: 0, y: 30 },
 };
 
 export default function EvaluationReportsPage() {
@@ -89,7 +90,7 @@ export default function EvaluationReportsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="max-w-7xl mx-auto px-6 py-6 -mt-12 bg-white rounded-xl shadow-lg border border-gray-100 flex flex-wrap items-center gap-4"
+        className="relative z-20 max-w-7xl mx-auto px-6 py-6 -mt-12 bg-white rounded-xl shadow-lg border border-gray-100 flex flex-wrap items-center gap-4"
       >
         <FilterEvaluation onFilter={setFilterData} />
       </motion.div>

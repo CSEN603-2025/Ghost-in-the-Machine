@@ -52,6 +52,8 @@ const ProStudentDashboard = () => {
     { id: 4, name: 'AI Ethics Seminar', time: '2025-06-05 10:00 AM', method: 'Venue', venueOrLink: 'Building A, Room 101' },
   ];
 
+  
+
   // Student dashboard state for company search/filter
   const [searchText, setSearchText] = useState('');
   const [companyFilter, setCompanyFilter] = useState({ industry: '', company: '' });

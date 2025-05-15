@@ -1,7 +1,8 @@
+// src/pages/ReportsListPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaFileAlt, FaSearch } from 'react-icons/fa'; // Added FaFileAlt for reports
+import { FaFileAlt, FaSearch } from 'react-icons/fa';
 import Filter from '../components/Filter';
 import Pagination from '../components/Pagination';
 import ReportDetailsModal from '../components/ReportDetailsModal';
@@ -18,8 +19,8 @@ export default function ReportsListPage() {
   const [filterData, setFilterData] = useState({ major: '', status: '' });
 
   // Pagination state
-  const [currentPage, setCurrentPage] = useState(1); // 1-indexed for UI
-  const [itemsPerPage] = useState(10); // Or any other number you prefer
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   // Modal
   const [selectedReport, setSelectedReport] = useState(null);
@@ -58,16 +59,12 @@ export default function ReportsListPage() {
   // Re-filter whenever searchTerm, filterData, or reports change
   useEffect(() => {
     let temp = reports;
-
-    // apply major/status filters
     if (filterData.major) {
       temp = temp.filter(r => r.major === filterData.major);
     }
     if (filterData.status) {
       temp = temp.filter(r => r.status === filterData.status);
     }
-
-    // apply search
     if (searchTerm) {
       const key = searchTerm.toLowerCase();
       temp = temp.filter(r =>
@@ -75,13 +72,12 @@ export default function ReportsListPage() {
         r.title.toLowerCase().includes(key)
       );
     }
-
     setFiltered(temp);
   }, [searchTerm, filterData, reports]);
 
   const handleFilter = (data) => {
     setFilterData(data);
-    setCurrentPage(1); // Reset to first page on filter change
+    setCurrentPage(1);
   };
 
   // Download PDF helper
@@ -92,14 +88,14 @@ export default function ReportsListPage() {
     link.click();
   };
 
-  // Calculate total pages and items for current page
+  // Pagination calculations
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filtered.slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber + 1); // Convert 0-indexed from Pagination to 1-indexed for state
+    setCurrentPage(pageNumber + 1);
   };
 
   return (
@@ -138,7 +134,7 @@ export default function ReportsListPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="max-w-7xl mx-auto px-6 py-6 -mt-12 bg-white rounded-xl shadow-lg border border-gray-100 flex flex-wrap items-center gap-4"
+        className="relative z-20 max-w-7xl mx-auto px-6 py-6 -mt-12 bg-white rounded-xl shadow-lg border border-gray-100 flex flex-wrap items-center gap-4"
       >
         <Filter onFilter={handleFilter} />
       </motion.div>
@@ -159,21 +155,28 @@ export default function ReportsListPage() {
             </thead>
             <tbody>
               {currentItems.map(report => (
-                <tr key={report.id} className="border-b last:border-none hover:bg-gray-50 transition-colors">
+                <tr
+                  key={report.id}
+                  className="border-b last:border-none hover:bg-gray-50 transition-colors"
+                >
                   <td className="p-3">{report.studentName}</td>
                   <td className="p-3">{report.major}</td>
                   <td className="p-3">{report.semester}</td>
                   <td className="p-3">{report.submissionDate}</td>
                   <td className="p-3">
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      report.status === 'Accepted' ? 'bg-green-100 text-green-800' :
-                      report.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-red-100 text-red-800' // Assuming other statuses like 'Rejected'
-                    }`}>
+                    <span
+                      className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        report.status === 'Accepted'
+                          ? 'bg-green-100 text-green-800'
+                          : report.status === 'Pending'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
                       {report.status}
                     </span>
                   </td>
-                  <td className="p-3 flex items-center space-x-2"> {/* Reduced space for potentially more buttons */}
+                  <td className="p-3 flex items-center space-x-2">
                     <button
                       onClick={() => setSelectedReport(report)}
                       className="px-3 py-1 bg-[#274472] text-white rounded hover:bg-[#41729F] transition text-sm"
@@ -185,27 +188,40 @@ export default function ReportsListPage() {
                       className="text-gray-500 hover:text-[#00106A] transition p-1 rounded hover:bg-gray-200"
                       title="Download Report"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" // Adjusted icon size
-                        viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        {/* Using a more common download icon path */}
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                        />
                       </svg>
                     </button>
                   </td>
                 </tr>
               ))}
               {currentItems.length === 0 && (
-                <tr><td colSpan="6" className="p-3 text-center text-gray-500">No reports found.</td></tr>
+                <tr>
+                  <td colSpan="6" className="p-3 text-center text-gray-500">
+                    No reports found.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
-          {/* Pagination - moved inside the white card for better grouping */}
+
           {totalPages > 0 && (
             <div className="px-3 py-4 border-t border-gray-200">
-              <Pagination 
-                currentPage={currentPage} 
-                totalPages={totalPages} 
-                onPageChange={handlePageChange} 
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
               />
             </div>
           )}
@@ -219,7 +235,9 @@ export default function ReportsListPage() {
           onClose={() => setSelectedReport(null)}
           report={selectedReport}
           onStatusChange={(id, newStatus) => {
-            setReports(rs => rs.map(r => r.id === id ? { ...r, status: newStatus } : r));
+            setReports(rs =>
+              rs.map(r => (r.id === id ? { ...r, status: newStatus } : r))
+            );
           }}
         />
       )}
