@@ -1,34 +1,30 @@
 // src/components/WorkshopDetailsModal.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { FaTimes, FaRegCalendarCheck, FaCertificate, FaStar } from 'react-icons/fa';
+import { FaTimes, FaRegCalendarCheck, FaCertificate, FaStar, FaComments } from 'react-icons/fa';
 import { useToastNotifications } from '../hooks/useToastNotifications';
 
 export default function WorkshopDetailsModal({ workshop, onClose }) {
   const { id, name, speaker, description, start, end, videoUrl, isLive } = workshop;
-  const regKey   = `ws_registered_${id}`;
+  const regKey = `ws_registered_${id}`;
   const [registered, setRegistered] = useState(() => !!localStorage.getItem(regKey));
 
   const notesKey = `ws_notes_${id}`;
   const [notes, setNotes] = useState(() => localStorage.getItem(notesKey) || '');
 
-  const rateKey  = `ws_rate_${id}`;
+  const rateKey = `ws_rate_${id}`;
   const [rating, setRating] = useState(() => Number(localStorage.getItem(rateKey)) || 0);
   const [feedback, setFeedback] = useState('');
 
-  const chatKey  = `ws_chat_${id}`;
+  const chatKey = `ws_chat_${id}`;
   const [chat, setChat] = useState(() => JSON.parse(localStorage.getItem(chatKey) || '[]'));
   const [msg, setMsg] = useState('');
   const chatEndRef = useRef();
 
-  const now   = new Date();
-  const ended = now > new Date(end);
-
-  // Which view: 'live' or 'recorded'
   const [viewMode, setViewMode] = useState(isLive ? 'live' : 'recorded');
-
   const { info } = useToastNotifications();
 
+  // persist
   useEffect(() => { localStorage.setItem(notesKey, notes); }, [notes]);
   useEffect(() => { localStorage.setItem(rateKey, rating); }, [rating]);
   useEffect(() => {
@@ -52,20 +48,14 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
 
   function sendMsg() {
     if (!msg.trim()) return;
-    // add your message
     setChat(c => [...c, { fromMe: true, text: msg }]);
     setMsg('');
-    // simulate incoming reply
     setTimeout(() => {
-      setChat(c => {
-        const next = [...c, { fromMe: false, text: '👍 Got your message!' }];
-        // fire toast notification on new incoming message
-        info(`New message from ${speaker}: "👍 Got your message!"`);
-        return next;
-      });
+      const reply = '👍 Got your message!';
+      setChat(c => [...c, { fromMe: false, text: reply }]);
+      info(`New message from ${speaker}: "${reply}"`);
     }, 2000);
   }
-
 
   return (
     <motion.div
@@ -73,11 +63,11 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
     >
       <motion.div
-        className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto"
         initial={{ y: 30 }} animate={{ y: 0 }} exit={{ y: 30 }}
       >
         {/* Header */}
-        <div className="flex justify-between items-center bg-gradient-to-r from-[#00D6A0] to-[#2b7de9] text-white px-6 py-4 rounded-t-2xl">
+        <div className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-4 rounded-t-xl">
           <div>
             <h2 className="text-2xl font-bold">{name}</h2>
             <p className="text-sm">by {speaker}</p>
@@ -90,8 +80,8 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
           <section>
             <h3 className="text-lg font-semibold mb-2">About this Workshop</h3>
             <p className="text-gray-700">{description}</p>
-            <p className="mt-2 text-sm text-gray-500">
-              <FaRegCalendarCheck className="inline mr-1" />
+            <p className="mt-2 text-sm text-gray-500 flex items-center">
+              <FaRegCalendarCheck className="mr-1" />
               {new Date(start).toLocaleString()} – {new Date(end).toLocaleString()}
             </p>
             <button
@@ -99,14 +89,14 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
               className={`mt-4 w-full py-2 rounded-full font-medium ${
                 registered
                   ? 'bg-gray-300 text-gray-800'
-                  : 'bg-gradient-to-r from-[#00D6A0] to-[#2b7de9] text-white'
+                  : 'bg-gradient-to-r from-blue-600 to-blue-800 text-white'
               }`}
             >
               {registered ? 'Registered ✓' : 'Register to Attend'}
             </button>
           </section>
 
-          {/* Live / Recording Toggle */}
+          {/* View Toggle */}
           {registered && (
             <div className="flex space-x-2">
               <button
@@ -114,7 +104,7 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
                 disabled={!isLive}
                 className={`flex-1 py-2 rounded-lg font-medium ${
                   viewMode === 'live'
-                    ? 'bg-[#00D6A0] text-white'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-gray-100 text-gray-700'
                 } ${!isLive ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
@@ -124,7 +114,7 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
                 onClick={() => setViewMode('recorded')}
                 className={`flex-1 py-2 rounded-lg font-medium ${
                   viewMode === 'recorded'
-                    ? 'bg-[#00D6A0] text-white'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-gray-100 text-gray-700'
                 }`}
               >
@@ -139,7 +129,7 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
               <h3 className="text-lg font-semibold mb-2">
                 {viewMode === 'live' ? 'Live Stream' : 'Recording'}
               </h3>
-              <div className="w-full relative" style={{ paddingBottom: '56.25%' }}>
+              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
                 <iframe
                   src={videoUrl}
                   title="Workshop Video"
@@ -149,7 +139,7 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
                 />
               </div>
 
-              <h4 className="mt-6 mb-2 text-md font-medium text-gray-700">Notes</h4>
+              <h4 className="mt-6 mb-2 font-medium text-gray-700">Notes</h4>
               <textarea
                 className="w-full border rounded-lg p-2"
                 rows={4}
@@ -160,8 +150,8 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
             </section>
           )}
 
-          {/* Certificate & Rating/Feedback */}
-          { registered && (
+          {/* Certificate & Feedback */}
+          {registered && (
             <div className="space-y-6">
               <button
                 onClick={() => alert('📜 Certificate downloaded!')}
@@ -194,20 +184,16 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
             </div>
           )}
 
-          {/* Live Chat */}
+          {/* Chat */}
           {registered && viewMode === 'live' && (
             <section>
-              <h3 className="text-lg font-semibold mb-2">Live Chat</h3>
-              <div className="border rounded-lg h-40 overflow-y-auto p-2 space-y-2 bg-gray-50">
+              <h3 className="text-lg font-semibold mb-2 flex items-center">
+                <FaComments className="mr-1" /> Live Chat
+              </h3>
+              <div className="border rounded-lg h-40 overflow-y-auto p-2 bg-gray-50 space-y-2">
                 {chat.map((m,i) => (
                   <div key={i} className={m.fromMe ? 'text-right' : ''}>
-                    <span
-                      className={`inline-block px-3 py-1 rounded-lg ${
-                        m.fromMe
-                          ? 'bg-gradient-to-r from-[#00D6A0] to-[#2b7de9] text-white'
-                          : 'bg-gray-200 text-gray-800'
-                      }`}
-                    >
+                    <span className={`${m.fromMe ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'} inline-block px-3 py-1 rounded-lg`}>
                       {m.text}
                     </span>
                   </div>
@@ -224,7 +210,7 @@ export default function WorkshopDetailsModal({ workshop, onClose }) {
                 />
                 <button
                   onClick={sendMsg}
-                  className="px-4 py-2 bg-gradient-to-r from-[#00D6A0] to-[#2b7de9] text-white rounded-full"
+                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-full"
                 >
                   Send
                 </button>

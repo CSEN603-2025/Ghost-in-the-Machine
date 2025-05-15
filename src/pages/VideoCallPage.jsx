@@ -1,81 +1,73 @@
-import { useState, useEffect } from 'react';
-import { FiMic, FiMicOff, FiVideo, FiVideoOff, FiMonitor, FiX, FiCast, FiTv, FiPhoneOff, FiPhoneMissed } from 'react-icons/fi';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  FiMic, FiMicOff, FiVideo, FiVideoOff,
+  FiCast, FiPhoneMissed
+} from 'react-icons/fi';
 import { useToastNotifications } from '../hooks/useToastNotifications';
 
-const VideoCallPage = () => {
-  const [callStatus, setCallStatus] = useState('idle'); // 'idle', 'ringing', 'in-progress'
+export default function VideoCallPage() {
+  const [callStatus, setCallStatus] = useState('idle');
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [micEnabled, setMicEnabled] = useState(true);
   const [screenSharing, setScreenSharing] = useState(false);
-  const [appointments, setAppointments] = useState([
-    {
-      id: 1,
-      studentName: "Ahmed Mohamed",
-      date: new Date().toLocaleDateString(),
-      time: "14:00",
-      status: "pending" // 'pending', 'accepted', 'rejected'
-    }
-  ]);
+  const [appointments, setAppointments] = useState([{
+    id: 1,
+    studentName: "Ahmed Mohamed",
+    date: new Date().toLocaleDateString(),
+    time: "14:00",
+    status: "pending"
+  }]);
   const [remoteOnline, setRemoteOnline] = useState(true);
-  // Available people to request appointments from
-  const availablePeople = [ "John Doe", "Jane Smith","Mohamed Ahmed", "Sara Ali", "Ali Hassan" ];
+  const availablePeople = ["John Doe", "Jane Smith", "Mohamed Ahmed", "Sara Ali", "Ali Hassan"];
   const [selectedPerson, setSelectedPerson] = useState(availablePeople[0]);
-  const { success } = useToastNotifications();
-  const { error } = useToastNotifications();
-  const [notifications, setNotifications] = useState([]);
+  const { success, error } = useToastNotifications();
+
+  // Guards so each toast only fires once
+  const firedAccept = useRef(false);
+  const firedReject = useRef(false);
 
   useEffect(() => {
-      const timer = setTimeout(() => {
+    if (!firedAccept.current) {
+      firedAccept.current = true;
+      const t1 = setTimeout(() => {
         const msg = "Ahmed Mohamed just accepted your appointment request! Click accept to start the call.";
-        // show toast
         success(msg);
-        // add to bell notification center
-        setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
       }, 100);
-      return () => clearTimeout(timer);
-    }, []);
+      return () => clearTimeout(t1);
+    }
+  }, [success]);
 
-    useEffect(() => {
-      const timer = setTimeout(() => {
+  useEffect(() => {
+    if (!firedReject.current) {
+      firedReject.current = true;
+      const t2 = setTimeout(() => {
         const msg = "Yassin Sayed just rejected your appointment request! Call removed from the list.";
-        // show toast
         error(msg);
-        // add to bell notification center
-        setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
       }, 800);
-      return () => clearTimeout(timer);
-    }, []);
+      return () => clearTimeout(t2);
+    }
+  }, [error]);
 
-  // Mock function to start a call
-  const startCall = (appointmentId) => {
+  const startCall = (id) => {
     setCallStatus('ringing');
-    // Simulate call acceptance after 3 seconds
     setTimeout(() => {
       setCallStatus('in-progress');
-      // after going in-progress, mark remote offline after 5s
       setRemoteOnline(true);
       setTimeout(() => setRemoteOnline(false), 5000);
     }, 3000);
   };
-
-  // Mock function to end call
   const endCall = () => {
     setCallStatus('idle');
     setVideoEnabled(true);
     setMicEnabled(true);
     setScreenSharing(false);
   };
-
-  // Update appointment status
-  const updateAppointmentStatus = (id, status) => {
-    setAppointments(appointments.map(app => 
-      app.id === id ? { ...app, status } : app
-    ));
+  const updateStatus = (id, st) => {
+    setAppointments(a => a.map(x => x.id === id ? { ...x, status: st } : x));
   };
-
-  // Request a new dummy appointment
   const requestAppointment = () => {
-    const newAppointment = {
+    const newApp = {
       id: Date.now(),
       studentName: selectedPerson,
       date: new Date().toLocaleDateString(),
@@ -83,184 +75,171 @@ const VideoCallPage = () => {
       status: 'pending',
       requested: true
     };
-    setAppointments(prev => [...prev, newAppointment]);
+    setAppointments(a => [...a, newApp]);
   };
 
+  const variants = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
+
   return (
-    <div className="video-call-container">
-      <h2>Career Guidance Appointments</h2>
-      {/* Request Appointment Section */}
-      <div className="request-appointment my-4 flex items-center space-x-2">
-        <select
-          value={selectedPerson}
-          onChange={(e) => setSelectedPerson(e.target.value)}
-          className="border px-2 py-1 rounded"
-        >
-          {availablePeople.map(person => (
-            <option key={person} value={person}>{person}</option>
-          ))}
-        </select>
-        <button
-          onClick={requestAppointment}
-          className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded"
-        >
-          Request Appointment
-        </button>
-      </div>
-
-      {/* Appointments List */}
-      <div className="appointments-section">
-        <h3>Upcoming Appointments</h3>
-        {appointments.length === 0 ? (
-          <p>No upcoming appointments</p>
-        ) : (
-          <div className="appointments-list">
-            {appointments.map(appointment => (
-              <div key={appointment.id} className="appointment-card">
-                <div className="appointment-info">
-                  <h4>{appointment.studentName}</h4>
-                  <p>{appointment.date} at {appointment.time}</p>
-                  <div className={`status-badge ${appointment.status}`}>
-                    {appointment.status}
-                  </div>
-                </div>
-                
-                <div className="appointment-actions">
-                  {appointment.status === 'pending' && !appointment.requested && (
-                    <>
-                      <button 
-                        onClick={() => updateAppointmentStatus(appointment.id, 'accepted')}
-                        className="accept-btn"
-                      >
-                        Accept
-                      </button>
-                      <button 
-                        onClick={() => updateAppointmentStatus(appointment.id, 'rejected')}
-                        className="reject-btn"
-                      >
-                        Reject
-                      </button>
-                    </>
-                  )}
-                  {appointment.status === 'pending' && appointment.requested && (
-                    <span className="text-gray-500 italic">Requested</span>
-                  )}
-
-                  {appointment.status === 'accepted' && (
-                    <button 
-                      onClick={() => startCall(appointment.id)}
-                      className="call-btn"
-                    >
-                      Start Call
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      
-      {/* Video Call Interface */}
-      {callStatus !== 'idle' && (
-        <div className={`video-call-section ${callStatus}`}>
-          <h3>
-            {callStatus === 'ringing' ? 'Calling...' : 'Call in Progress'}
-          </h3>
-          
-          <div className="video-container relative flex justify-center items-center space-x-4">
-            {callStatus === 'in-progress' && (
-              <>
-                <div className="remote-video flex flex-col items-center">
-                  <div className="video-placeholder flex flex-col items-center">
-                    <div className="user-avatar">
-                      {appointments[0].studentName.charAt(0)}
-                    </div>
-                    <p className="font-semibold">{appointments[0].studentName}</p>
-                    <div className={`flex items-center text-sm mt-1 ${remoteOnline ? 'text-green-500' : 'text-red-500'}`}>
-                      <span className={`w-2 h-2 rounded-full mr-1 ${remoteOnline ? 'bg-green-500' : 'bg-red-500'}`} />
-                      <span>{remoteOnline ? 'Online' : 'Offline'}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className={`local-video ${!videoEnabled ? 'disabled' : ''} flex flex-col items-center`}>
-                  {videoEnabled ? (
-                    <div className="video-placeholder flex flex-col items-center">
-                      <div className="user-avatar">Y</div>
-                      <p>You</p>
-                    </div>
-                  ) : (
-                    <div className="video-off flex flex-col items-center">
-                      <FiVideoOff size={48} />
-                      <p>Camera is off</p>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-            
-            {/* Dummy shared screen preview */}
-            {screenSharing && callStatus === 'in-progress' && (
-              <video 
-                autoPlay
-                loop
-                src="/dumdumvideo.mp4"
-                alt="Shared Screen"
-                className="absolute top-4 right-4 w-32 h-20 object-cover border rounded-lg shadow-lg"
-              />
-            )}
-            
-            {callStatus === 'ringing' && (
-              <div className="ringing-animation">
-                <div className="spinner"></div>
-                <p>Calling {appointments[0].studentName}...</p>
-              </div>
-            )}
-          </div>
-          
-          <div className="call-controls flex justify-center space-x-4 mt-4">
-            {/* Mic toggle */}
-            <button
-              onClick={() => setMicEnabled(!micEnabled)}
-              className={`p-3 rounded-full hover:bg-gray-200 ${
-                micEnabled ? 'bg-gray-100 text-black' : 'bg-red-800 text-white'
-              }`}
-            >
-              {micEnabled ? <FiMic size={20} /> : <FiMicOff size={20} />}
-            </button>
-            {/* Video toggle */}
-            <button
-              onClick={() => setVideoEnabled(!videoEnabled)}
-              className={`p-3 rounded-full hover:bg-gray-200 ${
-                videoEnabled ? 'bg-gray-100 text-black' : 'bg-red-800 text-white'
-              }`}
-            >
-              {videoEnabled ? <FiVideo size={20} /> : <FiVideoOff size={20} />}
-            </button>
-            {/* Screen share toggle */}
-            {callStatus === 'in-progress' && (
-              <button
-                onClick={() => setScreenSharing(!screenSharing)}
-                className={`p-3 rounded-full hover:bg-gray-200 ${
-                  screenSharing ? 'bg-green-600 text-white' : 'bg-red-800 text-white'
-                }`}
-              >
-                <FiCast size={20} />
-              </button>
-            )}
-            {/* End call */}
-            <button
-              onClick={endCall}
-              className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full"
-            >
-              <FiPhoneMissed size={20} />
-            </button>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Hero */}
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.5 }}
+        className="relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
+        <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center text-white">
+          <motion.h1
+            variants={variants}
+            transition={{ delay: 0.2 }}
+            className="text-4xl md:text-5xl font-bold mb-4"
+          >
+            📞 Career Guidance Appointments
+          </motion.h1>
+          <motion.p
+            variants={variants}
+            transition={{ delay: 0.3 }}
+            className="text-xl text-blue-100 max-w-2xl mx-auto"
+          >
+            Request, accept, and join live video guidance calls.
+          </motion.p>
         </div>
-      )}
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent" />
+      </motion.div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8 -mt-10 relative z-20 space-y-8">
+        {/* Request Appointment */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+          className="bg-white rounded-xl shadow-md border border-gray-100 p-6 flex items-center space-x-4"
+        >
+          <select
+            value={selectedPerson}
+            onChange={e => setSelectedPerson(e.target.value)}
+            className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#00D6A0] focus:border-transparent"
+          >
+            {availablePeople.map(p => <option key={p} value={p}>{p}</option>)}
+          </select>
+          <button
+            onClick={requestAppointment}
+            className="px-6 py-2 bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black font-semibold rounded-full shadow hover:shadow-lg transition"
+          >
+            Request Appointment
+          </button>
+        </motion.div>
+
+        {/* Appointments */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          {appointments.map(app => (
+            <motion.div
+              key={app.id}
+              variants={variants}
+              whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)" }}
+              className="bg-white rounded-xl border border-gray-100 p-6 space-y-4"
+            >
+              <h3 className="text-xl font-semibold text-gray-800">{app.studentName}</h3>
+              <p className="text-gray-600">{app.date} @ {app.time}</p>
+              <div className="flex items-center space-x-2">
+                <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs">{app.status}</span>
+                {app.status === 'pending' && !app.requested && (
+                  <>
+                    <button onClick={() => updateStatus(app.id, 'accepted')} className="text-[#00D6A0] hover:underline">Accept</button>
+                    <button onClick={() => updateStatus(app.id, 'rejected')} className="text-red-600 hover:underline">Reject</button>
+                  </>
+                )}
+                {app.status === 'accepted' && !app.requested && (
+                  <button onClick={() => startCall(app.id)}
+                          className="px-4 py-1 bg-gradient-to-r from-[#00D6A0] to-[#2b7de9] text-white rounded-full">
+                    Start Call
+                  </button>
+                )}
+                {app.requested && <span className="text-gray-500 italic">Requested</span>}
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Live Video */}
+        <AnimatePresence>
+        {callStatus !== 'idle' && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={variants}
+            className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 space-y-6"
+          >
+            <h3 className="text-xl font-bold text-gray-800">
+              {callStatus === 'ringing' ? 'Calling...' : 'Call in Progress'}
+            </h3>
+
+            {callStatus === 'in-progress' && (
+              <div className="grid grid-cols-2 gap-6">
+                {/* Remote */}
+                <div className="space-y-2">
+                  <div className="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <span className="text-6xl font-bold text-gray-400">
+                      {appointments[0].studentName.charAt(0)}
+                    </span>
+                  </div>
+                  <p className="text-center">{appointments[0].studentName}</p>
+                  <p className={`text-center text-sm ${remoteOnline ? 'text-green-600' : 'text-red-600'}`}>
+                    {remoteOnline ? 'Online' : 'Offline'}
+                  </p>
+                </div>
+                {/* Local */}
+                <div className="space-y-2">
+                  <div className={`w-full h-40 rounded-lg flex items-center justify-center ${videoEnabled ? 'bg-gray-100' : 'bg-red-100'}`}>
+                    {videoEnabled ? <FiVideo size={48}/> : <FiVideoOff size={48}/>}
+                  </div>
+                  <p className="text-center">You</p>
+                </div>
+              </div>
+            )}
+
+            {/* Controls */}
+            <div className="flex justify-center items-center space-x-4">
+              <button
+                onClick={() => setMicEnabled(m => !m)}
+                className={`p-3 rounded-full ${micEnabled ? 'bg-gray-100' : 'bg-red-600'} transition`}
+              >
+                {micEnabled ? <FiMic/> : <FiMicOff/>}
+              </button>
+              <button
+                onClick={() => setVideoEnabled(v => !v)}
+                className={`p-3 rounded-full ${videoEnabled ? 'bg-gray-100' : 'bg-red-600'} transition`}
+              >
+                {videoEnabled ? <FiVideo/> : <FiVideoOff/>}
+              </button>
+              {callStatus === 'in-progress' && (
+                <button
+                  onClick={() => setScreenSharing(s => !s)}
+                  className={`p-3 rounded-full ${screenSharing ? 'bg-green-600 text-white' : 'bg-gray-100'} transition`}
+                >
+                  <FiCast/>
+                </button>
+              )}
+              <button
+                onClick={endCall}
+                className="p-3 rounded-full bg-red-600 text-white transition"
+              >
+                <FiPhoneMissed/>
+              </button>
+            </div>
+          </motion.div>
+        )}
+        </AnimatePresence>
+      </div>
     </div>
   );
-};
-
-export default VideoCallPage;
+}
