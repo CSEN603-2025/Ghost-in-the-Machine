@@ -4,7 +4,7 @@ function CompanyProfileCard({ companyInfo }) {
   // Default fallback info
   const defaultInfo = {
     name: "Example Company",
-    industry: "Software",
+    industry: ["Software", "Business"],
     size: "Medium",
     email: "example@company.com",
     logoUrl: "https://via.placeholder.com/120",
@@ -62,13 +62,23 @@ function CompanyProfileCard({ companyInfo }) {
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
-            <svg className="w-6 h-6 text-blue-500 shrink-0" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5h1.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293H15M9 7h6v4H9V7z"></path></svg>
-            <div>
-              <p className="text-xs text-gray-500">Industry</p>
-              <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors duration-300">{info.industry || "Not Specified"}</p>
-            </div>
-          </div>
+         <div className="flex items-center space-x-3">
+  <svg className="w-6 h-6 text-blue-500 shrink-0" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5h1.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293H15M9 7h6v4H9V7z"></path></svg>
+  <div>
+    <p className="text-xs text-gray-500">Industry</p>
+    <div className="flex flex-wrap gap-2 mt-1">
+      {(Array.isArray(info.industry) ? info.industry : [info.industry || "Not Specified"]).map((ind, idx) => (
+        <span
+          key={idx}
+          className="inline-block bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full font-medium"
+        >
+          {ind}
+        </span>
+      ))}
+    </div>
+  </div>
+</div>
+
 
           {info.website && (
             <div className="flex items-center space-x-3 sm:col-span-2">

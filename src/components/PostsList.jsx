@@ -5,12 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
 
 const dummyCompany = {
-  name: "Google LLC",
-  industry: "Technology",
-  size: "Corporate",
-  email: "contact@google.com",
-  logoUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
-};
+    name: "Google LLC",
+    industry: ['IT', 'Software', 'Business', 'Technology'],
+    size: "Corporate",
+    email: "contact@google.com",
+    logoUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
+  };
 
 
 
@@ -24,6 +24,7 @@ const dummyPosts = [
     skills: ['React', 'CSS'],
     description: 'Work on frontend development for scalable web apps.',
     applications: 4,
+     industry: ['Technology']
   },
   {
     id: 2,
@@ -34,6 +35,7 @@ const dummyPosts = [
     skills: ['Excel', 'SQL'],
     description: 'Assist with reporting and data cleansing tasks.',
     applications: 4,
+     industry: ['IT']
   },
   {
     id: 3,
@@ -44,11 +46,14 @@ const dummyPosts = [
     skills: ['Flutter', 'Dart','container'],
     description: 'Work with our Devops team to automate our deployment process.',
     applications: 4,
+     industry: ['Software']
   }
 ];
 
+
 const PostsList = () => {
   const navigate = useNavigate();
+  const [industryFilter, setIndustryFilter] = useState('');
   useEffect(() => {
   window.scrollTo(0, 0);
 }, []);
@@ -80,15 +85,19 @@ const [postToDelete, setPostToDelete] = useState(null);
 
   const postsPerPage = 6;
 
-  const validateFields = (data) => {
-    const newErrors = {};
-    if (!data.title.trim()) newErrors.title = 'Title is required';
-    if (!data.duration) newErrors.duration = 'Duration is required';
-    if (data.paid && !data.salary) newErrors.salary = 'Salary is required for paid posts';
-    if (data.skills.length === 0) newErrors.skills = 'Add at least one skill';
-    if (!data.description.trim()) newErrors.description = 'Description is required';
-    return newErrors;
-  };
+ const validateFields = (data) => {
+  const newErrors = {};
+  if (!data.title.trim()) newErrors.title = 'Title is required';
+  if (!data.duration) newErrors.duration = 'Duration is required';
+  if (data.paid && !data.salary) newErrors.salary = 'Salary is required for paid posts';
+  if (data.skills.length === 0) newErrors.skills = 'Add at least one skill';
+  if (!data.description.trim()) newErrors.description = 'Description is required';
+  if (!data.industry || data.industry.length === 0 || !data.industry[0]) {
+    newErrors.industry = 'Industry is required';
+  }
+  return newErrors;
+};
+
 
   const handleSkillFilterAdd = () => {
     if (skillFilterInput.trim()) {
@@ -104,12 +113,14 @@ const [postToDelete, setPostToDelete] = useState(null);
   };
 
   const filteredPosts = posts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDuration = durationFilter === '' || post.duration === durationFilter;
-    const matchesPaid = paidFilter === '' || (paidFilter === 'paid' && post.paid) || (paidFilter === 'unpaid' && !post.paid);
-    const matchesSkills = filterSkills.length === 0 || filterSkills.every(skill => post.skills.includes(skill));
-    return matchesSearch && matchesDuration && matchesPaid && matchesSkills;
-  });
+  const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase());
+  const matchesDuration = durationFilter === '' || post.duration === durationFilter;
+  const matchesPaid = paidFilter === '' || (paidFilter === 'paid' && post.paid) || (paidFilter === 'unpaid' && !post.paid);
+  const matchesSkills = filterSkills.length === 0 || filterSkills.every(skill => post.skills.includes(skill));
+  const matchesIndustry = industryFilter === '' || post.industry.includes(industryFilter);
+  return matchesSearch && matchesDuration && matchesPaid && matchesSkills && matchesIndustry;
+});
+
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
@@ -123,21 +134,22 @@ const [postToDelete, setPostToDelete] = useState(null);
   };
 
   const handleCreateClick = () => {
-    setFormData({
-      id: Date.now(),
-      title: '',
-      company: dummyCompany.name,
-      industry: dummyCompany.industry,
-      duration: '',
-      paid: false,
-      salary: '',
-      skills: [],
-      skillInput: '',
-      description: '',
-      applications: 0,
-    });
-    setCreating(true);
-  };
+  setFormData({
+    id: Date.now(),
+    title: '',
+    company: dummyCompany.name,
+    industry: [''],  // Empty industry instead of dummyCompany.industry
+    duration: '',
+    paid: false,
+    salary: '',
+    skills: [],
+    skillInput: '',
+    description: '',
+    applications: 0,
+  });
+  setCreating(true);
+};
+
 
   const handleEditClick = (post) => {
     setFormData({ ...post, skillInput: '' });
@@ -308,7 +320,22 @@ setTimeout(() => setSuccessMessage(''), 3000);
           transition={{ delay: 0.3 }}
           className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100"
         >
-<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+  {/* Industry Filter */}
+<div className="flex flex-col translate-y-[6.5px]">
+  <label className="text-sm font-medium text-gray-700 mb-1">Industry</label>
+  <select
+    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+    value={industryFilter}
+    onChange={(e) => setIndustryFilter(e.target.value)}
+  >
+    <option value="">All Industries</option>
+    {[...new Set(posts.flatMap(p => p.industry))].map((ind, i) => (
+      <option key={i} value={ind}>{ind}</option>
+    ))}
+  </select>
+ 
+</div>
   {/* Duration */}
   <div className="flex flex-col translate-y-[6.5px]">
     <label className="text-sm font-medium text-gray-700 mb-1">Duration</label>
@@ -374,132 +401,176 @@ setTimeout(() => setSuccessMessage(''), 3000);
             </div>
           </div>
         </motion.div>
-        <AnimatePresence>
-          {creating && (
-            
-            <motion.div
-              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => resetForm()}
+    <AnimatePresence>
+  {creating && (
+    <motion.div
+      className="fixed inset-0 z-[999] bg-black bg-opacity-50 flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={resetForm}
+    >
+      <motion.div
+        className="bg-white rounded-xl p-6 w-full max-w-lg relative shadow-xl max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+      >
+        <button onClick={resetForm} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+          <FaTimes />
+        </button>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-6">{editingPostId ? 'Edit Post' : 'Create Post'}</h2>
+
+        <div className="space-y-4">
+          {/* Title */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <input
+              type="text"
+              placeholder="Post Title"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.title && <p className="text-red-600 text-sm font-medium">{errors.title}</p>}
+          </div>
+
+          {/* Duration */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+            <select
+              value={formData.duration}
+              onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             >
-              <motion.div
-                className="bg-white rounded-xl p-6 w-full max-w-lg relative shadow-xl"
-                onClick={(e) => e.stopPropagation()}
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-              >
-                <button onClick={resetForm} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                  <FaTimes />
-                </button>
-                <h2 className="text-2xl font-bold mb-4">{editingPostId ? 'Edit Post' : 'Create Post'}</h2>
+              <option value="">Select Duration</option>
+              <option value="1 Month">1 Month</option>
+              <option value="2 Months">2 Months</option>
+              <option value="3 Months">3 Months</option>
+              <option value="6 Months">6 Months</option>
+            </select>
+            {errors.duration && <p className="text-red-600 text-sm font-medium">{errors.duration}</p>}
+          </div>
 
-                <input
-                  type="text"
-                  placeholder="Title"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full mb-2 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-                {errors.title && <p className="text-red-700 font-bold text-sm mb-2">{errors.title}</p>}
+          {/* Paid */}
+          <div className="flex items-center gap-2">
+            <input
+              id="paid"
+              type="checkbox"
+              checked={formData.paid}
+              onChange={(e) => setFormData({ ...formData, paid: e.target.checked })}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="paid" className="text-sm text-gray-700">Paid Internship</label>
+          </div>
 
-                <select
-                  value={formData.duration}
-                  onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                  className="w-full mb-2 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">Select Duration</option>
-                  <option value="1 Month">1 Month</option>
-                  <option value="2 Months">2 Months</option>
-                  <option value="3 Months">3 Months</option>
-                  <option value="6 Months">6 Months</option>
-                </select>
-                {errors.duration && <p className="text-red-700 font-bold text-sm mb-2">{errors.duration}</p>}
-
-                <div className="flex items-center gap-2 mb-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.paid}
-                    onChange={(e) => setFormData({ ...formData, paid: e.target.checked })}
-                  />
-                  <span>Paid</span>
-                </div>
-
-                {formData.paid && (
-                  <>
-                    <input
-                      type="text"
-                      placeholder="Salary"
-                      value={formData.salary}
-                      onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
-                      onBlur={() => {
-                        if (formData.salary && !formData.salary.toLowerCase().includes('/month')) {
-                          setFormData(prev => ({
-                            ...prev,
-                            salary: prev.salary.trim() + '/month'
-                          }));
-                        }
-                      }}
-                      className="w-full mb-2 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                    {errors.salary && <p className="text-red-700 font-bold text-sm mb-2">{errors.salary}</p>}
-                  </>
-                )}
-
-                <div className="flex gap-2 mb-2">
-                  <input
-                    type="text"
-                    placeholder="Add skill"
-                    value={formData.skillInput}
-                    onChange={(e) => setFormData({ ...formData, skillInput: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <button
-                    onClick={handleSkillAdd}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                  >
-                    Add
-                  </button>
-                </div>
-
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {formData.skills.map((skill, i) => (
-                    <span key={i} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center">
-                      {skill}
-                      <button
-                        onClick={() => handleSkillRemove(i)}
-                        className="ml-2 text-blue-600 hover:text-blue-900"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                </div>
-                {errors.skills && <p className="text-red-700 font-bold text-sm mb-2">{errors.skills}</p>}
-
-                <textarea
-                  placeholder="Description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-                {errors.description && <p className="text-red-700 font-bold text-sm mb-2">{errors.description}</p>}
-
-                <div className="flex justify-end gap-2">
-                  <button onClick={resetForm} className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">
-                    Cancel
-                  </button>
-                  <button onClick={handleSave} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    {editingPostId ? 'Save Changes' : 'Create Post'}
-                  </button>
-                </div>
-              </motion.div>
-
-            </motion.div>
+          {/* Salary if Paid */}
+          {formData.paid && (
+            <div>
+              <input
+                type="text"
+                placeholder="Salary"
+                value={formData.salary}
+                onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
+                onBlur={() => {
+                  if (formData.salary && !formData.salary.toLowerCase().includes('/month')) {
+                    setFormData(prev => ({
+                      ...prev,
+                      salary: prev.salary.trim() + '/month'
+                    }));
+                  }
+                }}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+              {errors.salary && <p className="text-red-600 text-sm font-medium">{errors.salary}</p>}
+            </div>
           )}
-        </AnimatePresence>
+
+          {/* Skills */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Skills</label>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                placeholder="Add skill"
+                value={formData.skillInput}
+                onChange={(e) => setFormData({ ...formData, skillInput: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onClick={handleSkillAdd}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                Add
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {formData.skills.map((skill, i) => (
+                <span key={i} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center">
+                  {skill}
+                  <button
+                    onClick={() => handleSkillRemove(i)}
+                    className="ml-2 text-blue-600 hover:text-blue-900"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+            {errors.skills && <p className="text-red-600 text-sm font-medium">{errors.skills}</p>}
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea
+              placeholder="Describe the internship responsibilities..."
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+            {errors.description && <p className="text-red-600 text-sm font-medium">{errors.description}</p>}
+          </div>
+
+          {/* Industry */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+            <select
+              value={formData.industry[0] || ''}
+              onChange={(e) => setFormData({ ...formData, industry: [e.target.value] })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select Industry</option>
+              {dummyCompany.industry.map((ind, i) => (
+                <option key={i} value={ind}>{ind}</option>
+              ))}
+            </select>
+            {errors.industry && <p className="text-red-600 text-sm font-medium">{errors.industry}</p>}
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            onClick={resetForm}
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            {editingPostId ? 'Save Changes' : 'Create Post'}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
                       <AnimatePresence>
   {viewingPost && (
     <motion.div
@@ -528,6 +599,7 @@ setTimeout(() => setSuccessMessage(''), 3000);
           {viewingPost.paid ? `${viewingPost.salary}` : 'Unpaid'}
         </p>
         <p className="mb-2"><strong>Skills:</strong> {viewingPost.skills.join(', ')}</p>
+        <p className="mb-2"><strong>Industry:</strong> {viewingPost.industry.join(', ')}</p>
         <p className="mb-2"><strong>Description:</strong> {viewingPost.description}</p>
         <p className="mb-4"><strong>Applications:</strong> {viewingPost.applications}</p>
 
@@ -600,6 +672,8 @@ setTimeout(() => setSuccessMessage(''), 3000);
                 <p className="text-gray-600 text-sm mb-2">
                   <strong>Skills:</strong> {post.skills.join('- ')}
                 </p>
+                <p className="text-gray-600 text-sm mb-2">
+  <strong>Industry:</strong> {post.industry?.join(', ') || 'N/A'}</p>
 
                 <p className="text-gray-600 text-sm mb-4 flex-grow"> <strong>Description:</strong> {post.description}</p>
                 <p className="text-gray-600 text-sm mb-4"><strong>Applications:</strong> {post.applications}</p>

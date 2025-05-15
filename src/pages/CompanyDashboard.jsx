@@ -43,7 +43,7 @@ const CompanyDashboard = () => {
 
   const myCompany = {
     name: "Google LLC",
-    industry: "Technology",
+    industry: ['IT', 'Software', 'Business', 'Technology'],
     size: "Corporate",
     email: "contact@google.com",
     logoUrl: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
