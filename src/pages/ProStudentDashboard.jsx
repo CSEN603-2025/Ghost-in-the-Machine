@@ -8,8 +8,11 @@ import CompanyFilter from '../components/dashboard/CompanyFilter';
 import CompanyCard from '../components/dashboard/CompanyCard';
 import ProWorkshopCard from '../components/dashboard/ProWorkshopCard';
 import EnrolledWorkshopCard from '../components/dashboard/EnrolledWorkshopCard';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useToastNotifications } from '../hooks/useToastNotifications';
+import IncomingCallPrompt from '../components/IncomingCallPrompt';
+import OnGoingCallPrompt from '../components/OnGoingCallPrompt';
+import { FiArrowUpRight } from 'react-icons/fi';
 
 const allSuggestedCompanies = [
   { name: 'Instabug', industry: 'Technology', recommendations: 5 },
@@ -34,6 +37,12 @@ export default function ProStudentDashboard() {
   const [registered, setRegistered] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [companyFilter, setCompanyFilter] = useState({ industry: '', company: '' });
+  const [showIncoming, setShowIncoming] = useState(false);
+  const [showOngoing, setShowOngoing] = useState(false);
+  const [callStatus, setCallStatus] = useState('ringing');
+  const [micEnabled, setMicEnabled] = useState(true);
+  const [videoEnabled, setVideoEnabled] = useState(true);
+  const [screenSharing, setScreenSharing] = useState(false);
 
   // Profile load + toast
   useEffect(() => {
@@ -83,6 +92,44 @@ export default function ProStudentDashboard() {
   const variants = {
     hidden: { opacity: 0, y: 10 },
     visible:{ opacity: 1, y: 0 },
+  };
+
+  // Auto-show incoming call after 5s (demo)
+  useEffect(() => {
+    const timer = setTimeout(() => setShowIncoming(true), 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Auto-end call 5s after starting
+  useEffect(() => {
+    let endTimer;
+    if (showOngoing && callStatus === 'in-progress') {
+      endTimer = setTimeout(() => {
+        setShowOngoing(false);
+        success('John Doe left the call');
+      }, 5000);
+    }
+    return () => clearTimeout(endTimer);
+  }, [showOngoing, callStatus, success]);
+
+  // Call handlers (same as SCADDashboard)
+  const handleAcceptVideo = () => {
+    setCallStatus('in-progress');
+    setShowIncoming(false);
+    setShowOngoing(true);
+    success('Video call accepted');
+  };
+  const handleReject = () => {
+    setShowIncoming(false);
+    setShowOngoing(false);
+    success('Call rejected');
+  };
+  const handleAcceptAudio = () => {
+    setCallStatus('in-progress');
+    setVideoEnabled(false);
+    setShowIncoming(false);
+    setShowOngoing(true);
+    success('Audio call accepted');
   };
 
   return (
@@ -200,6 +247,54 @@ export default function ProStudentDashboard() {
           
         </div>
       </div>
+
+      {/* --- Call Prompts --- */}
+      <AnimatePresence>
+        {showIncoming && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="fixed inset-0 flex items-center justify-center z-50"
+          >
+            <IncomingCallPrompt
+              participantName="John Doe"
+              onAcceptVideo={handleAcceptVideo}
+              onAcceptAudio={handleAcceptAudio}
+              onReject={handleReject}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {showOngoing && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 flex items-center justify-center z-50"
+          >
+            {/* Pop-out button */}
+            <button
+              onClick={() => navigate('/videocallpage')}
+              className="absolute top-4 right-4 bg-white/80 p-2 rounded-full shadow hover:bg-white"
+            >
+              <FiArrowUpRight size={20} />
+            </button>
+            <OnGoingCallPrompt
+              callStatus={callStatus}
+              participantName="John Doe"
+              micEnabled={micEnabled}
+              videoEnabled={videoEnabled}
+              screenSharing={screenSharing}
+              onEndCall={handleReject}
+              onToggleMic={() => setMicEnabled(!micEnabled)}
+              onToggleVideo={() => setVideoEnabled(!videoEnabled)}
+              onToggleScreen={() => setScreenSharing(!screenSharing)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
