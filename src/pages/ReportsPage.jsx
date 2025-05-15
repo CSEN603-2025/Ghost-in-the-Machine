@@ -1,30 +1,31 @@
 // src/pages/ReportsPage.jsx
-import React, { useState, useEffect, use } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import jsPDF from "jspdf";
 import { useToastNotifications } from "../hooks/useToastNotifications";
 
 export default function ReportsPage() {
-  const [reports, setReports] = useState([
+  const [reports] = useState([
     { id: 1, title: "Internship Report 1", status: "Pending", comments: "" },
     { id: 2, title: "Internship Report 2", status: "Accepted", comments: "" },
     { id: 3, title: "Internship Report 3", status: "Rejected", comments: "Lacks detailed outcomes." },
     { id: 4, title: "Internship Report 4", status: "Flagged", comments: "Possible plagiarism—please clarify sources." },
   ]);
   const [appealMessages, setAppealMessages] = useState({});
-  const [notification, setNotification] = useState(null);
-  const {info} = useToastNotifications();
-  const [notifications, setNotifications] = useState([]);
+  const { info } = useToastNotifications();
+  const [notifs, setNotifs] = useState([]);
 
+  // only once: notify about the first rejected report
   useEffect(() => {
-        const rpt = reports.find(r => r.status === "Rejected");
-        const timer = setTimeout(() => {
-        const msg = `Your report "${rpt.title}" status has been set to "${rpt.status}".`;
-          info(msg);
-          setNotifications(prev => [...prev,{ id: Date.now(), message: msg, date: new Date() }]);
-        }, 100);
-        return () => clearTimeout(timer);
-  }, []);
+    const rpt = reports.find(r => r.status === "Rejected");
+    if (!rpt) return;
+    const t = setTimeout(() => {
+      const msg = `Your report "${rpt.title}" status has been set to "${rpt.status}".`;
+      info(msg);
+      setNotifs(n => [...n, { id: Date.now(), message: msg }]);
+    }, 100);
+    return () => clearTimeout(t);
+  }, []); // <-- empty deps
 
   const handleAppealChange = (id, msg) => {
     setAppealMessages(m => ({ ...m, [id]: msg }));
@@ -50,90 +51,115 @@ export default function ReportsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Hero */}
       <motion.div
-        initial={{ opacity: 0, y: -30 }}
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-[#00D6A0] to-[#00106A] text-white py-16 mb-8"
+        transition={{ duration: 0.5 }}
+        className="relative overflow-hidden"
       >
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-5xl font-extrabold mb-4">📝 My Internship Reports</h1>
-          <p className="text-lg opacity-90">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
+        <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center text-white">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-4xl md:text-5xl font-bold mb-4"
+          >
+            📝 My Internship Reports
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-lg text-blue-100 max-w-2xl mx-auto"
+          >
             Review statuses, download PDFs, and submit appeals on flagged or rejected reports.
-          </p>
+          </motion.p>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent" />
       </motion.div>
 
-      {/* Notification */}
-      {notification && (
-        <div className="max-w-3xl mx-auto mb-6 px-6">
-          <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-3 rounded shadow text-center text-sm">
-            {notification}
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8 -mt-10 relative z-20">
+        {/* “Filter” / Info Bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100"
+        >
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="text-gray-700">
+              Showing <span className="font-semibold">{reports.length}</span> reports
+            </div>
+            {/* could add real filters here later */}
           </div>
-        </div>
-      )}
+        </motion.div>
 
-      <div className="max-w-3xl mx-auto px-6 space-y-6">
-        {/* Report Cards */}
+        {/* Report Cards Grid */}
         <motion.div
           initial="hidden"
           animate="visible"
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.1 } }
-          }}
-          className="space-y-6"
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {reports.map(report => (
             <motion.div
               key={report.id}
               variants={{
                 hidden: { y: 20, opacity: 0 },
-                visible: { y: 0, opacity: 1 }
+                visible: { y: 0, opacity: 1 },
               }}
-              whileHover={{ scale: 1.02, boxShadow: "0 8px 24px rgba(0,0,0,0.12)" }}
-              className={`bg-white rounded-xl p-6 border ${
-                report.status === "Accepted"
-                  ? "border-green-300 bg-green-50"
-                  : "border-gray-200"
-              }`}
+              whileHover={{ scale: 1.03, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)" }}
+              className="bg-white rounded-xl border border-gray-100 overflow-hidden cursor-pointer transition-all"
             >
-              <h3 className="text-2xl font-semibold text-gray-800 mb-2 text-center">
-                {report.title}
-              </h3>
-              <p className="text-center text-gray-600 mb-4">
-                <strong>Status:</strong> {report.status}
-              </p>
+              {/* Top accent bar */}
+              <div
+                className={`h-2 w-full ${
+                  report.status === "Accepted"
+                    ? "bg-green-400"
+                    : report.status === "Rejected"
+                    ? "bg-red-400"
+                    : report.status === "Flagged"
+                    ? "bg-yellow-400"
+                    : "bg-gray-400"
+                }`}
+              />
+              <div className="p-6 flex flex-col h-full">
+                <h3 className="text-xl font-bold text-gray-800 mb-2">{report.title}</h3>
+                <p className="text-gray-600 mb-4"><strong>Status:</strong> {report.status}</p>
 
-              {(report.status === "Rejected" || report.status === "Flagged") && (
-                <div className="space-y-4">
-                  <p className="text-red-600 text-center">
-                    <strong>Comments:</strong> {report.comments}
-                  </p>
-                  <textarea
-                    rows={3}
-                    placeholder="Write your appeal message..."
-                    value={appealMessages[report.id] || ""}
-                    onChange={e => handleAppealChange(report.id, e.target.value)}
-                    className="w-full rounded-lg border-gray-300 p-2 shadow-sm"
-                  />
-                  <div className="flex justify-center space-x-4">
-                    <button
-                      onClick={() => handleAppealSubmit(report.id)}
-                      className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black font-semibold py-2 px-6 rounded-full shadow hover:shadow-lg transition-all"
-                    >
-                      Submit Appeal
-                    </button>
-                    <button
-                      onClick={() => handleDownload(report)}
-                      className="bg-gradient-to-r from-green-500 to-green-400 text-white py-2 px-6 rounded-full shadow hover:shadow-lg transition-all"
-                    >
-                      Download PDF
-                    </button>
-                  </div>
-                </div>
-              )}
+                {(report.status === "Rejected" || report.status === "Flagged") && (
+                  <>
+                    {report.comments && (
+                      <p className="text-red-600 mb-4"><strong>Comments:</strong> {report.comments}</p>
+                    )}
+                    <textarea
+                      rows={3}
+                      placeholder="Write your appeal message..."
+                      value={appealMessages[report.id] || ""}
+                      onChange={e => handleAppealChange(report.id, e.target.value)}
+                      className="w-full rounded-lg border-gray-300 p-2 mb-4 shadow-sm"
+                    />
+                    <div className="flex space-x-4">
+                      <button
+                        onClick={() => handleAppealSubmit(report.id)}
+                        className="flex-1 px-4 py-2 bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black font-semibold rounded-lg shadow hover:shadow-lg transition"
+                      >
+                        Submit Appeal
+                      </button>
+                      <button
+                        onClick={() => handleDownload(report)}
+                        className="flex-1 px-4 py-2 bg-gradient-to-r from-green-500 to-green-400 text-white rounded-lg shadow hover:shadow-lg transition"
+                      >
+                        Download PDF
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </motion.div>
           ))}
         </motion.div>

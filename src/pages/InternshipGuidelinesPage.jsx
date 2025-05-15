@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// Define video URLs for different majors
 const videoByMajor = {
   "Computer Engineering": "YnTEXW7RaYY",
   Business:               "YnTEXW7RaYY",
