@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route, BrowserRouter, useLocation } fr
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
-// Removed react-toastify CSS import here; managed in index.js
 import LoginPage from './pages/LoginPage';
 import RegisterCompanyPage from './pages/RegisterCompany';
 import CompanyDashboard from './pages/CompanyDashboard';

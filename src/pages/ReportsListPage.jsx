@@ -6,6 +6,7 @@ import { FaFileAlt, FaSearch } from 'react-icons/fa';
 import Filter from '../components/Filter';
 import Pagination from '../components/Pagination';
 import ReportDetailsModal from '../components/ReportDetailsModal';
+import { ArrowLeft } from 'lucide-react';
 
 export default function ReportsListPage() {
   const navigate = useNavigate();
@@ -106,6 +107,14 @@ export default function ReportsListPage() {
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden"
       >
+       <motion.button
+  whileHover={{ x: -5 }}
+  onClick={() => navigate('/faculty-dashboard')}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
+
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center text-white">
           <FaFileAlt size={48} className="mx-auto mb-4" />
