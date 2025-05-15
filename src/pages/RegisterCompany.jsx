@@ -2,10 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '../contexts/NotificationContext';
 import InputField from '../components/InputField';
+import { motion } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
+
 
 export default function RegisterCompanyPage() {
   const navigate = useNavigate();
   const { clearNotifications } = useNotifications();
+  const handleBack = () => {
+  navigate('/welcome'); 
+};
+
 
   useEffect(() => {
     clearNotifications();
@@ -254,6 +261,13 @@ if (showSuccess) {
   // Main form
   return (
     <div style={styles.page}>
+      <motion.button
+  whileHover={{ x: -5 }}
+  onClick={handleBack}
+  className="absolute top-6 left-6 flex items-center text-[#20368F] hover:underline z-10"
+>
+  <ArrowLeft className="mr-1 w-4 h-4" /> Back
+</motion.button>
       <form onSubmit={handleSubmit} noValidate style={styles.form}>
 
         {/* Title + pulsing dot */}

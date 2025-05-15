@@ -2,12 +2,18 @@ import React, { useContext, useState, useEffect } from 'react';
 import { ApplicationsContext } from '../contexts/ApplicationsContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+
+
 
 const statusColors = {
   'Internship Complete': 'bg-gray-100 text-gray-700',
 };
 
 function EvaluationsList() {
+   const handleBack = () => {
+  navigate('/dashboard'); 
+};
   const { applications, evaluations, setEvaluations } = useContext(ApplicationsContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [showFormId, setShowFormId] = useState(null);
@@ -76,6 +82,13 @@ function EvaluationsList() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <motion.div className="relative overflow-hidden">
+         <motion.button
+    whileHover={{ x: -5 }}
+    onClick={handleBack}
+    className="absolute top-6 left-6 z-20 flex items-center text-white hover:underline"
+  >
+    <ArrowLeft className="mr-1 w-5 h-5" /> Back
+  </motion.button>
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Internship Evaluations</h1>

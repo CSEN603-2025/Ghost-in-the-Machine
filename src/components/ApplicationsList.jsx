@@ -2,8 +2,13 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ApplicationsContext } from '../contexts/ApplicationsContext';
 import { motion } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
 
 function ApplicationsList({ posts }) {
+  const handleBack = () => {
+  navigate('/dashboard'); 
+};
+
   const navigate = useNavigate();
   const { applications, setApplications } = useContext(ApplicationsContext);
   useEffect(() => {
@@ -54,6 +59,13 @@ function ApplicationsList({ posts }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <motion.div className="relative overflow-hidden">
+         <motion.button
+    whileHover={{ x: -5 }}
+    onClick={handleBack}
+    className="absolute top-6 left-6 z-20 flex items-center text-white hover:underline"
+  >
+    <ArrowLeft className="mr-1 w-5 h-5" /> Back
+  </motion.button>
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Manage Student Applications</h1>

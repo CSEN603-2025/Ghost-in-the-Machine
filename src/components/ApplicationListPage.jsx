@@ -2,6 +2,8 @@ import React, { useState, useContext,useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ApplicationsContext } from '../contexts/ApplicationsContext';
 import { motion } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
+
 
 const statusColors = {
   Pending: 'bg-yellow-100 text-yellow-800',
@@ -12,6 +14,10 @@ const statusColors = {
 };
 
 const ApplicationListPage = () => {
+  const handleBack = () => {
+  navigate('/posts'); 
+};
+
   const { postId } = useParams();
   const navigate = useNavigate();
     useEffect(() => {
@@ -40,6 +46,14 @@ const ApplicationListPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="bg-[#00106A] text-white py-16 px-6 text-center">
+        <motion.button
+  whileHover={{ x: -5 }}
+  onClick={handleBack}
+  className="absolute top-6 left-6 z-20 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
+
         <h1 className="text-4xl font-bold mb-3">Applications for {readableTitle}</h1>
         <p className="text-xl text-blue-100">View and filter student applications</p>
       </div>
