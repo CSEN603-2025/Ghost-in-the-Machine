@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+
+import { motion, AnimatePresence } from 'framer-motion';
+
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Chart } from 'react-chartjs-2';
@@ -14,6 +17,9 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+
 
 ChartJS.register(
   CategoryScale,
@@ -104,6 +110,8 @@ const ManageReportsAndEvaluations = () => {
   const [popupOpen, setPopupOpen] = useState(false);
   const [filter, setFilter] = useState({ major: '', status: '', search: '' });
   const [activeTab, setActiveTab] = useState('reports');
+  const navigate = useNavigate();
+
 
   const filteredInternships = reports.filter(
     (r) =>
@@ -238,21 +246,27 @@ const ManageReportsAndEvaluations = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-gradient-to-r from-blue-800 to-indigo-900 text-white shadow-lg">
-        <div className="container mx-auto px-6 py-8">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold">Internship Management</h1>
-              <p className="text-blue-100 mt-2">Comprehensive reports and analytics dashboard</p>
-            </div>
-            <div className="flex space-x-4">
-              <button className="bg-white text-blue-800 px-4 py-2 rounded-lg font-medium hover:bg-blue-50 transition">
-                Export Data
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+  <header className="bg-gradient-to-r from-blue-800 to-indigo-900 text-white shadow-lg relative">
+  <div className="container mx-auto px-6 py-8 relative">
+    <div className="text-center">
+      <motion.button
+  whileHover={{ x: -5 }}
+  onClick={() => navigate('/scad-dashboard')}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
+      <h1 className="text-4xl font-bold">Internship Management</h1>
+      <p className="text-blue-100 mt-2">Comprehensive reports and analytics dashboard</p>
+    </div>
+    <div className="absolute right-6 top-1/2 transform -translate-y-1/2">
+      <button className="bg-white text-blue-800 px-4 py-2 rounded-lg font-medium hover:bg-blue-50 transition">
+        Export Data
+      </button>
+    </div>
+  </div>
+</header>
+
 
       <main className="container mx-auto px-6 py-8">
         <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">

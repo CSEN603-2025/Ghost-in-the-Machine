@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useToastNotifications } from '../hooks/useToastNotifications';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+
+
 
 const ManageCycle = () => {
   // Dummy current cycle dates
   const [startDate, setStartDate] = useState('2025-01-01');
   const [endDate, setEndDate] = useState('2025-06-30');
   const { success, error } = useToastNotifications();
+  const navigate = useNavigate();
+const handleBack = () => navigate('/scad-dashboard');
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,6 +38,14 @@ const ManageCycle = () => {
         transition={{ duration: 0.5 }}
         className="relative overflow-hidden"
       >
+        <motion.button
+  whileHover={{ x: -5 }}
+  onClick={handleBack}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
+
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center">
           <motion.h1

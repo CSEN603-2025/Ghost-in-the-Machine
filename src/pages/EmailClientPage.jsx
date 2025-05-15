@@ -35,12 +35,12 @@ const EmailClientPage = () => {
       {/* Header */}
       <div className="relative w-full bg-gradient-to-r from-[#00106A] to-[#0038A0] py-6 px-6 flex items-center justify-center">
       <motion.button
-  onClick={() => navigate(-1)}
+  onClick={() => navigate('/dashboard')}
   initial={{ opacity: 0, x: -10 }}
   animate={{ opacity: 1, x: 0 }}
-  whileHover={{ scale: 1.05, x: -4 }}
-  transition={{ duration: 0.3 }}
-  className="absolute left-6 top-1/2 transform -translate-y-1/2 flex items-center text-white hover:underline"
+  whileHover={{ x: -5 }}
+  transition={{ duration: 0.4, type: 'spring', stiffness: 200 }}
+  className="absolute left-6 top-1/2 -translate-y-1/2 flex items-center text-white hover:underline focus:outline-none"
 >
   <ArrowLeft className="mr-1 w-5 h-5" /> Back
 </motion.button>

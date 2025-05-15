@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
 
 const dummyStudents = [
   {
@@ -45,13 +46,13 @@ const ManageStudents = () => {
   const [selectedStatus, setSelectedStatus] = useState('All');
   const navigate = useNavigate();
 
-  const filteredStudents = selectedStatus === 'All' 
-    ? dummyStudents 
+  const filteredStudents = selectedStatus === 'All'
+    ? dummyStudents
     : dummyStudents.filter(s => s.internshipStatus === selectedStatus);
 
   const handleCardClick = (studentId, studentImage) => {
     navigate(`/students/${studentId}`, {
-      state: { 
+      state: {
         animateFrom: 'card',
         cardImage: studentImage
       }
@@ -60,7 +61,17 @@ const ManageStudents = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="bg-[#00106A] text-white py-16 px-6 text-center">
+      <div className="relative bg-[#00106A] text-white py-16 px-6 text-center">
+        
+        <motion.button
+  onClick={() => navigate('/scad-dashboard')}
+  whileHover={{ x: -5 }}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
+
+
         <h1 className="text-4xl font-bold mb-3">Student Management</h1>
         <p className="text-xl text-blue-100">Track student internship progress</p>
       </div>

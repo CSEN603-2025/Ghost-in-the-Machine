@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { FaBuilding, FaIndustry, FaUsers, FaMapMarkerAlt, FaEnvelope, FaPhone, FaGlobe, FaLinkedin, FaLaptopCode, FaLeaf, FaHeartbeat, FaSearch } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
 
 const sampleCompanies = [
   {
@@ -54,6 +57,7 @@ const industryIcons = {
 };
 
 const ManageCompanies = () => {
+  const navigate = useNavigate();
   const [companies, setCompanies] = useState(sampleCompanies);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('');
@@ -88,6 +92,18 @@ const ManageCompanies = () => {
         transition={{ duration: 0.5 }}
         className="relative overflow-hidden"
       >
+
+<motion.button
+  onClick={() => navigate('/scad-dashboard')}
+  initial={{ opacity: 0, x: -10 }}
+  animate={{ opacity: 1, x: 0 }}
+  whileHover={{ x: -5 }}
+  transition={{ duration: 0.4, type: 'spring', stiffness: 200 }}
+  className="absolute left-6 top-6 z-30 flex items-center text-white hover:underline focus:outline-none"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
+
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10">
           <div className="text-center">

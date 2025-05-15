@@ -6,8 +6,12 @@ import {
   FiCast, FiPhoneMissed
 } from 'react-icons/fi';
 import { useToastNotifications } from '../hooks/useToastNotifications';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 export default function VideoCallPage() {
+  const navigate = useNavigate();
+
   const [callStatus, setCallStatus] = useState('idle');
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [micEnabled, setMicEnabled] = useState(true);
@@ -113,6 +117,13 @@ export default function VideoCallPage() {
         transition={{ duration: 0.5 }}
         className="relative overflow-hidden"
       >
+        <motion.button
+  whileHover={{ x: -5 }}
+  onClick={() => navigate(-1)}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center text-white">
           <motion.h1
