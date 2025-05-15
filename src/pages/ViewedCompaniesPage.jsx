@@ -3,11 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FaClipboardList, FaSearch } from 'react-icons/fa';
+ import { ArrowLeft } from 'lucide-react';
 
 export default function ViewedCompaniesPage() {
   const [viewedCompanies, setViewedCompanies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+ 
+
 
   useEffect(() => {
     // Simulated data for demo purposes
@@ -36,6 +39,14 @@ export default function ViewedCompaniesPage() {
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden"
       >
+           <motion.button
+          whileHover={{ x: -5 }}
+          onClick={() => navigate(-1)}
+          className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+        >
+          <ArrowLeft className="mr-1 w-5 h-5" /> Back
+        </motion.button>
+        
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center text-white">
           <FaClipboardList size={48} className="mx-auto mb-4" />
@@ -54,6 +65,7 @@ export default function ViewedCompaniesPage() {
         transition={{ delay: 0.3 }}
         className="relative z-20 max-w-7xl mx-auto px-6 py-6 -mt-12 bg-white rounded-xl shadow-lg border border-gray-100 flex items-center gap-4"
       >
+
         <div className="relative flex-1 max-w-md">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <FaSearch className="text-gray-400" />
@@ -66,12 +78,6 @@ export default function ViewedCompaniesPage() {
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00D6A0]"
           />
         </div>
-        <button
-          onClick={() => navigate('/student')}
-          className="px-4 py-2 bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black rounded-full shadow hover:shadow-lg transition"
-        >
-          Home
-        </button>
       </motion.div>
 
       {/* Company Cards */}

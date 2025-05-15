@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import WorkshopDetailsModal from '../components/WorkshopDetailsModal';
-
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 const mockWorkshops = [
   {
     id: 1,
@@ -42,6 +43,7 @@ const cardVariants = {
 };
 
 export default function StudentWorkshopsPage() {
+  const navigate = useNavigate();
   const [workshops] = useState(mockWorkshops);
   const [selected, setSelected] = useState(null);
 
@@ -53,6 +55,13 @@ export default function StudentWorkshopsPage() {
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden"
       >
+         <motion.button
+  whileHover={{ x: -5 }}
+  onClick={() => navigate(-1)}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center text-white">
           <motion.h1

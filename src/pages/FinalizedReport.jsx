@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { ArrowLeft } from 'lucide-react';
 
 const FinalizedReport = () => {
   const [report, setReport] = useState({
@@ -38,6 +39,13 @@ const FinalizedReport = () => {
         animate={{ opacity: 1, y: 0 }}
         className="bg-gradient-to-r from-[#00D6A0] to-[#00106A] text-white py-16 mb-8"
       >
+          <motion.button
+          whileHover={{ x: -5 }}
+          onClick={() => navigate(-1)}
+          className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+        >
+          <ArrowLeft className="mr-1 w-5 h-5" /> Back
+        </motion.button>
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h1 className="text-5xl font-extrabold mb-4">📄 Finalized Report</h1>
           <p className="text-lg opacity-90">Review your report before final submission.</p>

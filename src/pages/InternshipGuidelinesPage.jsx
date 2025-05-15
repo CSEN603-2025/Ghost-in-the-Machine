@@ -1,7 +1,8 @@
 // src/pages/InternshipGuidelinesPage.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { motion } from "framer-motion";
+import { ArrowLeft } from 'lucide-react';
 const videoByMajor = {
   "Computer Engineering": "YnTEXW7RaYY",
   Business:               "YnTEXW7RaYY",
@@ -23,12 +24,13 @@ export default function InternshipGuidelinesPage() {
         <div className="w-1/3" />
         <h1 className="w-1/3 text-center text-2xl font-bold text-white">Internship Guidelines</h1>
         <div className="w-1/3 flex justify-end space-x-4">
-          <button
+           <motion.button
+            whileHover={{ x: -5 }}
             onClick={() => navigate(-1)}
-            className="bg-gradient-to-r from-[#00F0B5] to-[#00D6A0] text-black font-semibold px-4 py-2 rounded-full shadow hover:shadow-lg transition-all"
+            className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
           >
-            ← Back
-          </button>
+            <ArrowLeft className="mr-1 w-5 h-5" /> Back
+          </motion.button>
         </div>
       </div>
 

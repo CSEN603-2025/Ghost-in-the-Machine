@@ -1,6 +1,9 @@
 // src/pages/CompanyDetailsPage.jsx
 import React from "react";
 import { useParams, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const allSuggestedCompanies = [
   {
@@ -41,17 +44,13 @@ const allSuggestedCompanies = [
 const CompanyDetailsPage = () => {
   const { companyName } = useParams();
   const company = allSuggestedCompanies.find(c => c.name === companyName);
+  const navigate = useNavigate();
 
   if (!company) {
     return (
       <div className="min-h-screen bg-gray-50 p-8 flex items-center justify-center">
         <div className="text-center bg-white rounded-xl shadow-md p-6">
           <h2 className="text-xl font-bold mb-4">Company not found.</h2>
-          <Link to="/student">
-            <button className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white px-4 py-2 rounded-lg hover:opacity-90 transition">
-              Back to Dashboard
-            </button>
-          </Link>
         </div>
       </div>
     );
@@ -60,6 +59,13 @@ const CompanyDetailsPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-16">
       {/* Header */}
+        <motion.button
+  whileHover={{ x: -5 }}
+  onClick={() => navigate(-1)}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
       <div className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white py-14 mb-8">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h1 className="text-4xl font-extrabold">{company.name}</h1>
@@ -101,11 +107,6 @@ const CompanyDetailsPage = () => {
         </div>
 
         <div className="text-center pt-6">
-          <Link to="/student">
-            <button className="text-gray-600 underline hover:text-gray-800">
-              ← Back to Dashboard
-            </button>
-          </Link>
         </div>
       </div>
     </div>
