@@ -167,15 +167,6 @@ const CompanyDetailsPage = () => {
             </Link>
           </div>
         )}
-
-        <div className="text-center pt-6">
-          <button
-            onClick={() => navigate("/student-dashboard")}
-            className="text-gray-600 underline hover:text-gray-800"
-          >
-            ← Back to Dashboard
-          </button>
-        </div>
       </div>
     </div>
   );
