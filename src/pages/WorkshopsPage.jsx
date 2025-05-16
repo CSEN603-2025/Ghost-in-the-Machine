@@ -6,6 +6,8 @@ import { FaChalkboardTeacher, FaSearch } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import Toast from '../components/Toast';
+
 
 export default function WorkshopsPage() {
   const { workshops, addWorkshop, deleteWorkshop, updateWorkshop } = useWorkshops();
@@ -58,24 +60,14 @@ export default function WorkshopsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 relative">
 
-      {/* Notification Banner */}
-      {notification && (
-        <motion.div
-          initial={{ opacity: 0, y: -30 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -30 }}
-          className={`fixed top-6 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white z-50
-            ${
-              notification.type === 'success' ? 'bg-green-600' :
-              notification.type === 'error' ? 'bg-red-600' :
-              'bg-blue-600'
-            }
-          `}
-          role="alert"
-        >
-          {notification.message}
-        </motion.div>
-      )}
+     {notification && (
+  <Toast
+    message={notification.message}
+    type={notification.type}
+    containerProps={{ position: 'bottom-left' }}
+  />
+)}
+
 
       {/* Hero Section */}
       <motion.div
