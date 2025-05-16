@@ -3,10 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaFileAlt, FaSearch } from 'react-icons/fa';
+import { ArrowLeft } from 'lucide-react';
+import { jsPDF } from 'jspdf';
+import { useToastNotifications } from '../hooks/useToastNotifications';
 import Filter from '../components/Filter';
 import Pagination from '../components/Pagination';
-import { ArrowLeft } from 'lucide-react';
-import { useToastNotifications } from '../hooks/useToastNotifications';
 
 export default function ReportsListPage() {
   const navigate = useNavigate();
@@ -28,13 +29,6 @@ export default function ReportsListPage() {
   const [selectedReport, setSelectedReport] = useState(null);
   const [clarification, setClarification] = useState('');
 
-  // Courses by major (for context if you need later)
-  const majorCourses = {
-    'Computer Science': ['Data Structures', 'Algorithms', 'OS', 'DB Systems'],
-    'Graphic Design': ['Typography', 'UI/UX', 'Illustration'],
-    'Business Administration': ['Accounting', 'Marketing', 'Management']
-  };
-
   // Load mock including flagged & rejected
   useEffect(() => {
     const mock = [
@@ -46,7 +40,7 @@ export default function ReportsListPage() {
         submissionDate: '2025-03-15',
         status: 'Flagged',
         title: 'Internship Report 1',
-        reportContent: 'Content of report 1...',
+        reportContent: 'Detailed body of report 1 goes here...',
         companyName: 'TechCorp',
         clarification: ''
       },
@@ -58,7 +52,7 @@ export default function ReportsListPage() {
         submissionDate: '2025-03-20',
         status: 'Rejected',
         title: 'Internship Report 2',
-        reportContent: 'Content of report 2...',
+        reportContent: 'Detailed body of report 2 goes here...',
         companyName: 'DesignCo',
         clarification: ''
       },
@@ -70,7 +64,7 @@ export default function ReportsListPage() {
         submissionDate: '2025-04-01',
         status: 'Accepted',
         title: 'Internship Report 3',
-        reportContent: 'Content of report 3...',
+        reportContent: 'Detailed body of report 3 goes here...',
         companyName: 'BizPros',
         clarification: ''
       }
@@ -99,11 +93,28 @@ export default function ReportsListPage() {
     setCurrentPage(1);
   };
 
+  // Generate a PDF for a given report
   const downloadPdf = id => {
-    const a = document.createElement('a');
-    a.href = `/api/reports/${id}/download`;
-    a.download = `report-${id}.pdf`;
-    a.click();
+    const rep = reports.find(r => r.id === id);
+    if (!rep) return;
+    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+    doc.setFontSize(18);
+    doc.text(rep.title, 40, 60);
+    doc.setFontSize(12);
+    doc.text(`Student: ${rep.studentName}`, 40, 90);
+    doc.text(`Major: ${rep.major}`, 40, 110);
+    doc.text(`Semester: ${rep.semester}`, 40, 130);
+    doc.text(`Company: ${rep.companyName}`, 40, 150);
+    doc.text(`Submission Date: ${rep.submissionDate}`, 40, 170);
+    doc.text(`Status: ${rep.status}`, 40, 190);
+    doc.text('--- Report Content ---', 40, 220);
+    // split content into lines that fit page
+    const lines = doc.splitTextToSize(rep.reportContent, 500);
+    doc.text(lines, 40, 240);
+    doc.text('--- Clarification ---', 40, 240 + lines.length * 14 + 20);
+    const clarLines = doc.splitTextToSize(rep.clarification || 'None provided.', 500);
+    doc.text(clarLines, 40, 260 + lines.length * 14 + 20);
+    doc.save(`report-${id}.pdf`);
   };
 
   // Pagination slicing
