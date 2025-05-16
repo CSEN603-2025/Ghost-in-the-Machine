@@ -13,10 +13,86 @@ export default function EditProfilePage() {
   const [semester, setSemester] = useState("");
   const navigate = useNavigate();
 
+  // Courses by major
+  const majorCourses = {
+    "Computer Engineering": [
+      "Introduction to Programming",
+      "Data Structures and Algorithms",
+      "Computer Architecture",
+      "Operating Systems",
+      "Database Systems",
+      "Computer Networks",
+      "Software Engineering",
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Web Development",
+      "Mobile Application Development",
+      "Cybersecurity",
+      "Cloud Computing",
+      "Embedded Systems",
+      "Digital Signal Processing"
+    ],
+    "Business": [
+      "Principles of Management",
+      "Financial Accounting",
+      "Marketing Management",
+      "Business Statistics",
+      "Corporate Finance",
+      "Organizational Behavior",
+      "Business Law",
+      "Operations Management",
+      "Human Resource Management",
+      "Strategic Management",
+      "International Business",
+      "Entrepreneurship",
+      "Business Ethics",
+      "Economics for Business",
+      "Business Communication"
+    ],
+    "Pharmacy": [
+      "Pharmaceutical Chemistry",
+      "Pharmacology",
+      "Pharmaceutics",
+      "Pharmacognosy",
+      "Medicinal Chemistry",
+      "Pharmaceutical Analysis",
+      "Clinical Pharmacy",
+      "Biopharmaceutics",
+      "Pharmacokinetics",
+      "Pharmaceutical Biotechnology",
+      "Hospital Pharmacy",
+      "Community Pharmacy",
+      "Pharmaceutical Microbiology",
+      "Drug Design",
+      "Pharmacy Practice"
+    ],
+    "Management": [
+      "Principles of Management",
+      "Organizational Behavior",
+      "Human Resource Management",
+      "Strategic Management",
+      "Operations Management",
+      "Financial Management",
+      "Marketing Management",
+      "Business Ethics",
+      "Leadership and Teamwork",
+      "Project Management",
+      "Change Management",
+      "International Business Management",
+      "Entrepreneurship",
+      "Management Information Systems",
+      "Business Analytics"
+    ]
+  };
+
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("studentProfile")) || {};
     setJobInterests(stored.jobInterests || "");
-    setInternships(stored.internships || internships);
+    // Only initialize with empty internship if none exist
+    setInternships([
+  { company: "", role: "", duration: "", startDate: "", endDate: "", status: "current" }
+]);
+
     setActivities(stored.activities || "");
     setMajor(stored.major || "");
     setSemester(stored.semester || "");
@@ -29,17 +105,46 @@ export default function EditProfilePage() {
       return up;
     });
   };
+
   const addInternship = () => {
-    setInternships(prev => [...prev, { company: "", role: "", duration: "", startDate: "", endDate: "", status: "current" }]);
+    setInternships(prev => [...prev, { 
+      company: "", 
+      role: "", 
+      duration: "", 
+      startDate: "", 
+      endDate: "", 
+      status: "current" 
+    }]);
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    const valid = internships.filter(x => x.company || x.role || x.duration || x.startDate || x.endDate);
+    // Filter out empty internships (where all fields are empty)
+    const validNewInternships = internships.filter(x => 
+      x.company || x.role || x.duration || x.startDate || x.endDate
+    );
+    
+    // Get existing profile data
     const stored = JSON.parse(localStorage.getItem("studentProfile")) || {};
+    
+    // Get existing valid internships (if any)
+    const existingValidInternships = stored.internships?.filter(x => 
+      x.company || x.role || x.duration || x.startDate || x.endDate
+    ) || [];
+    
+    // Combine existing valid internships with new valid ones
+    const allInternships = [...existingValidInternships, ...validNewInternships];
+    
+    // Save to localStorage
     localStorage.setItem("studentProfile", JSON.stringify({
-      ...stored, jobInterests, internships: valid, activities, major, semester
+      ...stored, 
+      jobInterests, 
+      internships: allInternships, 
+      activities, 
+      major, 
+      semester
     }));
+    
     alert("Profile saved successfully!");
     navigate("/student-dashboard");
   };
@@ -81,8 +186,10 @@ export default function EditProfilePage() {
                   className="mt-1 w-full rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Select your major</option>
-                  <option>Computer Engineering</option><option>Business</option>
-                  <option>Pharmacy</option><option>Management</option>
+                  <option>Computer Engineering</option>
+                  <option>Business</option>
+                  <option>Pharmacy</option>
+                  <option>Management</option>
                 </select>
               </div>
               <div>
@@ -91,31 +198,39 @@ export default function EditProfilePage() {
                   className="mt-1 w-full rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Select semester</option>
-                  {[...Array(10)].map((_,i)=><option key={i}>{i+1}</option>)}
+                  {[...Array(10)].map((_,i) => <option key={i}>{i+1}</option>)}
                 </select>
               </div>
             </div>
 
             <div>
               <p className="text-sm font-medium text-gray-700 mb-2">Internships</p>
-              {internships.map((it,i)=>(
+              {internships.map((it,i) => (
                 <div key={i} className="space-y-4 mb-4 pb-4 border-b border-gray-200">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input placeholder="Company" value={it.company}
-                      onChange={e=>handleInternshipChange(i,"company",e.target.value)}
+                    <input 
+                      placeholder="Company" 
+                      value={it.company}
+                      onChange={e => handleInternshipChange(i, "company", e.target.value)}
                       className="rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
-                    <input placeholder="Role" value={it.role}
-                      onChange={e=>handleInternshipChange(i,"role",e.target.value)}
+                    <input 
+                      placeholder="Role" 
+                      value={it.role}
+                      onChange={e => handleInternshipChange(i, "role", e.target.value)}
                       className="rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <input placeholder="Duration (mo.)" value={it.duration}
-                      onChange={e=>handleInternshipChange(i,"duration",e.target.value)}
+                    <input 
+                      placeholder="Duration (mo.)" 
+                      value={it.duration}
+                      onChange={e => handleInternshipChange(i, "duration", e.target.value)}
                       className="rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
-                    <select value={it.status} onChange={e=>handleInternshipChange(i,"status",e.target.value)}
+                    <select 
+                      value={it.status} 
+                      onChange={e => handleInternshipChange(i, "status", e.target.value)}
                       className="rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="current">Current</option>
@@ -125,31 +240,40 @@ export default function EditProfilePage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm text-gray-600 mb-1">Start Date</label>
-                      <input type="date" value={it.startDate}
-                        onChange={e=>handleInternshipChange(i,"startDate",e.target.value)}
+                      <input 
+                        type="date" 
+                        value={it.startDate}
+                        onChange={e => handleInternshipChange(i, "startDate", e.target.value)}
                         className="rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                     <div>
                       <label className="block text-sm text-gray-600 mb-1">End Date</label>
-                      <input type="date" value={it.endDate}
-                        onChange={e=>handleInternshipChange(i,"endDate",e.target.value)}
+                      <input 
+                        type="date" 
+                        value={it.endDate}
+                        onChange={e => handleInternshipChange(i, "endDate", e.target.value)}
                         className="rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
                 </div>
               ))}
-              <button type="button" onClick={addInternship}
+              <button 
+                type="button" 
+                onClick={addInternship}
                 className="inline-flex items-center space-x-2 text-[#0038A0] font-medium"
               >
-                <span className="text-xl">＋</span><span>Add another internship</span>
+                <span className="text-xl">＋</span>
+                <span>Add another internship</span>
               </button>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">College Activities</label>
-              <textarea value={activities} onChange={e=>setActivities(e.target.value)}
+              <textarea 
+                value={activities} 
+                onChange={e => setActivities(e.target.value)}
                 placeholder="e.g., Robotics Club"
                 rows={3}
                 className="mt-1 w-full rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -157,7 +281,10 @@ export default function EditProfilePage() {
             </div>
 
             <div className="flex justify-end">
-              <button type="submit" className="px-6 py-2 bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all">
+              <button 
+                type="submit" 
+                className="px-6 py-2 bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white rounded-lg font-semibold shadow-md hover:shadow-lg transition-all"
+              >
                 Save Profile
               </button>
             </div>

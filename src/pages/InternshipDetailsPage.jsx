@@ -9,6 +9,8 @@ const internships = [
     company: "Valeo",
     duration: "3 Months",
     paid: true,
+    expectedSalary: "$1,200 - $2,000/month",
+    requiredSkills: ["React", "JavaScript", "HTML/CSS", "Redux"],
     industry: "Technology",
     description: "Work with React to build modern UIs.",
     location: "Cairo",
@@ -19,6 +21,7 @@ const internships = [
     company: "IBM",
     duration: "2 Months",
     paid: false,
+    requiredSkills: ["Python", "Machine Learning", "Pandas", "SQL"],
     industry: "Technology",
     description: "Analyze business data and trends using AI tools.",
     location: "Cairo",
@@ -29,6 +32,8 @@ const internships = [
     company: "Instabug",
     duration: "3 Months",
     paid: true,
+    expectedSalary: "$1,500 - $2,500/month",
+    requiredSkills: ["React Native", "iOS/Android", "JavaScript", "Firebase"],
     industry: "Technology",
     description: "Develop and test mobile applications.",
     location: "Giza",
@@ -79,10 +84,26 @@ const InternshipDetailsPage = () => {
             <p><strong>📍 Location:</strong> {internship.location}</p>
             <p><strong>⏱️ Duration:</strong> {internship.duration}</p>
             <p><strong>💰 Paid:</strong> {internship.paid ? "Yes" : "No"}</p>
+            {internship.paid && (
+              <p><strong>💵 Expected Salary:</strong> {internship.expectedSalary}</p>
+            )}
           </div>
           <div className="mt-6">
             <h3 className="text-xl font-semibold mb-2">📄 Description</h3>
             <p className="text-gray-600">{internship.description}</p>
+          </div>
+          <div className="mt-6">
+            <h3 className="text-xl font-semibold mb-2">🛠️ Required Skills</h3>
+            <div className="flex flex-wrap gap-2">
+              {internship.requiredSkills.map((skill, index) => (
+                <span 
+                  key={index} 
+                  className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
           </div>
           <button
             onClick={handleApplyClick}

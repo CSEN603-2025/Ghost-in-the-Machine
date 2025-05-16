@@ -1,57 +1,51 @@
 // src/pages/CompanyDetailsPage.jsx
 import React from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
 
 const allSuggestedCompanies = [
-  {
-    name: "Instabug",
-    industry: "Technology",
-    size: "Medium (51–100 employees)",
-    email: "contact@instabug.com",
-    phone: "+1 555-123-4567",
-    address: "123 Cairo Street, Egypt",
-    imageUrl: "/images/instabug.png",
-    documentName: "Instabug_Profile.pdf",
-    recommendations: 4.8,
-  },
-  {
-    name: "Valeo",
-    industry: "Engineering",
-    size: "Corporate (>500 employees)",
-    email: "hr@valeo.com",
-    phone: "+1 555-111-2222",
-    address: "56 Smart Village, Giza, Egypt",
-    imageUrl: "/images/valeo.png",
-    documentName: "Valeo_Cert.pdf",
-    recommendations: 4.5,
-  },
-  {
-    name: "IBM",
-    industry: "Technology",
-    size: "Corporate (>500 employees)",
-    email: "contact@ibm.com",
-    phone: "+1 555-222-3333",
-    address: "Tech Park Avenue, Cairo",
-    imageUrl: "/images/ibm.png",
-    documentName: "IBM_Overview.pdf",
-    recommendations: 4.0,
-  },
+  // ... keep your existing company list ...
 ];
 
 const CompanyDetailsPage = () => {
   const { companyName } = useParams();
-  const company = allSuggestedCompanies.find(c => c.name === companyName);
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Get internships from localStorage
+  const storedProfile = JSON.parse(localStorage.getItem("studentProfile")) || {};
+  const userInternships = storedProfile.internships || [];
+  
+  // Find user's completed internship with this company
+  const userInternship = userInternships.find(i => 
+    i.company === companyName && i.status === "completed"
+  );
 
-  if (!company) {
+  // Find company in predefined list or create from internship data
+  const predefinedCompany = allSuggestedCompanies.find(c => c.name === companyName);
+  const company = predefinedCompany || {
+    name: companyName,
+    industry: userInternship?.industry || "Unknown",
+    size: userInternship?.size || "Unknown",
+    email: "",
+    phone: "",
+    address: "",
+    imageUrl: "",
+    documentName: "",
+    recommendations: 0
+  };
+
+  // Redirect if no completed internship found
+  if (!userInternship) {
     return (
       <div className="min-h-screen bg-gray-50 p-8 flex items-center justify-center">
         <div className="text-center bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-xl font-bold mb-4">Company not found.</h2>
-          <Link to="/student">
-            <button className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white px-4 py-2 rounded-lg hover:opacity-90 transition">
-              Back to Dashboard
-            </button>
-          </Link>
+          <h2 className="text-xl font-bold mb-4">No completed internship found with this company</h2>
+          <button 
+            onClick={() => navigate("/student-dashboard")}
+            className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white px-4 py-2 rounded-lg hover:opacity-90 transition"
+          >
+            Back to Dashboard
+          </button>
         </div>
       </div>
     );
@@ -80,32 +74,53 @@ const CompanyDetailsPage = () => {
         <div className="space-y-2 text-gray-700">
           <p><strong>Industry:</strong> {company.industry}</p>
           <p><strong>Company Size:</strong> {company.size}</p>
-          <p><strong>Email:</strong> {company.email}</p>
-          <p><strong>Phone:</strong> {company.phone}</p>
-          <p><strong>Address:</strong> {company.address}</p>
-          <p><strong>Recommendations:</strong> {company.recommendations} / 5</p>
-          <p><strong>Document:</strong> {company.documentName}</p>
+          {company.email && <p><strong>Email:</strong> {company.email}</p>}
+          {company.phone && <p><strong>Phone:</strong> {company.phone}</p>}
+          {company.address && <p><strong>Address:</strong> {company.address}</p>}
+          {company.recommendations > 0 && (
+            <p><strong>Recommendations:</strong> {company.recommendations} / 5</p>
+          )}
+          {company.documentName && <p><strong>Document:</strong> {company.documentName}</p>}
+          
+          {/* Display user's internship details */}
+          <div className="pt-4 border-t border-gray-200 mt-4">
+            <h3 className="font-semibold mb-2">Your Internship Details:</h3>
+            <p><strong>Role:</strong> {userInternship.role}</p>
+            <p><strong>Duration:</strong> {userInternship.duration} months</p>
+            <p><strong>Period:</strong> {userInternship.startDate} to {userInternship.endDate}</p>
+          </div>
         </div>
 
-        <div className="flex justify-center space-x-4 pt-6">
-          <Link to="/student/report">
-            <button className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white px-5 py-2 rounded-lg hover:opacity-90 transition">
-              Create Report
-            </button>
+        <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6">
+          <Link 
+            to="/student/report" 
+            state={{ 
+              company: company.name,
+              internship: userInternship
+            }}
+            className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white px-5 py-2 rounded-lg hover:opacity-90 transition text-center"
+          >
+            Create Report
           </Link>
-          <Link to="/student/evaluation">
-            <button className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white px-5 py-2 rounded-lg hover:opacity-90 transition">
-              Create Evaluation
-            </button>
+          <Link 
+            to="/student/evaluation"
+            state={{ 
+              company: company.name,
+              internship: userInternship
+            }}
+            className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white px-5 py-2 rounded-lg hover:opacity-90 transition text-center"
+          >
+            Create Evaluation
           </Link>
         </div>
 
         <div className="text-center pt-6">
-          <Link to="/student">
-            <button className="text-gray-600 underline hover:text-gray-800">
-              ← Back to Dashboard
-            </button>
-          </Link>
+          <button 
+            onClick={() => navigate("/student-dashboard")}
+            className="text-gray-600 underline hover:text-gray-800"
+          >
+            ← Back to Dashboard
+          </button>
         </div>
       </div>
     </div>
