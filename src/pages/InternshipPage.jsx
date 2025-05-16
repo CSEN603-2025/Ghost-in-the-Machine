@@ -29,8 +29,67 @@ const InternshipPage = () => {
   }, []);
 
   const loadInternships = () => {
+    // First check if there are any internships in localStorage
     const stored = JSON.parse(localStorage.getItem("studentProfile")) || {};
-    const storedInternships = stored.internships || [];
+    let storedInternships = stored.internships || [];
+    
+    // If no internships in localStorage, use the dummy data
+    if (storedInternships.length === 0) {
+      storedInternships = [
+        {
+          id: "1",
+          company: "TechCorp",
+          role: "Software Developer Intern",
+          duration: "3",
+          status: "completed",
+          startDate: "2023-05-15",
+          endDate: "2023-08-15"
+        },
+        {
+          id: "2",
+          company: "DataSystems",
+          role: "Data Analyst Intern",
+          duration: "2",
+          status: "completed",
+          startDate: "2023-01-10",
+          endDate: "2023-03-10"
+        },
+        {
+          id: "3",
+          company: "WebSolutions",
+          role: "Frontend Developer Intern",
+          duration: "4",
+          status: "current",
+          startDate: "2023-09-01",
+          endDate: "2023-12-31"
+        },
+        {
+          id: "4",
+          company: "CloudNine",
+          role: "DevOps Intern",
+          duration: "1",
+          status: "completed",
+          startDate: "2022-11-01",
+          endDate: "2022-12-01"
+        },
+        {
+          id: "5",
+          company: "AI Innovations",
+          role: "Machine Learning Intern",
+          duration: "6",
+          status: "current",
+          startDate: "2023-06-01",
+          endDate: "2023-12-01"
+        }
+      ];
+      
+      // Save the dummy data to localStorage
+      localStorage.setItem("studentProfile", JSON.stringify({
+        ...stored,
+        internships: storedInternships
+      }));
+    }
+    
     setInternships(storedInternships);
     setFilteredInternships(storedInternships);
 
