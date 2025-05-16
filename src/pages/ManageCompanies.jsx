@@ -321,8 +321,7 @@ const ManageCompanies = () => {
                   <h3 className="font-semibold text-lg mb-2 text-gray-800">About the Company</h3>
                   <p className="text-gray-600 mb-4">{selectedCompany.description}</p>
                   <p className="text-gray-600">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus laoreet ipsum eu purus facilisis, 
-                    sed iaculis dolor ullamcorper. Pellentesque ac mi vehicula, feugiat metus non, tincidunt nunc.
+                    Browse and manage all company applications submitted to the SCAD system. Review details, verify documents, and accept or reject entries with ease.
                   </p>
                 </div>
 
