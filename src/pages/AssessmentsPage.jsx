@@ -119,7 +119,7 @@ export default function AssessmentsPage() {
             transition={{ delay: 0.2 }}
             className="text-4xl md:text-5xl font-bold mb-4"
           >
-            📝 Online Assessments
+             Online Assessments
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}

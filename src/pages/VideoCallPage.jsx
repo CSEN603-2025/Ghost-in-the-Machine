@@ -131,7 +131,7 @@ export default function VideoCallPage() {
             transition={{ delay: 0.2 }}
             className="text-4xl md:text-5xl font-bold mb-4"
           >
-            📞 Career Guidance Appointments
+             Career Guidance Appointments
           </motion.h1>
           <motion.p
             variants={variants}

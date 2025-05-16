@@ -70,7 +70,7 @@ export default function StudentWorkshopsPage() {
             animate="visible"
             className="text-4xl md:text-5xl font-bold mb-4"
           >
-            📅 Upcoming Workshops
+             Upcoming Workshops
           </motion.h1>
           <motion.p
             variants={cardVariants}

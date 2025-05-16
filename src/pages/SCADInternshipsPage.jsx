@@ -83,7 +83,7 @@ export default function ScadInternshipsPage() {
         
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-4xl mx-auto px-6 py-20 relative z-10 text-center text-white">
-          <h1 className="text-5xl font-extrabold mb-4">🎓 SCAD Internships</h1>
+          <h1 className="text-5xl font-extrabold mb-4">SCAD Internships</h1>
           <p className="text-lg opacity-90">
             Browse and filter all available internships across industries and durations.
           </p>

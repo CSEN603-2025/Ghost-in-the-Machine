@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Toast from '../components/Toast';
 
 const ApplicationPage = () => {
   const { id } = useParams();
@@ -9,6 +10,8 @@ const ApplicationPage = () => {
     coverLetter: null,
     certificates: null,
   });
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState(''); // Add toast type state
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleFileChange = (e, docType) => {
@@ -50,7 +53,16 @@ const ApplicationPage = () => {
     localStorage.setItem("applications", JSON.stringify(currentApplications));
 
     setIsSubmitted(true);
-    alert("Your application has been submitted!");
+
+    // Show toast instead of alert
+    setToastMessage('Your application has been submitted!');
+    setToastType('success');
+
+    // Optionally clear the toast after a few seconds
+    setTimeout(() => {
+      setToastMessage('');
+      setToastType('');
+    }, 4000);
   };
 
   const handleGoBack = () => {
@@ -62,10 +74,20 @@ const ApplicationPage = () => {
       {/* Header */}
       <div className="bg-gradient-to-r from-[#00D6A0] to-[#00106A] text-white py-14 mb-8">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h1 className="text-4xl font-extrabold">📤 Internship Application</h1>
+          <h1 className="text-4xl font-extrabold"> Internship Application</h1>
           <p className="text-lg mt-2 opacity-90">Upload your documents and apply now!</p>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setToastMessage('')}
+             containerProps={{ position: "bottom-left" }} 
+        />
+      )}
 
       {/* Form */}
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-8">
@@ -77,7 +99,7 @@ const ApplicationPage = () => {
 
         {isSubmitted ? (
           <div className="text-green-600 text-center font-medium">
-            🎉 Congratulations! You are now one step closer to your future career.
+            Congratulations! You are now one step closer to your future career.
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">

@@ -1,4 +1,3 @@
-// src/pages/InternshipPage.jsx
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -21,8 +20,9 @@ const InternshipPage = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [startDateFilter, setStartDateFilter] = useState("");
   const [endDateFilter, setEndDateFilter] = useState("");
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [isProStudent, setIsProStudent] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   useEffect(() => {
     loadInternships();
@@ -41,21 +41,26 @@ const InternshipPage = () => {
   };
 
   const clearInternships = () => {
-    if (window.confirm("Are you sure you want to clear all internships? This cannot be undone.")) {
-      const stored = JSON.parse(localStorage.getItem("studentProfile")) || {};
-      localStorage.setItem("studentProfile", JSON.stringify({
-        ...stored,
-        internships: []
-      }));
-      loadInternships();
-    }
+    setShowConfirmModal(true);
   };
 
-  // Original filter functionality
-   const filterInternships = (term, status, start, end) => {
+  const confirmClearInternships = () => {
+    const stored = JSON.parse(localStorage.getItem("studentProfile")) || {};
+    localStorage.setItem("studentProfile", JSON.stringify({
+      ...stored,
+      internships: []
+    }));
+    loadInternships();
+    setShowConfirmModal(false);
+  };
+
+  const cancelClearInternships = () => {
+    setShowConfirmModal(false);
+  };
+
+  const filterInternships = (term, status, start, end) => {
     let f = internships;
 
-    // Apply search filter
     if (term) {
       f = f.filter(i =>
         (i.company && i.company.toLowerCase().includes(term.toLowerCase())) ||
@@ -63,12 +68,10 @@ const InternshipPage = () => {
       );
     }
 
-    // Apply status filter using internship.status directly
     if (status !== "all") {
       f = f.filter(i => i.status === status);
     }
 
-    // Apply date filters
     if (start) {
       const startDate = new Date(start);
       f = f.filter(i => {
@@ -113,21 +116,19 @@ const InternshipPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Hero */}
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="relative overflow-hidden"
       >
-
-      <motion.button
-  whileHover={{ x: -5 }}
-  onClick={() => navigate(-1)}
-  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
->
-  <ArrowLeft className="mr-1 w-5 h-5" /> Back
-</motion.button>
+        <motion.button
+          whileHover={{ x: -5 }}
+          onClick={() => navigate(-1)}
+          className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+        >
+          <ArrowLeft className="mr-1 w-5 h-5" /> Back
+        </motion.button>
 
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-4xl mx-auto px-6 py-20 relative z-10 text-center text-white">
@@ -157,7 +158,6 @@ const InternshipPage = () => {
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent" />
       </motion.div>
 
-      {/* Filters Panel */}
       <div className="max-w-4xl mx-auto px-6 -mt-10 relative z-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -209,7 +209,6 @@ const InternshipPage = () => {
         </motion.div>
       </div>
 
-      {/* Internship Cards */}
       <div className="max-w-4xl mx-auto px-6 mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 relative z-20">
         {filteredInternships.length === 0 ? (
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="col-span-full text-center text-gray-500 py-12">
@@ -261,6 +260,29 @@ const InternshipPage = () => {
           ))
         )}
       </div>
+
+      {/* Confirm Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 shadow-lg text-center">
+            <p className="text-lg font-semibold mb-4">Are you sure you want to clear all internships?</p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={confirmClearInternships}
+                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              >
+                Yes
+              </button>
+              <button
+                onClick={cancelClearInternships}
+                className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100"
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
