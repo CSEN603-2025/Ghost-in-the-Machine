@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft } from 'lucide-react';
-import Toast from '../components/Toast';  // Make sure to import your Toast component
+import Toast from '../components/Toast';  // تأكد وجود مكون Toast
 
 export default function StudentEvaluation() {
   const [evaluation, setEvaluation] = useState(null);
@@ -26,16 +26,18 @@ export default function StudentEvaluation() {
     }
   }, []);
 
-  const handleSubmit = () => {
+  const validateFields = () => {
     const errors = {};
-    if (!companyName.trim()) {
-      errors.companyName = "Please enter the company name.";
-    }
+    if (!companyName.trim()) errors.companyName = "Please enter the company name.";
+    if (!text.trim()) errors.text = "Evaluation text is required.";
+    if (recommend !== "yes" && recommend !== "no") errors.recommend = "Please select recommend or not.";
 
-    if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
-      return;
-    }
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (!validateFields()) return;
 
     const existing = JSON.parse(localStorage.getItem("studentEvaluations")) || {};
     if (existing[companyName] && !evaluation) {
@@ -47,7 +49,7 @@ export default function StudentEvaluation() {
     }
 
     if (evaluation) {
-      // Update existing evaluation
+      // تحديث التقييم
       const updatedEval = { text, recommend, companyName };
       existing[companyName] = updatedEval;
       localStorage.setItem("studentEvaluations", JSON.stringify(existing));
@@ -56,7 +58,7 @@ export default function StudentEvaluation() {
       setToastMessage("Evaluation updated successfully.");
       setToastType("success");
     } else {
-      // Show confirm modal for new submission
+      // تأكيد الإرسال الجديد
       setShowConfirmModal(true);
     }
   };
@@ -111,7 +113,7 @@ export default function StudentEvaluation() {
         </motion.button>
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-4xl mx-auto px-6 py-20 relative z-10 text-center text-white">
-          <h1 className="text-5xl font-extrabold mb-4">Company Evaluation</h1>
+          <h1 className="text-5xl font-extrabold mb-4"> Company Evaluation</h1>
           <p className="text-xl opacity-90">
             Share your experience and help future interns decide.
           </p>
@@ -184,11 +186,17 @@ export default function StudentEvaluation() {
                 </label>
                 <textarea
                   value={text}
-                  onChange={(e) => setText(e.target.value)}
+                  onChange={(e) => {
+                    setText(e.target.value);
+                    setFieldErrors({...fieldErrors, text: ""});
+                  }}
                   placeholder="Write your evaluation..."
                   rows={4}
                   className="mt-1 w-full rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
+                {fieldErrors.text && (
+                  <p className="mt-1 text-sm text-red-600">{fieldErrors.text}</p>
+                )}
               </div>
               <div className="flex items-center space-x-6">
                 <label className="flex items-center space-x-2">
@@ -197,7 +205,10 @@ export default function StudentEvaluation() {
                     name="recommend"
                     value="yes"
                     checked={recommend === "yes"}
-                    onChange={() => setRecommend("yes")}
+                    onChange={() => {
+                      setRecommend("yes");
+                      setFieldErrors({...fieldErrors, recommend: ""});
+                    }}
                     className="form-radio text-blue-600"
                   />
                   <span>Recommend</span>
@@ -208,12 +219,18 @@ export default function StudentEvaluation() {
                     name="recommend"
                     value="no"
                     checked={recommend === "no"}
-                    onChange={() => setRecommend("no")}
+                    onChange={() => {
+                      setRecommend("no");
+                      setFieldErrors({...fieldErrors, recommend: ""});
+                    }}
                     className="form-radio text-blue-600"
                   />
                   <span>Don't Recommend</span>
                 </label>
               </div>
+              {fieldErrors.recommend && (
+                <p className="mt-1 text-sm text-red-600">{fieldErrors.recommend}</p>
+              )}
               <div className="flex justify-end">
                 <button
                   onClick={handleSubmit}
