@@ -1,6 +1,8 @@
 // src/pages/MyApplicationsPage.jsx
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 const hardcodedInternships = [
   { id: 1, title: "Frontend Developer Intern", company: "TechCorp", duration: "3 Months", status: "accepted", startDate: "2025-01-01", endDate: "2025-04-01" },
@@ -17,6 +19,7 @@ const statusStyles = {
 };
 
 export default function MyApplicationsPage() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Hero */}
@@ -25,6 +28,13 @@ export default function MyApplicationsPage() {
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden"
       >
+          <motion.button
+          whileHover={{ x: -5 }}
+          onClick={() => navigate(-1)}
+          className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+        >
+          <ArrowLeft className="mr-1 w-5 h-5" /> Back
+        </motion.button>
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-4xl mx-auto px-6 py-20 relative z-10 text-center text-white">
           <h1 className="text-5xl font-extrabold mb-4">📝 My Applications</h1>

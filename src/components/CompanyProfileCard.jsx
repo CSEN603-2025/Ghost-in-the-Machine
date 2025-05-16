@@ -30,7 +30,7 @@ function CompanyProfileCard({ companyInfo }) {
         </div>
         <div className="text-center">
           <p className="text-xl md:text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-300">{info.name}</p>
-          <p className="text-sm md:text-base text-gray-600">{info.industry}</p>
+         
         </div>
       </div>
 

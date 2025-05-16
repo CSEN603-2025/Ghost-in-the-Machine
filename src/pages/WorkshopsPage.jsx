@@ -6,12 +6,18 @@ import WorkshopList from '../components/WorkshopList';
 import { FaChalkboardTeacher, FaSearch } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+
 
 
 export default function WorkshopsPage({ onNotify }) {
   const { workshops, addWorkshop, deleteWorkshop, updateWorkshop } = useWorkshops();
   const [editWorkshop, setEditWorkshop] = useState(null);
   const [search, setSearch] = useState('');
+  const navigate = useNavigate();
+
+
 
   const handleAdd = (workshop) => {
     addWorkshop(workshop);
@@ -53,6 +59,14 @@ export default function WorkshopsPage({ onNotify }) {
         transition={{ duration: 0.5 }}
         className="relative overflow-hidden mb-10"
       >
+        <motion.button
+  whileHover={{ x: -5 }}
+  onClick={() => navigate('/scad-dashboard')}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
+
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10">
           <div className="text-center">

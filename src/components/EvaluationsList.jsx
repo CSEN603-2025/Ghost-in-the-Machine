@@ -2,12 +2,23 @@ import React, { useContext, useState, useEffect } from 'react';
 import { ApplicationsContext } from '../contexts/ApplicationsContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import Toast from '../components/Toast';
+
+
+
 
 const statusColors = {
   'Internship Complete': 'bg-gray-100 text-gray-700',
 };
 
 function EvaluationsList() {
+  const [toastMessage, setToastMessage] = useState('');
+const [toastType, setToastType] = useState('success'); // or 'error'
+
+   const handleBack = () => {
+  navigate('/dashboard'); 
+};
   const { applications, evaluations, setEvaluations } = useContext(ApplicationsContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [showFormId, setShowFormId] = useState(null);
@@ -17,6 +28,13 @@ function EvaluationsList() {
   const [filterInternship, setFilterInternship] = useState('');
   const [filterName, setFilterName] = useState('');
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+ const [errors, setErrors] = useState({
+  feedback: '',
+  score: '',
+  file: ''
+});
+
+
 
   const navigate = useNavigate();
   const internsPerPage = 6;
@@ -38,44 +56,83 @@ function EvaluationsList() {
   const totalPages = Math.ceil(completedInterns.length / internsPerPage);
 
   const handleSaveEvaluation = (internId) => {
-    if (!feedbackInput.trim() || !scoreInput) {
-      alert('Please fill all fields.');
-      return;
+  const newErrors = { feedback: '', score: '', file: '' };
+
+  if (!feedbackInput.trim()) {
+    newErrors.feedback = 'Feedback is required.';
+  }
+
+  if (!scoreInput) {
+    newErrors.score = 'Score is required.';
+  }
+
+  // Enforce file presence
+  if (!uploadFile || !uploadFile.name) {
+    newErrors.file = 'File is required.';
+  }
+
+  if (newErrors.feedback || newErrors.score || newErrors.file) {
+    setErrors(newErrors);
+    return;
+  }
+
+  const fileData = uploadFile.name;
+
+  setEvaluations((prev) => {
+    const existing = prev.find((ev) => ev.internId === internId);
+    if (existing) {
+      return prev.map((ev) =>
+        ev.internId === internId
+          ? { ...ev, feedback: feedbackInput, score: scoreInput, file: fileData }
+          : ev
+      );
+    } else {
+      return [...prev, { internId, feedback: feedbackInput, score: scoreInput, file: fileData }];
     }
+  });
 
-    const fileData = uploadFile ? uploadFile.name : null;
+  setToastMessage('Evaluation saved successfully.');
+  setToastType('success');
+  setShowFormId(null);
+  setFeedbackInput('');
+  setScoreInput('');
+  setUploadFile(null);
+  setErrors({ feedback: '', score: '', file: '' });
+};
 
-    setEvaluations((prev) => {
-      const existing = prev.find((ev) => ev.internId === internId);
-      if (existing) {
-        return prev.map((ev) =>
-          ev.internId === internId
-            ? { ...ev, feedback: feedbackInput, score: scoreInput, file: fileData }
-            : ev
-        );
-      } else {
-        return [...prev, { internId, feedback: feedbackInput, score: scoreInput, file: fileData }];
-      }
-    });
 
-    setShowFormId(null);
-    setFeedbackInput('');
-    setScoreInput('');
-    setUploadFile(null);
-  };
+
 
   const handleDeleteEvaluation = (internId) => {
     setConfirmDeleteId(internId);
   };
 
   const confirmDelete = () => {
-    setEvaluations((prev) => prev.filter((ev) => ev.internId !== confirmDeleteId));
-    setConfirmDeleteId(null);
-  };
+  setEvaluations((prev) => prev.filter((ev) => ev.internId !== confirmDeleteId));
+  setConfirmDeleteId(null);
+  setToastMessage('Evaluation deleted successfully.');
+  setToastType('error'); 
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {toastMessage && (
+  <Toast
+    message={toastMessage}
+    type={toastType}
+    containerProps={{ position: 'bottom-left' }}
+  />
+)}
+
       <motion.div className="relative overflow-hidden">
+         <motion.button
+    whileHover={{ x: -5 }}
+    onClick={handleBack}
+    className="absolute top-6 left-6 z-20 flex items-center text-white hover:underline"
+  >
+    <ArrowLeft className="mr-1 w-5 h-5" /> Back
+  </motion.button>
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Internship Evaluations</h1>
@@ -149,8 +206,11 @@ function EvaluationsList() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setShowFormId(intern.id);
-                          setFeedbackInput(evaluation.feedback);
-                          setScoreInput(evaluation.score);
+                        setFeedbackInput(evaluation.feedback);
+                        setScoreInput(evaluation.score);
+                        setUploadFile({ name: evaluation.file }); 
+                         setErrors({ feedback: '', score: '', file: '' });
+
                         }}
                       >
                         Edit Evaluation
@@ -172,6 +232,8 @@ function EvaluationsList() {
                     onClick={(e) => {
                       e.stopPropagation();
                       setShowFormId(intern.id);
+                      setErrors({ feedback: '', score: '', file: '' });
+
                     }}
                   >
                     Create Evaluation
@@ -194,6 +256,9 @@ function EvaluationsList() {
                 className="w-full border p-2 rounded mb-4"
                 placeholder="Write feedback here..."
               />
+              {errors.feedback && (
+  <p className="text-sm text-red-700 font-semibold mb-3">{errors.feedback}</p>
+)}
      <label className="block mb-2 font-medium">Performance</label>
 <div style={starStyles.container}>
   {[5, 4, 3, 2, 1].map((star) => (
@@ -219,6 +284,10 @@ function EvaluationsList() {
     </React.Fragment>
   ))}
 </div>
+{errors.score && (
+  <p className="text-sm text-red-700 font-semibold mb-3 text-left">{errors.score}</p>
+)}
+
 
 
 
@@ -261,6 +330,10 @@ function EvaluationsList() {
                   onChange={(e) => setUploadFile(e.target.files[0])}
                 />
               </div>
+              {errors.file && (
+  <p className="text-sm text-red-700 font-semibold mt-2">{errors.file}</p>
+)}
+
 
               <div className="flex justify-end gap-3">
                 <button

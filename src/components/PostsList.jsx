@@ -3,6 +3,9 @@ import { FaSearch, FaCalendarAlt, FaDollarSign, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
+import { ArrowLeft } from 'lucide-react';
+import Toast from '../components/Toast';
+
 
 const dummyCompany = {
     name: "Google LLC",
@@ -52,6 +55,10 @@ const dummyPosts = [
 
 
 const PostsList = () => {
+  const handleBack = () => {
+  navigate('/dashboard'); 
+};
+
   const navigate = useNavigate();
   const [industryFilter, setIndustryFilter] = useState('');
   useEffect(() => {
@@ -161,7 +168,7 @@ const [postToDelete, setPostToDelete] = useState(null);
   if (!postToDelete) return;
   setPosts(prev => prev.filter(post => post.id !== postToDelete.id));
   setDeleteMessage('Post deleted successfully!');
-  setTimeout(() => setDeleteMessage(''), 3000);
+ 
   setPostToDelete(null);
   setShowConfirmDelete(false);
 };
@@ -202,19 +209,17 @@ const handleDelete = (post) => {
   if (editingPostId !== null) {
   setPosts(prev => prev.map(p => p.id === editingPostId ? updatedFormData : p));
  setSuccessMessage('Post updated successfully!');
-setTimeout(() => setSuccessMessage(''), 3000);
+
 
 
 } else {
   setPosts(prev => [updatedFormData, ...prev]);
 setSuccessMessage('Post added successfully!');
-setTimeout(() => setSuccessMessage(''), 3000); 
+ 
 }
 
 resetForm();
 
-
-setTimeout(() => setSuccessMessage(''), 3000);
 
   };
 
@@ -226,17 +231,22 @@ setTimeout(() => setSuccessMessage(''), 3000);
   return (
    
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Red alert for deletion */}
-{deleteMessage && (
-  <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: 30 }}
-    className="fixed bottom-6 right-6 bg-red-100 text-red-800 px-6 py-3 rounded-lg shadow-lg z-50"
-  >
-    {deleteMessage}
-  </motion.div>
+  {successMessage && (
+  <Toast
+    message={successMessage}
+    type="success"
+    containerProps={{ position: "bottom-left" }} // 👈 Custom position
+  />
 )}
+{deleteMessage && (
+  <Toast
+    message={deleteMessage}
+    type="error"
+    containerProps={{ position: "bottom-left" }} // 👈 Custom position
+  />
+)}
+
+
 
 {/* Confirmation Modal */}
 <AnimatePresence>
@@ -273,18 +283,17 @@ setTimeout(() => setSuccessMessage(''), 3000);
     </motion.div>
   )}
 </AnimatePresence>
-   {successMessage && (
-  <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: 30 }}
-    className="fixed bottom-6 right-6 bg-green-100 text-green-800 px-6 py-3 rounded-lg shadow-lg z-50"
-  >
-    {successMessage}
-  </motion.div>
-)}
+ 
 
       <motion.div className="relative overflow-hidden">
+        <motion.button
+  whileHover={{ x: -5 }}
+  onClick={handleBack}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
+
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Manage Your Internship Posts</h1>

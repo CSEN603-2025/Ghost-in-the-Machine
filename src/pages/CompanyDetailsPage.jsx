@@ -1,6 +1,6 @@
 // src/pages/CompanyDetailsPage.jsx
 import React from "react";
-import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 const allSuggestedCompanies = [
   // ... keep your existing company list ...
@@ -8,44 +8,18 @@ const allSuggestedCompanies = [
 
 const CompanyDetailsPage = () => {
   const { companyName } = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
-  
-  // Get internships from localStorage
-  const storedProfile = JSON.parse(localStorage.getItem("studentProfile")) || {};
-  const userInternships = storedProfile.internships || [];
-  
-  // Find user's completed internship with this company
-  const userInternship = userInternships.find(i => 
-    i.company === companyName && i.status === "completed"
-  );
+  const company = allSuggestedCompanies.find(c => c.name === companyName);
 
-  // Find company in predefined list or create from internship data
-  const predefinedCompany = allSuggestedCompanies.find(c => c.name === companyName);
-  const company = predefinedCompany || {
-    name: companyName,
-    industry: userInternship?.industry || "Unknown",
-    size: userInternship?.size || "Unknown",
-    email: "",
-    phone: "",
-    address: "",
-    imageUrl: "",
-    documentName: "",
-    recommendations: 0
-  };
-
-  // Redirect if no completed internship found
-  if (!userInternship) {
+  if (!company) {
     return (
       <div className="min-h-screen bg-gray-50 p-8 flex items-center justify-center">
         <div className="text-center bg-white rounded-xl shadow-md p-6">
-          <h2 className="text-xl font-bold mb-4">No completed internship found with this company</h2>
-          <button 
-            onClick={() => navigate("/student-dashboard")}
-            className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white px-4 py-2 rounded-lg hover:opacity-90 transition"
-          >
-            Back to Dashboard
-          </button>
+          <h2 className="text-xl font-bold mb-4">Company not found.</h2>
+          <Link to="/student">
+            <button className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white px-4 py-2 rounded-lg hover:opacity-90 transition">
+              Back to Dashboard
+            </button>
+          </Link>
         </div>
       </div>
     );
@@ -54,6 +28,13 @@ const CompanyDetailsPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-16">
       {/* Header */}
+        <motion.button
+  whileHover={{ x: -5 }}
+  onClick={() => navigate(-1)}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
       <div className="bg-gradient-to-r from-[#00106A] to-[#0038A0] text-white py-14 mb-8">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h1 className="text-4xl font-extrabold">{company.name}</h1>
@@ -115,12 +96,11 @@ const CompanyDetailsPage = () => {
         </div>
 
         <div className="text-center pt-6">
-          <button 
-            onClick={() => navigate("/student-dashboard")}
-            className="text-gray-600 underline hover:text-gray-800"
-          >
-            ← Back to Dashboard
-          </button>
+          <Link to="/student">
+            <button className="text-gray-600 underline hover:text-gray-800">
+              ← Back to Dashboard
+            </button>
+          </Link>
         </div>
       </div>
     </div>

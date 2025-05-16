@@ -6,8 +6,12 @@ import {
   FiCast, FiPhoneMissed
 } from 'react-icons/fi';
 import { useToastNotifications } from '../hooks/useToastNotifications';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 export default function VideoCallPage() {
+  const navigate = useNavigate();
+
   const [callStatus, setCallStatus] = useState('idle');
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [micEnabled, setMicEnabled] = useState(true);
@@ -113,6 +117,13 @@ export default function VideoCallPage() {
         transition={{ duration: 0.5 }}
         className="relative overflow-hidden"
       >
+        <motion.button
+  whileHover={{ x: -5 }}
+  onClick={() => navigate(-1)}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center text-white">
           <motion.h1
@@ -203,7 +214,7 @@ export default function VideoCallPage() {
               animate="visible"
               exit="hidden"
               variants={variants}
-              className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 space-y-6"
+              className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 space-y-6 relative"
             >
               <h3 className="text-xl font-bold text-gray-800">
                 {callStatus === 'ringing' ? 'Calling...' : 'Call in Progress'}
@@ -231,6 +242,35 @@ export default function VideoCallPage() {
                     <p className="text-center">You</p>
                   </div>
                 </div>
+              )}
+
+              {/* Mini popup for screen sharing video */}
+              {screenSharing && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className="fixed bottom-8 right-8 z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-2 flex flex-col items-end"
+                  style={{ width: 320 }}
+                >
+                  <button
+                    onClick={() => setScreenSharing(false)}
+                    className="mb-1 text-gray-500 hover:text-red-500 text-xs"
+                    title="Stop sharing"
+                  >
+                    ✕
+                  </button>
+                  <video
+                    src="/sharescreenvideo.mp4"
+                    autoPlay
+                    loop
+                    muted
+                    controls={false}
+                    className="rounded w-full h-40 object-cover"
+                    style={{ background: '#000' }}
+                  />
+                  <div className="text-xs text-gray-600 mt-1">You: Screen Sharing, Display 1</div>
+                </motion.div>
               )}
 
               {/* Controls */}

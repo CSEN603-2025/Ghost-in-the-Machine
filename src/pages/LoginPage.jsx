@@ -2,10 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {FaEye} from 'react-icons/fa';
 import { useNotifications } from '../contexts/NotificationContext';
+import { motion } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
+
 
 function LoginPage() {
     const navigate = useNavigate();
     const { clearNotifications } = useNotifications();
+    const handleBack = () => {
+     navigate('/');
+    };
+
 
     useEffect(() => {
         clearNotifications();
@@ -84,7 +91,18 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white py-12 px-4">
+   
+     <div className="relative min-h-screen flex items-center justify-center bg-white py-12 px-4">
+
+  <motion.button
+  whileHover={{ x: -5 }}
+  onClick={handleBack}
+  className="absolute top-6 left-6 flex items-center text-[#20368F] hover:underline z-10"
+>
+  <ArrowLeft className="mr-1 w-4 h-4" /> Back
+</motion.button>
+
+    
       <div className="w-full max-w-sm bg-[#F5F5F5] shadow-lg rounded-lg p-8 border border-[#E0E6EF]">
 
         <h2 className="text-2xl font-semibold text-[#20368F] mb-8 text-center">Login</h2>

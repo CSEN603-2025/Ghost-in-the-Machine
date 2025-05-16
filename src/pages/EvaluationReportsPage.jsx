@@ -6,6 +6,8 @@ import { FaClipboardList, FaSearch, FaTimes } from 'react-icons/fa';
 import FilterEvaluation from '../components/FilterEvaluation';
 import Pagination from '../components/Pagination';
 import EvaluationDetailsModal from '../components/EvaluationDetailsModal';
+import { ArrowLeft } from 'lucide-react';
+
 
 const detailsVariants = {
   hidden:  { opacity: 0, y: 30 },
@@ -56,12 +58,21 @@ export default function EvaluationReportsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
 
+
       {/* Hero */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden"
       >
+    <motion.button
+  whileHover={{ x: -5 }}
+  onClick={() => navigate(-1)}
+  className="ml-6 mt-6 mb-2 flex items-center text-white hover:underline z-50 relative"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
+
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center text-white">
           <FaClipboardList size={48} className="mx-auto mb-4" />

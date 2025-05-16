@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { ArrowLeft } from 'lucide-react';
 
 export default function EditProfilePage() {
   const [jobInterests, setJobInterests] = useState("");
@@ -153,6 +154,13 @@ export default function EditProfilePage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Hero */}
       <motion.div initial={{opacity:0,y:-20}} animate={{opacity:1,y:0}} className="relative overflow-hidden">
+         <motion.button
+  whileHover={{ x: -5 }}
+  onClick={() => navigate(-1)}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-4xl mx-auto px-6 py-20 relative z-10 text-center text-white">
           <h1 className="text-5xl font-extrabold mb-4">🖋️ Edit My Profile</h1>

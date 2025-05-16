@@ -7,11 +7,16 @@ import { jsPDF } from 'jspdf';
 import KpiCard from '../components/KpiCard';
 import StatsFilters from '../components/StatsFilters';
 import ExportCsvDropdown from '../components/ExportCsvDropdown';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+
 
 export default function StatsPage() {
   const [cycle, setCycle] = useState({ start: '2025-01-01', end: '2025-06-30' });
   const [major, setMajor] = useState('');
   const { info } = useToastNotifications();
+  const navigate = useNavigate();
+
 
   const kpis = {
     accepted: 12,
@@ -63,6 +68,14 @@ export default function StatsPage() {
         animate={{ opacity: 1, y: 0 }}
         className="relative overflow-hidden"
       >
+        <motion.button
+  whileHover={{ x: -5 }}
+  onClick={() => navigate('/faculty-dashboard')}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
+
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center text-white">
           <FaChartBar size={48} className="mx-auto mb-4" />

@@ -2,8 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import jsPDF from 'jspdf';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+   
 
 export default function AssessmentsPage() {
+     const navigate = useNavigate();
   const [availableAssessments, setAvailableAssessments] = useState([]);
   const [selectedIdx, setSelectedIdx] = useState(null);
   const [completed, setCompleted] = useState(false);
@@ -99,6 +103,14 @@ export default function AssessmentsPage() {
         transition={{ duration: 0.5 }}
         className="relative overflow-hidden"
       >
+             <motion.button
+          whileHover={{ x: -5 }}
+          onClick={() => navigate(-1)}
+          className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+        >
+          <ArrowLeft className="mr-1 w-5 h-5" /> Back
+        </motion.button>
+        
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center text-white">
           <motion.h1

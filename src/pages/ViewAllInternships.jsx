@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { FaSearch, FaIndustry, FaCalendarAlt, FaDollarSign, FaBuilding, FaTools, FaTimes } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
 
 const internshipsMock = [
   {
@@ -52,6 +55,7 @@ const getCompanyLogo = (companyName) => {
 };
 
 const ViewAllInternships = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [industryFilter, setIndustryFilter] = useState('');
   const [durationFilter, setDurationFilter] = useState('');
@@ -87,6 +91,15 @@ const ViewAllInternships = () => {
         className="relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
+<motion.button
+  onClick={() => navigate('/scad-dashboard')}
+  whileHover={{ x: -5 }}
+  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+>
+  <ArrowLeft className="mr-1 w-5 h-5" /> Back
+</motion.button>
+
+
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10">
           <div className="text-center">
             <motion.h1 
