@@ -50,7 +50,7 @@ export default function ViewedCompaniesPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center text-white">
           <FaClipboardList size={48} className="mx-auto mb-4" />
-          <h1 className="text-4xl md:text-5xl font-bold mb-2">👀 Companies Viewed My Profile</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-2"> Companies Viewed My Profile</h1>
           <p className="text-xl max-w-2xl mx-auto mb-8 text-blue-100">
             See who’s been interested in your experience and reach out!
           </p>

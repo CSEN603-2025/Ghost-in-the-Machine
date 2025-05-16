@@ -88,7 +88,7 @@ export default function ReportsPage() {
             transition={{ delay: 0.2 }}
             className="text-4xl md:text-5xl font-bold mb-4"
           >
-            📝 My Internship Reports
+             My Internship Reports
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}

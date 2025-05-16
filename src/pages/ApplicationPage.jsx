@@ -74,7 +74,7 @@ const ApplicationPage = () => {
       {/* Header */}
       <div className="bg-gradient-to-r from-[#00D6A0] to-[#00106A] text-white py-14 mb-8">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h1 className="text-4xl font-extrabold">📤 Internship Application</h1>
+          <h1 className="text-4xl font-extrabold"> Internship Application</h1>
           <p className="text-lg mt-2 opacity-90">Upload your documents and apply now!</p>
         </div>
       </div>
@@ -85,6 +85,7 @@ const ApplicationPage = () => {
           message={toastMessage}
           type={toastType}
           onClose={() => setToastMessage('')}
+             containerProps={{ position: "bottom-left" }} 
         />
       )}
 
@@ -98,7 +99,7 @@ const ApplicationPage = () => {
 
         {isSubmitted ? (
           <div className="text-green-600 text-center font-medium">
-            🎉 Congratulations! You are now one step closer to your future career.
+            Congratulations! You are now one step closer to your future career.
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
