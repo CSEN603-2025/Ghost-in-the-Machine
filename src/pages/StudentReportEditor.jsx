@@ -2,12 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft } from 'lucide-react';
-import Toast from '../components/Toast';
-
 
 export default function StudentReportEditor() {
-  const [toastData, setToastData] = useState(null);
-
   const [report, setReport] = useState({
     title: "",
     introduction: "",
@@ -27,14 +23,15 @@ export default function StudentReportEditor() {
   };
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("studentReport"));
-    if (stored) {
-      setReport({
-        ...stored,
-        selectedCourses: stored.selectedCourses || [],
-        major: stored.major || "",
-      });
-    }
+    // Clear any stored report data when the page loads
+    localStorage.removeItem("studentReport");
+    setReport({
+      title: "",
+      introduction: "",
+      body: "",
+      selectedCourses: [],
+      major: "",
+    });
   }, []);
 
   useEffect(() => {
@@ -74,8 +71,7 @@ export default function StudentReportEditor() {
     e.preventDefault();
     if (!validateFields()) return;
     localStorage.setItem("studentReport", JSON.stringify(report));
- setToastData({ message: "Report saved successfully!", type: "success" });
-
+    alert("✅ Report saved successfully!");
   };
 
   const handleView = (e) => {
@@ -101,7 +97,7 @@ export default function StudentReportEditor() {
         </motion.button>
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95" />
         <div className="max-w-4xl mx-auto px-6 py-20 relative z-10 text-center text-white">
-          <h1 className="text-5xl font-extrabold mb-4"> Edit Internship Report</h1>
+          <h1 className="text-5xl font-extrabold mb-4">✏️ Edit Internship Report</h1>
           <p className="text-xl opacity-90">
             Write or update your report, choose courses that helped you, then save or view.
           </p>
@@ -198,7 +194,7 @@ export default function StudentReportEditor() {
             </div>
           )}
 
-       
+          {/* Buttons */}
           <div className="flex justify-end space-x-4">
             <button
               type="submit"
@@ -217,15 +213,6 @@ export default function StudentReportEditor() {
           </div>
         </motion.form>
       </div>
-      {toastData && (
-  <Toast
-    message={toastData.message}
-    type={toastData.type}
-    containerProps={{ position: 'bottom-left' }} // ✅ override here
-  />
-)}
-
-
     </div>
   );
 }
