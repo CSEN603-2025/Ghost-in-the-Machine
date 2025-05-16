@@ -11,13 +11,15 @@ const EmailClientPage = () => {
   const folders = ['Inbox', 'Sent', 'Drafts', 'Spam'];
 
   const dummyEmails = [
-    { id: 1, folder: 'Inbox', sender: 'John Doe', subject: 'Meeting Reminder', snippet: "Don't forget our meeting at 3 PM.", time: '9:00 AM', body: 'Hi there,\nJust a reminder about our meeting scheduled at 3 PM today in conference room A.\nBest, John' },
-    { id: 2, folder: 'Inbox', sender: 'Jane Smith', subject: 'Project Update', snippet: 'The project is on track...', time: '8:30 AM', body: 'Hello team,\nThe project is on track and we completed the first milestone.\nRegards, Jane' },
-    { id: 3, folder: 'Sent', sender: 'You', subject: 'Re: Meeting Reminder', snippet: 'Thanks for the heads up...', time: '9:05 AM', body: 'Thanks for the heads up, John. I will be there.\nCheers,' },
-    { id: 4, folder: 'Drafts', sender: 'You', subject: 'Draft: Weekly Report', snippet: 'Summary of this week...', time: 'Yesterday', body: 'Draft content goes here...' },
-    { id: 5, folder: 'Spam', sender: 'Spam Bot', subject: 'You won a prize!', snippet: 'Click this link...', time: 'Today', body: 'Congratulations! Click here to claim your prize.' },
-    { id: 6, folder: 'Inbox', sender: 'Internship Notification System', subject: 'New Applicant Notification!', snippet: 'A new applicant has applied for the DevOps internship position.', time: '10:00 AM', body: 'Dear Team,\nA new applicant "Ahmed Mohamed" has applied for the internship position. Please review their application.\nBest, Internship Notification System' },
-  ];
+  { id: 1, folder: 'Inbox', sender: 'John Doe', subject: 'Meeting Reminder', snippet: "Don't forget our meeting at 3 PM.", time: '9:00 AM', body: 'Hi there,\nJust a reminder about our meeting scheduled at 3 PM today in conference room A.\nBest, John' },
+  { id: 2, folder: 'Inbox', sender: 'Jane Smith', subject: 'Project Update', snippet: 'The project is on track...', time: '8:30 AM', body: 'Hello team,\nThe project is on track and we completed the first milestone.\nRegards, Jane' },
+  { id: 3, folder: 'Sent', sender: 'You', subject: 'Re: Meeting Reminder', snippet: 'Thanks for the heads up...', time: '9:05 AM', body: 'Thanks for the heads up, John. I will be there.\nCheers,' },
+  { id: 4, folder: 'Drafts', sender: 'You', subject: 'Draft: Weekly Report', snippet: 'Summary of this week...', time: 'Yesterday', body: 'Draft content goes here...' },
+  { id: 5, folder: 'Spam', sender: 'Spam Bot', subject: 'You won a prize!', snippet: 'Click this link...', time: 'Today', body: 'Congratulations! Click here to claim your prize.' },
+  { id: 6, folder: 'Inbox', sender: 'Internship Notification System', subject: 'New Applicant Notification!', snippet: 'A new applicant has applied for the DevOps internship position.', time: '10:00 AM', body: 'Dear Team,\nA new applicant "Ahmed Mohamed" has applied for the internship position. Please review their application.\nBest, Internship Notification System' },
+  { id: 7, folder: 'Inbox', sender: 'GUC Internship System', subject: 'Application Accepted!', snippet: 'Your application to the GUC internship system has been accepted!', time: '11:45 AM', body: 'Dear Applicant,\n\nYour application to the GUC internship system has been accepted! 🎉\n\nHave a look at our features and discover more on our website.\n\nBest regards,\nGUC Internship Team' }
+];
+
 
   const [selectedFolder, setSelectedFolder] = useState('Inbox');
   const [selectedEmail, setSelectedEmail] = useState(null);

@@ -20,6 +20,7 @@ const dummyCompany = {
 const dummyPosts = [
   {
     id: 1,
+    company: 'Google LLC',
     title: 'Frontend Developer Intern',
     duration: '3 Months',
     paid: true,
@@ -31,6 +32,7 @@ const dummyPosts = [
   },
   {
     id: 2,
+    company: 'Google LLC',
     title: 'Data Analyst Intern',
     duration: '2 Months',
     paid: false,
@@ -42,6 +44,7 @@ const dummyPosts = [
   },
   {
     id: 3,
+    company: 'Google LLC',
     title: 'Devops Intern',
     duration: '1 Month',
     paid: true,
@@ -50,11 +53,63 @@ const dummyPosts = [
     description: 'Work with our Devops team to automate our deployment process.',
     applications: 4,
      industry: ['Software']
+  },
+    {
+    id: 4,
+    company: 'UNICEF',
+    title: 'Data Analyst Intern',
+    industry: ['NGO'],
+    duration: '6 Months',
+    paid: false,
+    salary: '',
+    skills: ['Excel', 'Python', 'Data Visualization'],
+    description: 'Analyze data and create reports to support UNICEFs efforts in various global initiatives.',
+    applications: 0
+  },
+    {
+    id: 5,
+    company: 'BMW',
+    title: 'Mechanical Engineering Intern',
+    industry: ['Automotive'],
+    duration: '3 Months',
+    paid: true,
+    salary: '$3500/month',
+    skills: ['SolidWorks', 'AutoCAD', 'Mechanical Design'],
+    description: 'Work on engineering projects and assist with design tasks and simulations in the automotive industry.',
+    applications: 0
+  },
+   {
+    id: 6,
+    company: "Instabug",
+    title: "Mobile Dev Intern",
+    duration: "2 Months",
+    paid: false,
+    salary: "",
+    skills: ['Android', 'iOS', 'Kotlin'],
+    description: "Work on the Instabug SDK for mobile development.",
+    applications: 0,
+    industry: ['Software']
+  },
+   {
+    id: 7,
+    company: "IBM",
+    title: "Cloud Engineering Intern",
+    duration: "1 Month",
+    paid: false,
+    salary: "",
+    skills: ['Cloud', 'Kubernetes', 'Terraform'],
+    description: "Assist with cloud migration and infrastructure automation tasks.",
+    applications: 0,
+    industry: ['IT']
   }
+
 ];
 
 
 const PostsList = () => {
+  const [companyFilter, setCompanyFilter] = useState('all');
+const currentCompany = dummyCompany.name;
+
   const handleBack = () => {
   navigate('/dashboard'); 
 };
@@ -66,7 +121,19 @@ const PostsList = () => {
 }, []);
 const [viewingPost, setViewingPost] = useState(null);
   
-const getCompanyLogo = () => dummyCompany.logoUrl;
+const getCompanyLogo = (companyName) => {
+  const logos = {
+    'Google LLC': 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
+    'UNICEF': '/logos/unicef-logo.png',  // <-- your custom uploaded logo
+    'BMW': 'https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg',
+    'Instabug': 'https://cdn-icons-png.flaticon.com/512/1384/1384015.png',   // <-- your custom uploaded logo
+    'IBM': 'https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg',
+  };
+
+  return logos[companyName] || 'https://via.placeholder.com/150';
+};
+
+
 const [posts, setPosts] = useState(() => {
   const stored = sessionStorage.getItem('posts');
   return stored ? JSON.parse(stored) : dummyPosts;
@@ -119,14 +186,38 @@ const [postToDelete, setPostToDelete] = useState(null);
     setFilterSkills(updated);
   };
 
-  const filteredPosts = posts.filter(post => {
-  const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase());
-  const matchesDuration = durationFilter === '' || post.duration === durationFilter;
-  const matchesPaid = paidFilter === '' || (paidFilter === 'paid' && post.paid) || (paidFilter === 'unpaid' && !post.paid);
-  const matchesSkills = filterSkills.length === 0 || filterSkills.every(skill => post.skills.includes(skill));
-  const matchesIndustry = industryFilter === '' || post.industry.includes(industryFilter);
-  return matchesSearch && matchesDuration && matchesPaid && matchesSkills && matchesIndustry;
+ const filteredPosts = posts.filter(post => {
+  const matchesSearch =
+    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    post.company.toLowerCase().includes(searchTerm.toLowerCase());
+
+  const matchesDuration =
+    durationFilter === '' || post.duration === durationFilter;
+
+  const matchesPaid =
+    paidFilter === '' ||
+    (paidFilter === 'paid' && post.paid) ||
+    (paidFilter === 'unpaid' && !post.paid);
+
+  const matchesSkills =
+    filterSkills.length === 0 || filterSkills.every(skill => post.skills.includes(skill));
+
+  const matchesIndustry =
+    industryFilter === '' || post.industry.includes(industryFilter);
+
+  const matchesCompany =
+    companyFilter === 'all' || (companyFilter === 'mine' && post.company === currentCompany);
+
+  return (
+    matchesSearch &&
+    matchesDuration &&
+    matchesPaid &&
+    matchesSkills &&
+    matchesIndustry &&
+    matchesCompany
+  );
 });
+
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -193,6 +284,9 @@ const handleDelete = (post) => {
     updated.splice(index, 1);
     setFormData(prev => ({ ...prev, skills: updated }));
   };
+useEffect(() => {
+  setCurrentPage(1);
+}, [companyFilter, searchTerm, industryFilter, paidFilter, durationFilter, filterSkills]);
 
   const handleSave = () => {
     const validation = validateFields(formData);
@@ -235,14 +329,14 @@ resetForm();
   <Toast
     message={successMessage}
     type="success"
-    containerProps={{ position: "bottom-left" }} // 👈 Custom position
+    containerProps={{ position: "bottom-left" }} 
   />
 )}
 {deleteMessage && (
   <Toast
     message={deleteMessage}
     type="error"
-    containerProps={{ position: "bottom-left" }} // 👈 Custom position
+    containerProps={{ position: "bottom-left" }} 
   />
 )}
 
@@ -296,8 +390,8 @@ resetForm();
 
         <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
         <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Manage Your Internship Posts</h1>
-          <p className="text-lg text-blue-100 mb-6">Create, view, and modify your available internship posts</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Internship Posts</h1>
+          <p className="text-lg text-blue-100 mb-6"> View all posts, Manage your posts, and Hunt interns down</p>
           <div className="flex justify-center">
             <div className="w-full max-w-md relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -305,7 +399,8 @@ resetForm();
               </div>
               <input
                 type="text"
-                placeholder="Search by job title or keyword..."
+                placeholder="Search by job title or Company name"
+                aria-label="Search by job title or Company name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-blue-300/30 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -409,7 +504,20 @@ resetForm();
               </div>
             </div>
           </div>
+               <div className="flex flex-col">
+  <label className="text-sm font-medium text-gray-700 mb-1">My Company Posts Only</label>
+  <select
+    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+    value={companyFilter}
+    onChange={(e) => setCompanyFilter(e.target.value)}
+  >
+    <option value="all">Show All</option>
+    <option value="mine">Only My Posts</option>
+  </select>
+</div>
+
         </motion.div>
+   
     <AnimatePresence>
   {creating && (
     <motion.div
@@ -610,37 +718,43 @@ resetForm();
         <p className="mb-2"><strong>Skills:</strong> {viewingPost.skills.join(', ')}</p>
         <p className="mb-2"><strong>Industry:</strong> {viewingPost.industry.join(', ')}</p>
         <p className="mb-2"><strong>Description:</strong> {viewingPost.description}</p>
-        <p className="mb-4"><strong>Applications:</strong> {viewingPost.applications}</p>
+       {viewingPost.company === currentCompany && (
+  <p className="mb-4"><strong>Applications:</strong> {viewingPost.applications}</p>
+)}
 
-        <div className="mt-4 flex justify-center gap-3">
-          <button
-            onClick={() => {
-              handleEditClick(viewingPost);
-              setViewingPost(null);
-            }}
-            className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            Edit
-          </button>
-          <button
-            onClick={() => {
-              handleDelete(viewingPost);
-              setViewingPost(null);
-            }}
-            className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-          >
-            Delete
-          </button>
-          <button
-            onClick={() => {
-              handleViewApplications(viewingPost.title);
-              setViewingPost(null);
-            }}
-            className="px-3 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800"
-          >
-            View Applications
-          </button>
-        </div>
+
+        {viewingPost.company === currentCompany && (
+  <div className="mt-4 flex justify-center gap-3">
+    <button
+      onClick={() => {
+        handleEditClick(viewingPost);
+        setViewingPost(null);
+      }}
+      className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+    >
+      Edit
+    </button>
+    <button
+      onClick={() => {
+        handleDelete(viewingPost);
+        setViewingPost(null);
+      }}
+      className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+    >
+      Delete
+    </button>
+    <button
+      onClick={() => {
+        handleViewApplications(viewingPost.title);
+        setViewingPost(null);
+      }}
+      className="px-3 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800"
+    >
+      View Applications
+    </button>
+  </div>
+)}
+
       </motion.div>
     </motion.div>
   )}
@@ -656,11 +770,13 @@ resetForm();
               <div className="h-2 w-full bg-gradient-to-r from-blue-600 to-blue-800"></div>
               <div className="p-6 flex flex-col h-full">
                 <div className="flex items-center mb-4">
-                  <img
-                    src={getCompanyLogo()}
-                    alt="logo"
-                    className="w-12 h-12 object-contain rounded mr-4"
-                  />
+                <img
+  src={getCompanyLogo(post.company)}
+  alt={post.company}
+  referrerPolicy="no-referrer"
+  className="w-12 h-12 object-contain rounded mr-4"
+/>
+
                   <div>
                     <h2 className="text-xl font-bold text-gray-800">{post.title}</h2>
                     <p className="text-sm text-gray-600">{post.company || 'Google LLC'}</p>
@@ -685,29 +801,35 @@ resetForm();
   <strong>Industry:</strong> {post.industry?.join(', ') || 'N/A'}</p>
 
                 <p className="text-gray-600 text-sm mb-4 flex-grow"> <strong>Description:</strong> {post.description}</p>
-                <p className="text-gray-600 text-sm mb-4"><strong>Applications:</strong> {post.applications}</p>
+               {post.company === currentCompany && (
+  <>
+    <p className="text-gray-600 text-sm mb-4">
+      <strong>Applications:</strong> {post.applications}
+    </p>
 
-               <div className="mt-auto flex justify-center gap-2" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    onClick={() => handleEditClick(post)}
-                    className="px-3 py-1 bg-blue-700 text-white text-sm rounded-lg hover:bg-blue-800 transition"
-                  >
-                    Edit
-                  </button>
-                  <button
-                   onClick={() => handleDelete(post)}
+    <div className="mt-auto flex justify-center gap-2" onClick={(e) => e.stopPropagation()}>
+      <button
+        onClick={() => handleEditClick(post)}
+        className="px-3 py-1 bg-blue-700 text-white text-sm rounded-lg hover:bg-blue-800 transition"
+      >
+        Edit
+      </button>
+      <button
+        onClick={() => handleDelete(post)}
+        className="px-3 py-1 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition"
+      >
+        Delete
+      </button>
+      <button
+        onClick={() => handleViewApplications(post.title)}
+        className="px-3 py-1 bg-gray-700 text-white text-sm rounded-lg hover:bg-gray-800 transition"
+      >
+        View Applications
+      </button>
+    </div>
+  </>
+)}
 
-                    className="px-3 py-1 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    onClick={() => handleViewApplications(post.title)}
-                    className="px-3 py-1 bg-gray-700 text-white text-sm rounded-lg hover:bg-gray-800 transition"
-                  >
-                    View Applications
-                  </button>
-                </div>
               </div>
             </div>
           ))}
