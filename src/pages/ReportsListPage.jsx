@@ -25,6 +25,32 @@ export default function ReportsListPage() {
 
   // Modal
   const [selectedReport, setSelectedReport] = useState(null);
+  const [selectedCourses, setSelectedCourses] = useState([]);
+
+  // Courses by major
+  const majorCourses = {
+    'Computer Science': [
+      'Introduction to Programming',
+      'Data Structures',
+      'Algorithms',
+      'Database Systems',
+      'Operating Systems'
+    ],
+    'Graphic Design': [
+      'Design Fundamentals',
+      'Typography',
+      'Digital Illustration',
+      'UI/UX Design',
+      'Motion Graphics'
+    ],
+    'Business Administration': [
+      'Principles of Management',
+      'Financial Accounting',
+      'Marketing',
+      'Business Statistics',
+      'Organizational Behavior'
+    ]
+  };
 
   // Load mock data
   useEffect(() => {
@@ -39,6 +65,7 @@ export default function ReportsListPage() {
         title: 'Internship Report 1',
         reportContent: 'Introduction...\nBody...\nCourses used: CS101, CS102',
         companyName: 'TechCorp',
+        coursesUsed: ['Data Structures', 'Algorithms']
       },
       {
         id: 2,
@@ -50,12 +77,19 @@ export default function ReportsListPage() {
         title: 'Internship Report 2',
         reportContent: 'Intro...\nBody...\nCourses used: GD201, GD202',
         companyName: 'DesignCo',
+        coursesUsed: ['Typography', 'UI/UX Design']
       },
-      // …add more as needed
     ];
     setReports(mock);
     setFiltered(mock);
   }, []);
+
+  // When a report is selected, set its courses as selected
+  useEffect(() => {
+    if (selectedReport) {
+      setSelectedCourses(selectedReport.coursesUsed || []);
+    }
+  }, [selectedReport]);
 
   // Re-filter whenever searchTerm, filterData, or reports change
   useEffect(() => {
@@ -97,6 +131,27 @@ export default function ReportsListPage() {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber + 1);
+  };
+
+  const toggleCourseSelection = (course) => {
+    setSelectedCourses(prev => 
+      prev.includes(course)
+        ? prev.filter(c => c !== course)
+        : [...prev, course]
+    );
+  };
+
+  const updateReportCourses = () => {
+    if (selectedReport) {
+      setReports(rs =>
+        rs.map(r => 
+          r.id === selectedReport.id 
+            ? { ...r, coursesUsed: selectedCourses } 
+            : r
+        )
+      );
+      setSelectedReport(prev => ({ ...prev, coursesUsed: selectedCourses }));
+    }
   };
 
   return (
@@ -237,18 +292,87 @@ export default function ReportsListPage() {
         </div>
       </div>
 
-      {/* Details Modal */}
+      {/* Enhanced Details Modal */}
       {selectedReport && (
-        <ReportDetailsModal
-          isOpen={!!selectedReport}
-          onClose={() => setSelectedReport(null)}
-          report={selectedReport}
-          onStatusChange={(id, newStatus) => {
-            setReports(rs =>
-              rs.map(r => (r.id === id ? { ...r, status: newStatus } : r))
-            );
-          }}
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  {selectedReport.title}
+                </h2>
+                <button 
+                  onClick={() => setSelectedReport(null)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold mb-2">Report Details</h3>
+                    <div className="space-y-2">
+                      <p><span className="font-medium">Student:</span> {selectedReport.studentName}</p>
+                      <p><span className="font-medium">Major:</span> {selectedReport.major}</p>
+                      <p><span className="font-medium">Semester:</span> {selectedReport.semester}</p>
+                      <p><span className="font-medium">Company:</span> {selectedReport.companyName}</p>
+                      <p><span className="font-medium">Status:</span> 
+                        <span className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full ${
+                          selectedReport.status === 'Accepted'
+                            ? 'bg-green-100 text-green-800'
+                            : selectedReport.status === 'Pending'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {selectedReport.status}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Report Content</h3>
+                    <div className="bg-gray-50 p-4 rounded-lg whitespace-pre-line">
+                      {selectedReport.reportContent}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Related Courses</h3>
+                  <div className="bg-gray-50 p-4 rounded-lg max-h-60 overflow-y-auto">
+                    {majorCourses[selectedReport.major]?.map((course, index) => (
+                      <div key={index} className="flex items-center mb-2">
+                        <input
+                          type="checkbox"
+                          id={`course-${index}`}
+                          checked={selectedCourses.includes(course)}
+                          onChange={() => toggleCourseSelection(course)}
+                          className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                        />
+                        <label htmlFor={`course-${index}`} className="ml-2 text-sm text-gray-700">
+                          {course}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    onClick={updateReportCourses}
+                    className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                  >
+                    Update Courses
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       )}
     </div>
   );

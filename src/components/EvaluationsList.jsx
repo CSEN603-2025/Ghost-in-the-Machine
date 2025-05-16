@@ -3,6 +3,8 @@ import { ApplicationsContext } from '../contexts/ApplicationsContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import Toast from '../components/Toast';
+
 
 
 
@@ -11,6 +13,9 @@ const statusColors = {
 };
 
 function EvaluationsList() {
+  const [toastMessage, setToastMessage] = useState('');
+const [toastType, setToastType] = useState('success'); // or 'error'
+
    const handleBack = () => {
   navigate('/dashboard'); 
 };
@@ -23,6 +28,13 @@ function EvaluationsList() {
   const [filterInternship, setFilterInternship] = useState('');
   const [filterName, setFilterName] = useState('');
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+ const [errors, setErrors] = useState({
+  feedback: '',
+  score: '',
+  file: ''
+});
+
+
 
   const navigate = useNavigate();
   const internsPerPage = 6;
@@ -44,43 +56,75 @@ function EvaluationsList() {
   const totalPages = Math.ceil(completedInterns.length / internsPerPage);
 
   const handleSaveEvaluation = (internId) => {
-    if (!feedbackInput.trim() || !scoreInput) {
-      alert('Please fill all fields.');
-      return;
+  const newErrors = { feedback: '', score: '', file: '' };
+
+  if (!feedbackInput.trim()) {
+    newErrors.feedback = 'Feedback is required.';
+  }
+
+  if (!scoreInput) {
+    newErrors.score = 'Score is required.';
+  }
+
+  // Enforce file presence
+  if (!uploadFile || !uploadFile.name) {
+    newErrors.file = 'File is required.';
+  }
+
+  if (newErrors.feedback || newErrors.score || newErrors.file) {
+    setErrors(newErrors);
+    return;
+  }
+
+  const fileData = uploadFile.name;
+
+  setEvaluations((prev) => {
+    const existing = prev.find((ev) => ev.internId === internId);
+    if (existing) {
+      return prev.map((ev) =>
+        ev.internId === internId
+          ? { ...ev, feedback: feedbackInput, score: scoreInput, file: fileData }
+          : ev
+      );
+    } else {
+      return [...prev, { internId, feedback: feedbackInput, score: scoreInput, file: fileData }];
     }
+  });
 
-    const fileData = uploadFile ? uploadFile.name : null;
+  setToastMessage('Evaluation saved successfully.');
+  setToastType('success');
+  setShowFormId(null);
+  setFeedbackInput('');
+  setScoreInput('');
+  setUploadFile(null);
+  setErrors({ feedback: '', score: '', file: '' });
+};
 
-    setEvaluations((prev) => {
-      const existing = prev.find((ev) => ev.internId === internId);
-      if (existing) {
-        return prev.map((ev) =>
-          ev.internId === internId
-            ? { ...ev, feedback: feedbackInput, score: scoreInput, file: fileData }
-            : ev
-        );
-      } else {
-        return [...prev, { internId, feedback: feedbackInput, score: scoreInput, file: fileData }];
-      }
-    });
 
-    setShowFormId(null);
-    setFeedbackInput('');
-    setScoreInput('');
-    setUploadFile(null);
-  };
+
 
   const handleDeleteEvaluation = (internId) => {
     setConfirmDeleteId(internId);
   };
 
   const confirmDelete = () => {
-    setEvaluations((prev) => prev.filter((ev) => ev.internId !== confirmDeleteId));
-    setConfirmDeleteId(null);
-  };
+  setEvaluations((prev) => prev.filter((ev) => ev.internId !== confirmDeleteId));
+  setConfirmDeleteId(null);
+  setToastMessage('Evaluation deleted successfully.');
+  setToastType('error'); 
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {toastMessage && (
+  <Toast
+    message={toastMessage}
+    type={toastType}
+    containerProps={{ position: 'bottom-left' }}
+  />
+)}
+
       <motion.div className="relative overflow-hidden">
          <motion.button
     whileHover={{ x: -5 }}
@@ -162,8 +206,11 @@ function EvaluationsList() {
                         onClick={(e) => {
                           e.stopPropagation();
                           setShowFormId(intern.id);
-                          setFeedbackInput(evaluation.feedback);
-                          setScoreInput(evaluation.score);
+                        setFeedbackInput(evaluation.feedback);
+                        setScoreInput(evaluation.score);
+                        setUploadFile({ name: evaluation.file }); 
+                         setErrors({ feedback: '', score: '', file: '' });
+
                         }}
                       >
                         Edit Evaluation
@@ -185,6 +232,8 @@ function EvaluationsList() {
                     onClick={(e) => {
                       e.stopPropagation();
                       setShowFormId(intern.id);
+                      setErrors({ feedback: '', score: '', file: '' });
+
                     }}
                   >
                     Create Evaluation
@@ -207,6 +256,9 @@ function EvaluationsList() {
                 className="w-full border p-2 rounded mb-4"
                 placeholder="Write feedback here..."
               />
+              {errors.feedback && (
+  <p className="text-sm text-red-700 font-semibold mb-3">{errors.feedback}</p>
+)}
      <label className="block mb-2 font-medium">Performance</label>
 <div style={starStyles.container}>
   {[5, 4, 3, 2, 1].map((star) => (
@@ -232,6 +284,10 @@ function EvaluationsList() {
     </React.Fragment>
   ))}
 </div>
+{errors.score && (
+  <p className="text-sm text-red-700 font-semibold mb-3 text-left">{errors.score}</p>
+)}
+
 
 
 
@@ -274,6 +330,10 @@ function EvaluationsList() {
                   onChange={(e) => setUploadFile(e.target.files[0])}
                 />
               </div>
+              {errors.file && (
+  <p className="text-sm text-red-700 font-semibold mt-2">{errors.file}</p>
+)}
+
 
               <div className="flex justify-end gap-3">
                 <button

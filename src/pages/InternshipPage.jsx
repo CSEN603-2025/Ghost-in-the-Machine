@@ -10,7 +10,8 @@ import {
   FaHourglassHalf,
   FaCalendarCheck,
   FaCalendarAlt,
-  FaSearch
+  FaSearch,
+  FaTrash
 } from "react-icons/fa";
 
 const InternshipPage = () => {
@@ -24,56 +25,65 @@ const InternshipPage = () => {
   const [isProStudent, setIsProStudent] = useState(false);
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("studentProfile")) || {};
-    const storedInternships = stored.internships || [];
-
-    const hardcoded = [
-      {
-        id: 101,
-        company: "Instabug",
-        role: "Mobile Dev Intern",
-        duration: 2,
-        status: "completed",
-        startDate: "2024-01-01",
-        endDate: "2024-03-01"
-      },
-      {
-        id: 102,
-        company: "IBM",
-        role: "Cloud Engineering Intern",
-        duration: 1,
-        status: "current",
-        startDate: "2025-05-01",
-        endDate: "2025-06-01"
-      }
-    ];
-
-    const combined = [...storedInternships, ...hardcoded];
-    setInternships(combined);
-    setFilteredInternships(combined);
-
-    const totalMonths = combined
-      .filter(i => i.status === "completed")
-      .reduce((acc, i) => acc + i.duration, 0);
-    setIsProStudent(totalMonths >= 3);
+    loadInternships();
   }, []);
 
-  const filterInternships = (term, status, start, end) => {
-    let f = internships.filter(i =>
-      i.company.toLowerCase().includes(term.toLowerCase()) ||
-      i.role.toLowerCase().includes(term.toLowerCase())
-    );
-    if (status === "current") {
-      f = f.filter(i => new Date(i.endDate) >= new Date());
-    } else if (status === "completed") {
-      f = f.filter(i => new Date(i.endDate) < new Date());
+  const loadInternships = () => {
+    const stored = JSON.parse(localStorage.getItem("studentProfile")) || {};
+    const storedInternships = stored.internships || [];
+    setInternships(storedInternships);
+    setFilteredInternships(storedInternships);
+
+    const totalMonths = storedInternships
+      .filter(i => i.status === "completed")
+      .reduce((acc, i) => acc + (parseInt(i.duration) || 0), 0);
+    setIsProStudent(totalMonths >= 3);
+  };
+
+  const clearInternships = () => {
+    if (window.confirm("Are you sure you want to clear all internships? This cannot be undone.")) {
+      const stored = JSON.parse(localStorage.getItem("studentProfile")) || {};
+      localStorage.setItem("studentProfile", JSON.stringify({
+        ...stored,
+        internships: []
+      }));
+      loadInternships();
     }
+  };
+
+  // Original filter functionality
+   const filterInternships = (term, status, start, end) => {
+    let f = internships;
+
+    // Apply search filter
+    if (term) {
+      f = f.filter(i =>
+        (i.company && i.company.toLowerCase().includes(term.toLowerCase())) ||
+        (i.role && i.role.toLowerCase().includes(term.toLowerCase()))
+      );
+    }
+
+    // Apply status filter using internship.status directly
+    if (status !== "all") {
+      f = f.filter(i => i.status === status);
+    }
+
+    // Apply date filters
     if (start) {
-      f = f.filter(i => new Date(i.startDate) >= new Date(start));
+      const startDate = new Date(start);
+      f = f.filter(i => {
+        if (!i.startDate) return false;
+        return new Date(i.startDate) >= startDate;
+      });
     }
     if (end) {
-      f = f.filter(i => new Date(i.endDate) <= new Date(end));
+      const endDate = new Date(end);
+      f = f.filter(i => {
+        if (!i.endDate) return false;
+        return new Date(i.endDate) <= endDate;
+      });
     }
+
     setFilteredInternships(f);
   };
 
@@ -82,16 +92,19 @@ const InternshipPage = () => {
     setSearch(t);
     filterInternships(t, statusFilter, startDateFilter, endDateFilter);
   };
+
   const handleStatusChange = e => {
     const v = e.target.value;
     setStatusFilter(v);
     filterInternships(search, v, startDateFilter, endDateFilter);
   };
+
   const handleStartDateChange = e => {
     const v = e.target.value;
     setStartDateFilter(v);
     filterInternships(search, statusFilter, v, endDateFilter);
   };
+
   const handleEndDateChange = e => {
     const v = e.target.value;
     setEndDateFilter(v);
@@ -120,18 +133,26 @@ const InternshipPage = () => {
         <div className="max-w-4xl mx-auto px-6 py-20 relative z-10 text-center text-white">
           <h1 className="text-5xl font-extrabold mb-4">My Internships</h1>
           <p className="text-xl opacity-90">
-            Track your history, filter by status or date, and earn your “PRO Student” badge at 3 months!
+            Track your history, filter by status or date, and earn your "PRO Student" badge at 3 months!
           </p>
-          {isProStudent && (
-            <motion.span
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.6, type: "spring", stiffness: 300 }}
-              className="inline-block mt-6 bg-yellow-300 text-gray-900 px-5 py-2 rounded-full font-semibold shadow-lg"
+          <div className="flex justify-center gap-4 mt-6">
+            {isProStudent && (
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.6, type: "spring", stiffness: 300 }}
+                className="inline-block bg-yellow-300 text-gray-900 px-5 py-2 rounded-full font-semibold shadow-lg"
+              >
+                <FaHourglassHalf className="inline mr-2" /> PRO Student
+              </motion.span>
+            )}
+            <button 
+              onClick={clearInternships}
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full font-medium flex items-center gap-2 transition-colors"
             >
-              <FaHourglassHalf className="inline mr-2" /> PRO Student
-            </motion.span>
-          )}
+              <FaTrash /> Clear All Internships
+            </button>
+          </div>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent" />
       </motion.div>
@@ -201,7 +222,9 @@ const InternshipPage = () => {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               whileHover={{ scale: 1.03, boxShadow: "0 8px 20px rgba(0,0,0,0.1)" }}
-              className="bg-white rounded-xl p-6 border border-gray-100 flex flex-col justify-between"
+              className={`bg-white rounded-xl p-6 border flex flex-col justify-between ${
+                i.status === "completed" ? "border-green-400" : "border-gray-100"
+              }`}
             >
               <div>
                 <h3 className="text-2xl font-semibold text-gray-800 mb-2">
