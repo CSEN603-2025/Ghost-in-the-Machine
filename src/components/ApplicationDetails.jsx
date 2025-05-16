@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ApplicationsContext } from '../contexts/ApplicationsContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
+import Toast from '../components/Toast';
 
 const statusColor = {
   Pending: 'bg-yellow-100 text-yellow-800',
@@ -14,6 +15,8 @@ const statusColor = {
 };
 
 const ApplicationDetails = () => {
+  const [toastMessage, setToastMessage] = useState('');
+
   useEffect(() => {
   window.scrollTo(0, 0);
 }, []);
@@ -31,38 +34,35 @@ const ApplicationDetails = () => {
   }, [id, applications]);
 
   const handleStatusChange = (newStatus) => {
-    setApplications((prev) =>
-      prev.map((app) =>
-        app.id === parseInt(id) ? { ...app, status: newStatus } : app
-      )
-    );
+  setApplications((prev) =>
+    prev.map((app) =>
+      app.id === parseInt(id) ? { ...app, status: newStatus } : app
+    )
+  );
 
-    setAlertMessage(`Status changed to: ${newStatus}`);
-    setAlertType(newStatus === 'Rejected' ? 'error' : 'success');
+  setToastMessage(`Status changed to: ${newStatus}`);
+};
 
-    setTimeout(() => {
-      setAlertMessage(null);
-    }, 2000);
-  };
 
   if (!application) return <div className="p-6 text-red-600">Application not found</div>;
 
   return (
     <div className="min-h-screen bg-[#f4f4f4] p-6">
+      {toastMessage && (
+  <Toast
+    message={toastMessage}
+    type="info"
+    containerProps={{ position: 'bottom-left' }}
+  />
+)}
+
       <AnimatePresence>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
         >
-          {alertMessage && (
-            <div
-              className={`fixed top-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-md z-50 text-white text-sm font-medium transition-all duration-300
-                ${alertType === 'success' ? 'bg-green-600' : 'bg-red-600'}`}
-            >
-              {alertMessage}
-            </div>
-          )}
+       
 
           <motion.button
             whileHover={{ x: -5 }}

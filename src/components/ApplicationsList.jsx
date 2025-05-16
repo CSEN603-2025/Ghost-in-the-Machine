@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { ApplicationsContext } from '../contexts/ApplicationsContext';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
+import Toast from '../components/Toast';
+
 
 function ApplicationsList({ posts }) {
+  const [toastMessage, setToastMessage] = useState('');
   const handleBack = () => {
   navigate('/dashboard'); 
 };
@@ -23,10 +26,12 @@ function ApplicationsList({ posts }) {
   const applicationsPerPage = 6;
 
   const handleStatusChange = (id, newStatus) => {
-    setApplications(prev =>
-      prev.map(app => (app.id === id ? { ...app, status: newStatus } : app))
-    );
-  };
+  setApplications(prev =>
+    prev.map(app => (app.id === id ? { ...app, status: newStatus } : app))
+  );
+
+  setToastMessage(`Application marked as "${newStatus}"`);
+};
 
   const getAllInternshipTitles = () => {
     const postTitles = posts.map(post => post.title);
@@ -58,6 +63,14 @@ function ApplicationsList({ posts }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {toastMessage && (
+  <Toast
+    message={toastMessage}
+    type="info"
+    containerProps={{ position: 'bottom-left' }}
+  />
+)}
+
       <motion.div className="relative overflow-hidden">
          <motion.button
     whileHover={{ x: -5 }}

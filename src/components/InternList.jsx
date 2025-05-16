@@ -1,8 +1,11 @@
+
 import React, { useState, useContext,useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ApplicationsContext } from '../contexts/ApplicationsContext';
-import { motion } from 'framer-motion';
+import { motion,AnimatePresence } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
+import Toast from '../components/Toast';
+
 
 
 
@@ -12,6 +15,11 @@ const statusColors = {
 };
 
 function InternList() {
+  const [toastMessage, setToastMessage] = useState('');
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+const [selectedInternId, setSelectedInternId] = useState(null);
+
+
    const handleBack = () => {
   navigate('/dashboard'); 
 };
@@ -28,11 +36,17 @@ function InternList() {
 
   const navigate = useNavigate();
   const internsPerPage = 6;
-const markAsComplete = (id) => {
+const confirmMarkAsComplete = () => {
   setApplications((prev) =>
-    prev.map((app) => (app.id === id ? { ...app, status: 'Internship Complete' } : app))
+    prev.map((app) =>
+      app.id === selectedInternId ? { ...app, status: 'Internship Complete' } : app
+    )
   );
+  setToastMessage('Intern marked as complete');
+  setShowConfirmModal(false);
+  setSelectedInternId(null);
 };
+
 
   const filteredInterns = applications.filter((intern) => {
     const matchesStatus =
@@ -52,6 +66,14 @@ const markAsComplete = (id) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {toastMessage && (
+  <Toast
+    message={toastMessage}
+    type="success"
+    containerProps={{ position: 'bottom-left' }}
+  />
+)}
+
       <motion.div className="relative overflow-hidden">
          <motion.button
     whileHover={{ x: -5 }}
@@ -137,8 +159,9 @@ const markAsComplete = (id) => {
     <div className="mt-3">
       <button
         onClick={(e) => {
-          e.stopPropagation();
-          markAsComplete(intern.id);
+  e.stopPropagation();
+  setSelectedInternId(intern.id);
+  setShowConfirmModal(true);
         }}
         className="px-3 py-1 bg-green-700 text-white text-sm rounded hover:bg-green-800"
       >
@@ -175,6 +198,41 @@ const markAsComplete = (id) => {
           </div>
         )}
       </div>
+      <AnimatePresence>
+  {showConfirmModal && (
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="bg-white rounded-lg p-6 shadow-lg max-w-md w-full text-center"
+        initial={{ scale: 0.9 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.9 }}
+      >
+        <h3 className="text-xl font-semibold mb-4">Are you sure?</h3>
+        <p className="text-gray-600 mb-6">Do you want to mark this intern as complete?</p>
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={() => setShowConfirmModal(false)}
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={confirmMarkAsComplete}
+            className="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800"
+          >
+            Confirm
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
     </div>
   );
 }
