@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Toast from '../components/Toast';
 
 const ApplicationPage = () => {
   const { id } = useParams();
@@ -9,6 +10,8 @@ const ApplicationPage = () => {
     coverLetter: null,
     certificates: null,
   });
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState(''); // Add toast type state
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleFileChange = (e, docType) => {
@@ -50,7 +53,16 @@ const ApplicationPage = () => {
     localStorage.setItem("applications", JSON.stringify(currentApplications));
 
     setIsSubmitted(true);
-    alert("Your application has been submitted!");
+
+    // Show toast instead of alert
+    setToastMessage('Your application has been submitted!');
+    setToastType('success');
+
+    // Optionally clear the toast after a few seconds
+    setTimeout(() => {
+      setToastMessage('');
+      setToastType('');
+    }, 4000);
   };
 
   const handleGoBack = () => {
@@ -66,6 +78,15 @@ const ApplicationPage = () => {
           <p className="text-lg mt-2 opacity-90">Upload your documents and apply now!</p>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onClose={() => setToastMessage('')}
+        />
+      )}
 
       {/* Form */}
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-8">
