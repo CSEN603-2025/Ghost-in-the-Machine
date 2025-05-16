@@ -1,4 +1,3 @@
-// src/pages/StudentReportEditor.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -10,14 +9,42 @@ export default function StudentReportEditor() {
     introduction: "",
     body: "",
     selectedCourses: [],
+    major: "",
   });
-  const [courses] = useState([
-    "Data Base 1",
-    "Gaming",
-    "Math 501",
-    "Theory",
-  ]);
+
+  const [availableCourses, setAvailableCourses] = useState([]);
   const navigate = useNavigate();
+
+  const majorToCourses = {
+    "Computer Engineering": [
+      "Data Structures",
+      "Algorithms",
+      "Database Systems",
+      "Operating Systems",
+      "Computer Networks",
+    ],
+    Business: [
+      "Marketing",
+      "Accounting",
+      "Finance",
+      "Organizational Behavior",
+      "Business Analytics",
+    ],
+    Pharmacy: [
+      "Pharmacology",
+      "Medicinal Chemistry",
+      "Pharmaceutics",
+      "Pharmacognosy",
+      "Clinical Pharmacy",
+    ],
+    Management: [
+      "Operations Management",
+      "Project Management",
+      "HR Management",
+      "Strategic Management",
+      "Supply Chain",
+    ],
+  };
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("studentReport"));
@@ -25,9 +52,16 @@ export default function StudentReportEditor() {
       setReport({
         ...stored,
         selectedCourses: stored.selectedCourses || [],
+        major: stored.major || "",
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (report.major && majorToCourses[report.major]) {
+      setAvailableCourses(majorToCourses[report.major]);
+    }
+  }, [report.major]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -37,10 +71,10 @@ export default function StudentReportEditor() {
   const handleCourseSelection = (e) => {
     const { value } = e.target;
     setReport((r) => {
-      const sel = r.selectedCourses || [];
-      const updated = sel.includes(value)
-        ? sel.filter((c) => c !== value)
-        : [...sel, value];
+      const selected = r.selectedCourses || [];
+      const updated = selected.includes(value)
+        ? selected.filter((c) => c !== value)
+        : [...selected, value];
       return { ...r, selectedCourses: updated };
     });
   };
@@ -49,6 +83,7 @@ export default function StudentReportEditor() {
     localStorage.setItem("studentReport", JSON.stringify(report));
     alert("Report saved!");
   };
+
   const handleView = () => {
     localStorage.setItem("studentReport", JSON.stringify(report));
     navigate("/student/view-report");
@@ -133,26 +168,48 @@ export default function StudentReportEditor() {
               />
             </div>
 
-            {/* Courses */}
+            {/* Major Selection */}
             <div>
-              <p className="block text-sm font-medium text-gray-700 mb-2">
-                Courses that helped you:
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {courses.map((c, i) => (
-                  <label key={i} className="inline-flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      value={c}
-                      checked={report.selectedCourses.includes(c)}
-                      onChange={handleCourseSelection}
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="text-gray-700">{c}</span>
-                  </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Select Your Major
+              </label>
+              <select
+                name="major"
+                value={report.major}
+                onChange={handleInputChange}
+                className="w-full rounded-lg border-gray-300 p-3 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">-- Choose a major --</option>
+                {Object.keys(majorToCourses).map((m, i) => (
+                  <option key={i} value={m}>
+                    {m}
+                  </option>
                 ))}
-              </div>
+              </select>
             </div>
+
+            {/* Course Selection */}
+            {report.major && (
+              <div>
+                <p className="block text-sm font-medium text-gray-700 mb-2">
+                  Here are all the available courses. Select the ones that helped you:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {availableCourses.map((course, idx) => (
+                    <label key={idx} className="inline-flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        value={course}
+                        checked={report.selectedCourses.includes(course)}
+                        onChange={handleCourseSelection}
+                        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                      <span className="text-gray-700">{course}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Buttons */}
             <div className="flex justify-end space-x-4">

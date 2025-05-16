@@ -14,9 +14,9 @@ const Navbar = () => {
         <h1 className="text-3xl font-bold text-[#EBEBEB]">GUC</h1>
 
         <ul className="hidden md:flex gap-8 text-[#EBEBEB]">
-          <li className="hover:text-[#829CD0] transition duration-300 cursor-pointer">Home</li>
-          <li className="hover:text-[#829CD0] transition duration-300 cursor-pointer">About</li>
-          <li className="hover:text-[#829CD0] transition duration-300 cursor-pointer">Contact</li>
+          <li className="hover:text-[#829CD0] transition duration-300 cursor-pointer"></li>
+          <li className="hover:text-[#829CD0] transition duration-300 cursor-pointer"></li>
+          <li className="hover:text-[#829CD0] transition duration-300 cursor-pointer"></li>
         </ul>
 
         <div onClick={handleNav} className="block md:hidden cursor-pointer">
@@ -32,9 +32,9 @@ const Navbar = () => {
       >
         <h1 className="text-3xl font-bold m-4 text-[#EBEBEB]">GUC</h1>
         <ul className="pt-10 uppercase">
-          <li className="p-4 border-b border-[#829CD0] hover:text-[#EBEBEB]">Home</li>
-          <li className="p-4 border-b border-[#829CD0] hover:text-[#EBEBEB]">About</li>
-          <li className="p-4 border-b border-[#829CD0] hover:text-[#EBEBEB]">Contact</li>
+          <li className="p-4 border-b border-[#829CD0] hover:text-[#EBEBEB]"></li>
+          <li className="p-4 border-b border-[#829CD0] hover:text-[#EBEBEB]"></li>
+          <li className="p-4 border-b border-[#829CD0] hover:text-[#EBEBEB]"></li>
         </ul>
       </div>
     </div>

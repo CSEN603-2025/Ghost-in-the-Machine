@@ -71,16 +71,38 @@ const ManageReportsAndEvaluations = () => {
     {
       id: 4,
       type: 'internship',
-      studentName: 'Layla Hassan',
+      studentName: 'Noha Ahmed',
       companyName: 'InnovaTech',
       major: 'Electrical Engineering',
       status: 'Flagged',
       submissionDate: '2025-02-28',
-      clarification: 'Reviewed by SCAD office.',
+      clarification: '',
       details: 'Worked on circuit testing and hardware design tasks.',
     },
     {
       id: 5,
+      type: 'internship',
+      studentName: 'Rana Ali',
+      companyName: 'Synapse',
+      major: 'Computer Science',
+      status: 'Accepted',
+      submissionDate: '2025-02-28',
+      clarification: 'Reviewed by SCAD office.',
+      details: 'Worked on Data Analysis.',
+    },
+    {
+      id: 6,
+      type: 'internship',
+      studentName: 'Mazen Ahmed',
+      companyName: 'CIB',
+      major: 'Business',
+      status: 'Accepted',
+      submissionDate: '2025-02-28',
+      clarification: 'Reviewed by SCAD office.',
+      details: 'Worked on Marketing.',
+    },
+    {
+      id: 7,
       type: 'evaluation',
       studentName: 'Ahmed Nour',
       companyName: 'SmartSystems',
@@ -102,6 +124,18 @@ const ManageReportsAndEvaluations = () => {
       evaluationComments: 'Very committed and eager to learn.',
       submissionDate: '2025-07-25',
       rating: 4.2,
+    },
+    {
+      id: 7,
+      type: 'evaluation',
+      studentName: 'Mohamed Ayman',
+      companyName: 'Synapse',
+      mainSupervisor: 'Eng. Omar Ghareeb',
+      internshipStartDate: '2025-03-10',
+      internshipEndDate: '2025-07-20',
+      evaluationComments: 'Eager to learn.',
+      submissionDate: '2025-07-25',
+      rating: 4.7,
     },
   ]);
 
@@ -246,27 +280,42 @@ const ManageReportsAndEvaluations = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-  <header className="bg-gradient-to-r from-blue-800 to-indigo-900 text-white shadow-lg relative">
-  <div className="container mx-auto px-6 py-8 relative">
-    <div className="text-center">
-      <motion.button
-  whileHover={{ x: -5 }}
-  onClick={() => navigate('/scad-dashboard')}
-  className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
->
-  <ArrowLeft className="mr-1 w-5 h-5" /> Back
-</motion.button>
-      <h1 className="text-4xl font-bold">Internship Management</h1>
-      <p className="text-blue-100 mt-2">Comprehensive reports and analytics dashboard</p>
-    </div>
-    <div className="absolute right-6 top-1/2 transform -translate-y-1/2">
-      <button className="bg-white text-blue-800 px-4 py-2 rounded-lg font-medium hover:bg-blue-50 transition">
-        Export Data
-      </button>
-    </div>
-  </div>
-</header>
+  {/* Updated Hero Section to match ManageCycle */}
+  <motion.div
+    initial={{ opacity: 0, y: -20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+    className="relative overflow-hidden"
+  >
+    <motion.button
+      whileHover={{ x: -5 }}
+      onClick={() => navigate('/scad-dashboard')}
+      className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+    >
+      <ArrowLeft className="mr-1 w-5 h-5" /> Back
+    </motion.button>
 
+    <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
+    <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center">
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-4xl md:text-5xl font-bold text-white mb-4"
+      >
+        Manage Reports & Evaluations
+      </motion.h1>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="text-xl text-blue-100 max-w-2xl mx-auto"
+      >
+        View and manage all internship reports and evaluations
+      </motion.p>
+    </div>
+    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
+  </motion.div>
 
       <main className="container mx-auto px-6 py-8">
         <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">

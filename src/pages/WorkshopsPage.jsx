@@ -1,4 +1,4 @@
-// src/pages/WorkshopsPage.jsx
+
 import React, { useState } from 'react';
 import { useWorkshops } from '../hooks/useWorkshops';
 import WorkshopForm from '../components/WorkshopForm';
