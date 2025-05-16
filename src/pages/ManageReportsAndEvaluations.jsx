@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-
 import { motion, AnimatePresence } from 'framer-motion';
-
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Chart } from 'react-chartjs-2';
@@ -19,7 +17,6 @@ import {
 } from 'chart.js';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-
 
 ChartJS.register(
   CategoryScale,
@@ -114,7 +111,7 @@ const ManageReportsAndEvaluations = () => {
       rating: 4.5,
     },
     {
-      id: 6,
+      id: 8,
       type: 'evaluation',
       studentName: 'Sara Ayman',
       companyName: 'NextGen',
@@ -126,7 +123,7 @@ const ManageReportsAndEvaluations = () => {
       rating: 4.2,
     },
     {
-      id: 7,
+      id: 9,
       type: 'evaluation',
       studentName: 'Mohamed Ayman',
       companyName: 'Synapse',
@@ -145,7 +142,6 @@ const ManageReportsAndEvaluations = () => {
   const [filter, setFilter] = useState({ major: '', status: '', search: '' });
   const [activeTab, setActiveTab] = useState('reports');
   const navigate = useNavigate();
-
 
   const filteredInternships = reports.filter(
     (r) =>
@@ -280,42 +276,41 @@ const ManageReportsAndEvaluations = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-  {/* Updated Hero Section to match ManageCycle */}
-  <motion.div
-    initial={{ opacity: 0, y: -20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-    className="relative overflow-hidden"
-  >
-    <motion.button
-      whileHover={{ x: -5 }}
-      onClick={() => navigate('/scad-dashboard')}
-      className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
-    >
-      <ArrowLeft className="mr-1 w-5 h-5" /> Back
-    </motion.button>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative overflow-hidden"
+      >
+        <motion.button
+          whileHover={{ x: -5 }}
+          onClick={() => navigate('/scad-dashboard')}
+          className="absolute top-6 left-6 z-30 flex items-center text-white hover:underline"
+        >
+          <ArrowLeft className="mr-1 w-5 h-5" /> Back
+        </motion.button>
 
-    <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
-    <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center">
-      <motion.h1
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="text-4xl md:text-5xl font-bold text-white mb-4"
-      >
-        Manage Reports & Evaluations
-      </motion.h1>
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="text-xl text-blue-100 max-w-2xl mx-auto"
-      >
-        View and manage all internship reports and evaluations
-      </motion.p>
-    </div>
-    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
-  </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#00106A] to-[#0038A0] opacity-95"></div>
+        <div className="max-w-7xl mx-auto px-6 py-20 relative z-10 text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-4xl md:text-5xl font-bold text-white mb-4"
+          >
+            Manage Reports & Evaluations
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-xl text-blue-100 max-w-2xl mx-auto"
+          >
+            View and manage all internship reports and evaluations
+          </motion.p>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
+      </motion.div>
 
       <main className="container mx-auto px-6 py-8">
         <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
@@ -462,9 +457,15 @@ const ManageReportsAndEvaluations = () => {
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <button
                               onClick={() => openReportPopup(evalReport)}
-                              className="text-blue-600 hover:text-blue-900"
+                              className="text-blue-600 hover:text-blue-900 mr-4"
                             >
                               View
+                            </button>
+                            <button
+                              onClick={() => downloadPDF(evalReport)}
+                              className="text-indigo-600 hover:text-indigo-900"
+                            >
+                              Download
                             </button>
                           </td>
                         </tr>
@@ -578,12 +579,16 @@ const ManageReportsAndEvaluations = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-800">Internships by Major</h3>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-800">Most Frequently Used Courses</h3>
                     <div className="h-80">
                       <Chart
                         type="doughnut"
                         data={{
-                          labels: majorLabels,
+                          labels: majorLabels.map(major => 
+                            major === 'Computer Science' ? 'CSEN401' :
+                            major === 'Business' ? 'BI602' :
+                            'ELCT501'
+                          ),
                           datasets: [{
                             data: majorData,
                             backgroundColor: ['#4f46e5', '#10b981', '#f59e0b'],
@@ -596,6 +601,11 @@ const ManageReportsAndEvaluations = () => {
                           plugins: {
                             legend: {
                               position: 'right',
+                              labels: {
+                                font: {
+                                  size: 14
+                                }
+                              }
                             },
                           },
                           cutout: '70%',
@@ -603,7 +613,7 @@ const ManageReportsAndEvaluations = () => {
                       />
                     </div>
                   </div>
-
+                  
                   <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <h3 className="text-lg font-semibold mb-4 text-gray-800">Top Companies by Internship Count</h3>
                     <div className="h-80">
